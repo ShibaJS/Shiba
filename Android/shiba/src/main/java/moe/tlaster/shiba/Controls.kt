@@ -20,11 +20,19 @@ data class Thickness(val top: Float, val left: Float, val right: Float, val bott
 open class View {
     var width = Float.NaN
     var height = Float.NaN
+    var maxWidth = Float.NaN
+    var maxHeight = Float.NaN
+    var minWidth = Float.NaN
+    var minHeight = Float.NaN
     var gravity = Gravity.Start
     var margin = Thickness(0f, 0f, 0f, 0f)
     var padding = Thickness(0f, 0f, 0f, 0f)
     var isEnabled = true
     var backgroundColor = ""
+    var click = ""
+    var sizeChanged = ""
+    var name = ""
+    var alpha = 1f
 }
 
 open class ViewGroup : View() {

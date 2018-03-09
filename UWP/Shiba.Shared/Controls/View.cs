@@ -31,12 +31,20 @@ namespace Shiba.Controls
     {
         public float Width { get; set; } = float.NaN;
         public float Height { get; set; } = float.NaN;
+        public float MinWidth { get; set; } = float.NaN;
+        public float MinHeight { get; set; } = float.NaN;
+        public float MaxWidth { get; set; } = float.NaN;
+        public float MaxHeight { get; set; } = float.NaN;
         public Gravity Gravity { get; set; } = Gravity.Start;
         public Thickness Margin { get; set; } = new Thickness();
         public Thickness Padding { get; set; } = new Thickness();
         public bool IsEnabled { get; set; } = true;
         public string BackgroundColor { get; set; }
 
+        public string Click { get; set; }
+        public string SizeChanged { get; set; }
+        public float Alpha { get; set; } = 1f;
+        public string Name { get; set; }
     }
 
     public class ViewGroup : View
