@@ -111,6 +111,7 @@
     <EmbeddedResource Include="Properties\Shiba.UWP.rd.xml" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Antlr4.Runtime.Standard" Version="4.7.1.1" />
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.0.8" />
     <PackageReference Include="Sprache" Version="2.1.2" />
     <PackageReference Include="System.ValueTuple">
