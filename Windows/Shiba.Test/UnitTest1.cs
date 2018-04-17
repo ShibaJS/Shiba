@@ -1,6 +1,6 @@
-using System;
-using System.IO;
-using Sprache;
+using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
+using Shiba.Parser;
 using Xunit;
 
 namespace Shiba.Test
@@ -10,9 +10,16 @@ namespace Shiba.Test
         [Fact]
         public void Test1()
         {
-            var text = "<body>\n    <p name=\"sadasdas\" aaa=\"aaa\">\n        hello,<br aaa=\"aaa\"/> <!--\n      This is a comment\n    --><i>world!</i>\n    </p>\n</body>";
-            var doc = SbParser.Node.Parse(text);
-            Assert.NotNull(doc);
+            var input = "xxx {aaa: true, bbb: 4312412, ccc{aaa:false}}";
+            var stream = CharStreams.fromstring(input);
+            var lexer = new ShibaLexer(stream);
+            var tokens = new CommonTokenStream(lexer);
+            var parser = new ShibaParser(tokens) {BuildParseTree = true};
+            var tree = parser.root();
+            var obj = tree.GetChild<ShibaParser.ObjContext>(0);
+            var child = obj.GetChild(1);
+            
+            Assert.NotNull(tree);
         }
     }
 }

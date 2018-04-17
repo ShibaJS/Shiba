@@ -11,10 +11,20 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Text.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\View.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SbParser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Parser\ShibaBaseListener.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Parser\ShibaLexer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Parser\ShibaListener.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Parser\ShibaParser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Parser\ShibaParserWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Converters" />
     <Folder Include="$(MSBuildThisFileDirectory)Renderers" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Parser\Shiba.interp" />
+    <None Include="$(MSBuildThisFileDirectory)Parser\Shiba.tokens" />
+    <None Include="$(MSBuildThisFileDirectory)Parser\ShibaLexer.interp" />
+    <None Include="$(MSBuildThisFileDirectory)Parser\ShibaLexer.tokens" />
   </ItemGroup>
 </Project>
