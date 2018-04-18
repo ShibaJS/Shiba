@@ -9,6 +9,7 @@
     <Import_RootNamespace>Shiba</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Common\ReflectionExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Text.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\View.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Parser\ShibaBaseListener.cs" />

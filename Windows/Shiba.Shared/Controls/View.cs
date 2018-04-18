@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Shiba.Controls
 {
@@ -7,7 +7,7 @@ namespace Shiba.Controls
     {
         public string Target { get; set; }
     }
-    
+
     public enum Gravity
     {
         Start,
@@ -18,7 +18,16 @@ namespace Shiba.Controls
 
     public struct Thickness
     {
-        public Thickness(float top, float left, float right, float bottom) : this()
+        internal Thickness(string value)
+        {
+            var values = value.Split(',');
+            Top = float.TryParse(values.ElementAtOrDefault(0), out var top) ? top : 0F;
+            Right = float.TryParse(values.ElementAtOrDefault(1), out var right) ? right : 0F;
+            Bottom = float.TryParse(values.ElementAtOrDefault(2), out var bottom) ? bottom : 0F;
+            Left = float.TryParse(values.ElementAtOrDefault(3), out var left) ? left : 0F;
+
+        }
+        internal Thickness(float top, float left, float right, float bottom)
         {
             Top = top;
             Left = left;

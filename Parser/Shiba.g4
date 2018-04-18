@@ -1,16 +1,23 @@
 grammar Shiba;
 
 root
-   : obj
+   : namespaces obj
+   ;
+
+namespaces
+   : NAMESPACE*
+   ;
+
+NAMESPACE
+   : '@' TOKEN ('.' TOKEN)*
    ;
 
 obj
-   : TOKEN '{' pair (',' pair)* '}'
+   : TOKEN ('{' pair (','? (pair | obj))* '}')?
    ;
 
 pair
    : TOKEN ':' value
-   | obj
    ;
 
 value

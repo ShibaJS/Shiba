@@ -28,6 +28,18 @@ public class ShibaBaseListener implements ShibaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterNamespaces(ShibaParser.NamespacesContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNamespaces(ShibaParser.NamespacesContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterObj(ShibaParser.ObjContext ctx) { }
 	/**
 	 * {@inheritDoc}

@@ -37,21 +37,22 @@ public partial class ShibaParser : Parser {
 	protected static DFA[] decisionToDFA;
 	protected static PredictionContextCache sharedContextCache = new PredictionContextCache();
 	public const int
-		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, STRING=6, BOOLEAN=7, TOKEN=8, 
-		NUMBER=9, Hws=10, Vws=11, DocComment=12, BlockComment=13, LineComment=14, 
-		LineCommentExt=15;
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, NAMESPACE=6, STRING=7, BOOLEAN=8, 
+		TOKEN=9, NUMBER=10, Hws=11, Vws=12, DocComment=13, BlockComment=14, LineComment=15, 
+		LineCommentExt=16;
 	public const int
-		RULE_root = 0, RULE_obj = 1, RULE_pair = 2, RULE_value = 3;
+		RULE_root = 0, RULE_namespaces = 1, RULE_obj = 2, RULE_pair = 3, RULE_value = 4;
 	public static readonly string[] ruleNames = {
-		"root", "obj", "pair", "value"
+		"root", "namespaces", "obj", "pair", "value"
 	};
 
 	private static readonly string[] _LiteralNames = {
 		null, "'{'", "','", "'}'", "':'", "'null'"
 	};
 	private static readonly string[] _SymbolicNames = {
-		null, null, null, null, null, null, "STRING", "BOOLEAN", "TOKEN", "NUMBER", 
-		"Hws", "Vws", "DocComment", "BlockComment", "LineComment", "LineCommentExt"
+		null, null, null, null, null, null, "NAMESPACE", "STRING", "BOOLEAN", 
+		"TOKEN", "NUMBER", "Hws", "Vws", "DocComment", "BlockComment", "LineComment", 
+		"LineCommentExt"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -85,6 +86,9 @@ public partial class ShibaParser : Parser {
 		Interpreter = new ParserATNSimulator(this, _ATN, decisionToDFA, sharedContextCache);
 	}
 	public partial class RootContext : ParserRuleContext {
+		public NamespacesContext namespaces() {
+			return GetRuleContext<NamespacesContext>(0);
+		}
 		public ObjContext obj() {
 			return GetRuleContext<ObjContext>(0);
 		}
@@ -110,7 +114,62 @@ public partial class ShibaParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 8; obj();
+			State = 10; namespaces();
+			State = 11; obj();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class NamespacesContext : ParserRuleContext {
+		public ITerminalNode[] NAMESPACE() { return GetTokens(ShibaParser.NAMESPACE); }
+		public ITerminalNode NAMESPACE(int i) {
+			return GetToken(ShibaParser.NAMESPACE, i);
+		}
+		public NamespacesContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_namespaces; } }
+		public override void EnterRule(IParseTreeListener listener) {
+			IShibaListener typedListener = listener as IShibaListener;
+			if (typedListener != null) typedListener.EnterNamespaces(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			IShibaListener typedListener = listener as IShibaListener;
+			if (typedListener != null) typedListener.ExitNamespaces(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public NamespacesContext namespaces() {
+		NamespacesContext _localctx = new NamespacesContext(Context, State);
+		EnterRule(_localctx, 2, RULE_namespaces);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 16;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while (_la==NAMESPACE) {
+				{
+				{
+				State = 13; Match(NAMESPACE);
+				}
+				}
+				State = 18;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -132,6 +191,12 @@ public partial class ShibaParser : Parser {
 		public PairContext pair(int i) {
 			return GetRuleContext<PairContext>(i);
 		}
+		public ObjContext[] obj() {
+			return GetRuleContexts<ObjContext>();
+		}
+		public ObjContext obj(int i) {
+			return GetRuleContext<ObjContext>(i);
+		}
 		public ObjContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -150,29 +215,58 @@ public partial class ShibaParser : Parser {
 	[RuleVersion(0)]
 	public ObjContext obj() {
 		ObjContext _localctx = new ObjContext(Context, State);
-		EnterRule(_localctx, 2, RULE_obj);
+		EnterRule(_localctx, 4, RULE_obj);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 10; Match(TOKEN);
-			State = 11; Match(T__0);
-			State = 12; pair();
-			State = 17;
+			State = 19; Match(TOKEN);
+			State = 36;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			while (_la==T__1) {
+			if (_la==T__0) {
 				{
-				{
-				State = 13; Match(T__1);
-				State = 14; pair();
-				}
-				}
-				State = 19;
+				State = 20; Match(T__0);
+				State = 21; pair();
+				State = 31;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
+				while (_la==T__1 || _la==TOKEN) {
+					{
+					{
+					State = 23;
+					ErrorHandler.Sync(this);
+					_la = TokenStream.LA(1);
+					if (_la==T__1) {
+						{
+						State = 22; Match(T__1);
+						}
+					}
+
+					State = 27;
+					ErrorHandler.Sync(this);
+					switch ( Interpreter.AdaptivePredict(TokenStream,2,Context) ) {
+					case 1:
+						{
+						State = 25; pair();
+						}
+						break;
+					case 2:
+						{
+						State = 26; obj();
+						}
+						break;
+					}
+					}
+					}
+					State = 33;
+					ErrorHandler.Sync(this);
+					_la = TokenStream.LA(1);
+				}
+				State = 34; Match(T__2);
+				}
 			}
-			State = 20; Match(T__2);
+
 			}
 		}
 		catch (RecognitionException re) {
@@ -190,9 +284,6 @@ public partial class ShibaParser : Parser {
 		public ITerminalNode TOKEN() { return GetToken(ShibaParser.TOKEN, 0); }
 		public ValueContext value() {
 			return GetRuleContext<ValueContext>(0);
-		}
-		public ObjContext obj() {
-			return GetRuleContext<ObjContext>(0);
 		}
 		public PairContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -212,25 +303,13 @@ public partial class ShibaParser : Parser {
 	[RuleVersion(0)]
 	public PairContext pair() {
 		PairContext _localctx = new PairContext(Context, State);
-		EnterRule(_localctx, 4, RULE_pair);
+		EnterRule(_localctx, 6, RULE_pair);
 		try {
-			State = 26;
-			ErrorHandler.Sync(this);
-			switch ( Interpreter.AdaptivePredict(TokenStream,1,Context) ) {
-			case 1:
-				EnterOuterAlt(_localctx, 1);
-				{
-				State = 22; Match(TOKEN);
-				State = 23; Match(T__3);
-				State = 24; value();
-				}
-				break;
-			case 2:
-				EnterOuterAlt(_localctx, 2);
-				{
-				State = 25; obj();
-				}
-				break;
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 38; Match(TOKEN);
+			State = 39; Match(T__3);
+			State = 40; value();
 			}
 		}
 		catch (RecognitionException re) {
@@ -266,12 +345,12 @@ public partial class ShibaParser : Parser {
 	[RuleVersion(0)]
 	public ValueContext value() {
 		ValueContext _localctx = new ValueContext(Context, State);
-		EnterRule(_localctx, 6, RULE_value);
+		EnterRule(_localctx, 8, RULE_value);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 28;
+			State = 42;
 			_la = TokenStream.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__4) | (1L << STRING) | (1L << BOOLEAN) | (1L << NUMBER))) != 0)) ) {
 			ErrorHandler.RecoverInline(this);
@@ -295,31 +374,43 @@ public partial class ShibaParser : Parser {
 
 	private static char[] _serializedATN = {
 		'\x3', '\x608B', '\xA72A', '\x8133', '\xB9ED', '\x417C', '\x3BE7', '\x7786', 
-		'\x5964', '\x3', '\x11', '!', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
-		'\t', '\x3', '\x4', '\x4', '\t', '\x4', '\x4', '\x5', '\t', '\x5', '\x3', 
-		'\x2', '\x3', '\x2', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', 
-		'\x3', '\x3', '\x3', '\a', '\x3', '\x12', '\n', '\x3', '\f', '\x3', '\xE', 
-		'\x3', '\x15', '\v', '\x3', '\x3', '\x3', '\x3', '\x3', '\x3', '\x4', 
-		'\x3', '\x4', '\x3', '\x4', '\x3', '\x4', '\x5', '\x4', '\x1D', '\n', 
-		'\x4', '\x3', '\x5', '\x3', '\x5', '\x3', '\x5', '\x2', '\x2', '\x6', 
-		'\x2', '\x4', '\x6', '\b', '\x2', '\x3', '\x4', '\x2', '\a', '\t', '\v', 
-		'\v', '\x2', '\x1E', '\x2', '\n', '\x3', '\x2', '\x2', '\x2', '\x4', '\f', 
-		'\x3', '\x2', '\x2', '\x2', '\x6', '\x1C', '\x3', '\x2', '\x2', '\x2', 
-		'\b', '\x1E', '\x3', '\x2', '\x2', '\x2', '\n', '\v', '\x5', '\x4', '\x3', 
-		'\x2', '\v', '\x3', '\x3', '\x2', '\x2', '\x2', '\f', '\r', '\a', '\n', 
-		'\x2', '\x2', '\r', '\xE', '\a', '\x3', '\x2', '\x2', '\xE', '\x13', '\x5', 
-		'\x6', '\x4', '\x2', '\xF', '\x10', '\a', '\x4', '\x2', '\x2', '\x10', 
-		'\x12', '\x5', '\x6', '\x4', '\x2', '\x11', '\xF', '\x3', '\x2', '\x2', 
-		'\x2', '\x12', '\x15', '\x3', '\x2', '\x2', '\x2', '\x13', '\x11', '\x3', 
-		'\x2', '\x2', '\x2', '\x13', '\x14', '\x3', '\x2', '\x2', '\x2', '\x14', 
-		'\x16', '\x3', '\x2', '\x2', '\x2', '\x15', '\x13', '\x3', '\x2', '\x2', 
-		'\x2', '\x16', '\x17', '\a', '\x5', '\x2', '\x2', '\x17', '\x5', '\x3', 
-		'\x2', '\x2', '\x2', '\x18', '\x19', '\a', '\n', '\x2', '\x2', '\x19', 
-		'\x1A', '\a', '\x6', '\x2', '\x2', '\x1A', '\x1D', '\x5', '\b', '\x5', 
-		'\x2', '\x1B', '\x1D', '\x5', '\x4', '\x3', '\x2', '\x1C', '\x18', '\x3', 
-		'\x2', '\x2', '\x2', '\x1C', '\x1B', '\x3', '\x2', '\x2', '\x2', '\x1D', 
-		'\a', '\x3', '\x2', '\x2', '\x2', '\x1E', '\x1F', '\t', '\x2', '\x2', 
-		'\x2', '\x1F', '\t', '\x3', '\x2', '\x2', '\x2', '\x4', '\x13', '\x1C',
+		'\x5964', '\x3', '\x12', '/', '\x4', '\x2', '\t', '\x2', '\x4', '\x3', 
+		'\t', '\x3', '\x4', '\x4', '\t', '\x4', '\x4', '\x5', '\t', '\x5', '\x4', 
+		'\x6', '\t', '\x6', '\x3', '\x2', '\x3', '\x2', '\x3', '\x2', '\x3', '\x3', 
+		'\a', '\x3', '\x11', '\n', '\x3', '\f', '\x3', '\xE', '\x3', '\x14', '\v', 
+		'\x3', '\x3', '\x4', '\x3', '\x4', '\x3', '\x4', '\x3', '\x4', '\x5', 
+		'\x4', '\x1A', '\n', '\x4', '\x3', '\x4', '\x3', '\x4', '\x5', '\x4', 
+		'\x1E', '\n', '\x4', '\a', '\x4', ' ', '\n', '\x4', '\f', '\x4', '\xE', 
+		'\x4', '#', '\v', '\x4', '\x3', '\x4', '\x3', '\x4', '\x5', '\x4', '\'', 
+		'\n', '\x4', '\x3', '\x5', '\x3', '\x5', '\x3', '\x5', '\x3', '\x5', '\x3', 
+		'\x6', '\x3', '\x6', '\x3', '\x6', '\x2', '\x2', '\a', '\x2', '\x4', '\x6', 
+		'\b', '\n', '\x2', '\x3', '\x5', '\x2', '\a', '\a', '\t', '\n', '\f', 
+		'\f', '\x2', '.', '\x2', '\f', '\x3', '\x2', '\x2', '\x2', '\x4', '\x12', 
+		'\x3', '\x2', '\x2', '\x2', '\x6', '\x15', '\x3', '\x2', '\x2', '\x2', 
+		'\b', '(', '\x3', '\x2', '\x2', '\x2', '\n', ',', '\x3', '\x2', '\x2', 
+		'\x2', '\f', '\r', '\x5', '\x4', '\x3', '\x2', '\r', '\xE', '\x5', '\x6', 
+		'\x4', '\x2', '\xE', '\x3', '\x3', '\x2', '\x2', '\x2', '\xF', '\x11', 
+		'\a', '\b', '\x2', '\x2', '\x10', '\xF', '\x3', '\x2', '\x2', '\x2', '\x11', 
+		'\x14', '\x3', '\x2', '\x2', '\x2', '\x12', '\x10', '\x3', '\x2', '\x2', 
+		'\x2', '\x12', '\x13', '\x3', '\x2', '\x2', '\x2', '\x13', '\x5', '\x3', 
+		'\x2', '\x2', '\x2', '\x14', '\x12', '\x3', '\x2', '\x2', '\x2', '\x15', 
+		'&', '\a', '\v', '\x2', '\x2', '\x16', '\x17', '\a', '\x3', '\x2', '\x2', 
+		'\x17', '!', '\x5', '\b', '\x5', '\x2', '\x18', '\x1A', '\a', '\x4', '\x2', 
+		'\x2', '\x19', '\x18', '\x3', '\x2', '\x2', '\x2', '\x19', '\x1A', '\x3', 
+		'\x2', '\x2', '\x2', '\x1A', '\x1D', '\x3', '\x2', '\x2', '\x2', '\x1B', 
+		'\x1E', '\x5', '\b', '\x5', '\x2', '\x1C', '\x1E', '\x5', '\x6', '\x4', 
+		'\x2', '\x1D', '\x1B', '\x3', '\x2', '\x2', '\x2', '\x1D', '\x1C', '\x3', 
+		'\x2', '\x2', '\x2', '\x1E', ' ', '\x3', '\x2', '\x2', '\x2', '\x1F', 
+		'\x19', '\x3', '\x2', '\x2', '\x2', ' ', '#', '\x3', '\x2', '\x2', '\x2', 
+		'!', '\x1F', '\x3', '\x2', '\x2', '\x2', '!', '\"', '\x3', '\x2', '\x2', 
+		'\x2', '\"', '$', '\x3', '\x2', '\x2', '\x2', '#', '!', '\x3', '\x2', 
+		'\x2', '\x2', '$', '%', '\a', '\x5', '\x2', '\x2', '%', '\'', '\x3', '\x2', 
+		'\x2', '\x2', '&', '\x16', '\x3', '\x2', '\x2', '\x2', '&', '\'', '\x3', 
+		'\x2', '\x2', '\x2', '\'', '\a', '\x3', '\x2', '\x2', '\x2', '(', ')', 
+		'\a', '\v', '\x2', '\x2', ')', '*', '\a', '\x6', '\x2', '\x2', '*', '+', 
+		'\x5', '\n', '\x6', '\x2', '+', '\t', '\x3', '\x2', '\x2', '\x2', ',', 
+		'-', '\t', '\x2', '\x2', '\x2', '-', '\v', '\x3', '\x2', '\x2', '\x2', 
+		'\a', '\x12', '\x19', '\x1D', '!', '&',
 	};
 
 	public static readonly ATN _ATN =

@@ -18,6 +18,16 @@ public interface ShibaListener extends ParseTreeListener {
 	 */
 	void exitRoot(ShibaParser.RootContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ShibaParser#namespaces}.
+	 * @param ctx the parse tree
+	 */
+	void enterNamespaces(ShibaParser.NamespacesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ShibaParser#namespaces}.
+	 * @param ctx the parse tree
+	 */
+	void exitNamespaces(ShibaParser.NamespacesContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ShibaParser#obj}.
 	 * @param ctx the parse tree
 	 */

@@ -1,5 +1,4 @@
 using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
 using Shiba.Parser;
 using Xunit;
 
@@ -18,7 +17,9 @@ namespace Shiba.Test
             var tree = parser.root();
             var obj = tree.GetChild<ShibaParser.ObjContext>(0);
             var child = obj.GetChild(1);
-            
+
+//            var view = ShibaParserWrapper.BuildViewTree(tree);
+
             Assert.NotNull(tree);
         }
     }

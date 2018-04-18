@@ -31,7 +31,7 @@
     {
     }
 
-    public class Edit : View
+    public class Input : View
     {
         public string Content { get; set; }
         public string TextColor { get; set; }
