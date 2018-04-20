@@ -42,16 +42,6 @@ public interface IShibaListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitRoot([NotNull] ShibaParser.RootContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ShibaParser.namespaces"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterNamespaces([NotNull] ShibaParser.NamespacesContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ShibaParser.namespaces"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitNamespaces([NotNull] ShibaParser.NamespacesContext context);
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="ShibaParser.obj"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

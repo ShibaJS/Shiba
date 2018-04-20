@@ -1,19 +1,11 @@
 grammar Shiba;
 
 root
-   : namespaces obj
-   ;
-
-namespaces
-   : NAMESPACE*
-   ;
-
-NAMESPACE
-   : '@' TOKEN ('.' TOKEN)*
+   : obj
    ;
 
 obj
-   : TOKEN ('{' pair (','? (pair | obj))* '}')?
+   : TOKEN ('{' ((pair | obj) (','? (pair | obj))*)? '}')?
    ;
 
 pair
@@ -37,7 +29,7 @@ BOOLEAN
    ;
 
 TOKEN
-   : ([a-z] | [A-Z] | '_')+ ([a-z] | [A-Z] | [0-9] | '_')*
+   : ([a-z] | [A-Z] | '_')+ ([a-z] | [A-Z] | [0-9] | '_' | '.')*
    ;
 
 NUMBER

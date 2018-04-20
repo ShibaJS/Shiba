@@ -20,11 +20,6 @@ namespace Shiba.Common
                 Expression.New(constructor)
             ).Compile();
         }
-
-        public static string ToWindowsNameSpace(this string nameSpace)
-        {
-            return string.Join(".", nameSpace.Split('.').Select(item => item.FirstToUpper()));
-        }
     }
 
     public static class StringExtensions

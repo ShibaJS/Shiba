@@ -48,18 +48,6 @@ public partial class ShibaBaseListener : IShibaListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitRoot([NotNull] ShibaParser.RootContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ShibaParser.namespaces"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterNamespaces([NotNull] ShibaParser.NamespacesContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ShibaParser.namespaces"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitNamespaces([NotNull] ShibaParser.NamespacesContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="ShibaParser.obj"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

@@ -12,10 +12,7 @@ namespace Shiba.Parser
 {
     public class ShibaParserWrapper
     {
-        public List<string> NameSpaces { get; } = new List<string>
-        {
-            "Shiba.Controls"
-        };
+
 
         public static IParseTree ParseGrammarTree(string input)
         {
@@ -38,8 +35,6 @@ namespace Shiba.Parser
             switch (tree)
             {
                 case ShibaParser.RootContext root:
-                    NameSpaces.AddRange(root.namespaces()?.NAMESPACE()
-                        ?.Select(item => item.Symbol.Text.Trim('@').ToWindowsNameSpace()));
                     return BuildViewTree(root.obj());
                 case ShibaParser.ObjContext obj:
                     var view = FindTypes(obj.Start.Text)?.FirstOrDefault()?.CreateInstance() as View;
@@ -87,7 +82,7 @@ namespace Shiba.Parser
 
         private IEnumerable<Type> FindTypes(string name)
         {
-            return NameSpaces.Select(item => Type.GetType($"{item}.{name}"));
+            throw new NotImplementedException();
         }
     }
 }
