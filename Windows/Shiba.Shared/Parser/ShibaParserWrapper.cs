@@ -7,13 +7,12 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Shiba.Common;
 using Shiba.Controls;
+using Shiba.Core;
 
 namespace Shiba.Parser
 {
     public class ShibaParserWrapper
     {
-
-
         public static IParseTree ParseGrammarTree(string input)
         {
             var stream = CharStreams.fromstring(input);
@@ -28,7 +27,6 @@ namespace Shiba.Parser
             var tree = ParseGrammarTree(input);
             return BuildViewTree(tree);
         }
-
 
         public View BuildViewTree(IParseTree tree)
         {
@@ -82,7 +80,7 @@ namespace Shiba.Parser
 
         private IEnumerable<Type> FindTypes(string name)
         {
-            throw new NotImplementedException();
+            return Initialization.Instance.Renderers.Where(item => item.LayoutName == name).Select(item => item.RendererType);
         }
     }
 }

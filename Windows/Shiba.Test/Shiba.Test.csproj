@@ -14,9 +14,11 @@
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Shiba.WPF\Shiba.WPF.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <None Update="file1.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <Import Project="..\Shiba.Shared\Shiba.Shared.projitems" Label="Shared" />
 </Project>

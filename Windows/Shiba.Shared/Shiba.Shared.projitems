@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\ReflectionExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Text.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\View.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\ExportRendererAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Parser\ShibaBaseListener.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Parser\ShibaLexer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Parser\ShibaListener.cs" />
@@ -20,6 +21,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Converters" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Initialization.cs" />
     <Folder Include="$(MSBuildThisFileDirectory)Renderers" />
   </ItemGroup>
   <ItemGroup>
