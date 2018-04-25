@@ -7,6 +7,16 @@ namespace Shiba.Common
 {
     public static class ReflectionExtensions
     {
+        public static T CreateInstance<T>(this string typeName) where T: class
+        {
+            return typeName.CreateInstence() as T;
+        }
+
+        public static T CreateInstance<T>(this Type type) where T : class
+        {
+            return type.CreateInstance() as T;
+        }
+
         public static object CreateInstence(this string typeName)
         {
             return Type.GetType(typeName)?.CreateInstance();

@@ -18,11 +18,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Parser\ShibaListener.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Parser\ShibaParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Parser\ShibaParserWrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Renderers\IViewRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Converters" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Initialization.cs" />
-    <Folder Include="$(MSBuildThisFileDirectory)Renderers" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Parser\Shiba.interp" />

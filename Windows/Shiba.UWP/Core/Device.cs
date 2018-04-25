@@ -8,9 +8,9 @@ using Windows.Storage.Search;
 
 namespace Shiba.Core
 {
-    public partial class Initialization
+    public partial class Device
     {
-        private IEnumerable<Assembly> GetAssemblies()
+        public IEnumerable<Assembly> GetAssemblies()
         {
             var options = new QueryOptions { FileTypeFilter = { ".exe", ".dll" } };
 

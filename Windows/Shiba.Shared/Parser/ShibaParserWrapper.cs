@@ -35,8 +35,8 @@ namespace Shiba.Parser
                 case ShibaParser.RootContext root:
                     return BuildViewTree(root.obj());
                 case ShibaParser.ObjContext obj:
-                    var view = FindTypes(obj.Start.Text)?.FirstOrDefault()?.CreateInstance() as View;
-                    InitPair(ref view, obj.pair());
+                    var view = FindTypes(obj.Start.Text)?.FirstOrDefault()?.CreateInstance<View>();
+                    //InitPair(ref view, obj.pair());
                     if (obj.obj() != null && obj.obj().Any())
                     {
                         if (!(view is ViewGroup viewGroup))
@@ -50,37 +50,42 @@ namespace Shiba.Parser
             }
         }
 
-        private void InitPair(ref View view, params ShibaParser.PairContext[] pairs)
+        private Dictionary<string, object> PairToDictionary(IEnumerable<ShibaParser.PairContext> pair)
         {
-            var properties = view.GetType().GetRuntimeProperties().ToArray();
-            foreach (var pair in pairs)
-            {
-                var property = properties.FirstOrDefault(item =>
-                    string.Equals(item.Name, pair.Start.Text, StringComparison.OrdinalIgnoreCase));
-                if (property == null)
-                {
-                    throw new MissingMemberException();
-                }
-                if (property.CanWrite)
-                {
-                    object targetValue = null;
-                    try
-                    {
-                        targetValue = Convert.ChangeType(pair.value().GetText(), property.PropertyType);
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.WriteLine(e.Message);
-                        Debug.WriteLine(e.StackTrace);
-                    }
-                    
-                }
-            }
+            return pair.ToDictionary(x => x.Start.Text, x => x.value().GetText() as object);
         }
+
+        //private void InitPair(ref View view, params ShibaParser.PairContext[] pairs)
+        //{
+        //    var properties = view.GetType().GetRuntimeProperties().ToArray();
+        //    foreach (var pair in pairs)
+        //    {
+        //        var property = properties.FirstOrDefault(item =>
+        //            string.Equals(item.Name, pair.Start.Text, StringComparison.OrdinalIgnoreCase));
+        //        if (property == null)
+        //        {
+        //            throw new MissingMemberException();
+        //        }
+        //        if (property.CanWrite)
+        //        {
+        //            object targetValue = null;
+        //            try
+        //            {
+        //                targetValue = Convert.ChangeType(pair.value().GetText(), property.PropertyType);
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                Debug.WriteLine(e.Message);
+        //                Debug.WriteLine(e.StackTrace);
+        //            }
+                    
+        //        }
+        //    }
+        //}
 
         private IEnumerable<Type> FindTypes(string name)
         {
-            return Initialization.Instance.Renderers.Where(item => item.LayoutName == name).Select(item => item.RendererType);
+            return ViewMapping.Instance.Views.Where(item => item.ViewName == name).Select(item => item.ViewType);
         }
     }
 }

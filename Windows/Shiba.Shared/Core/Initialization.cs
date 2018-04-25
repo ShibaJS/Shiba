@@ -1,20 +1,53 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
+using Shiba.Controls;
 
 namespace Shiba.Core
 {
+    internal class ViewMapping
+    {
+        private ViewMapping()
+        {
+            
+        }
+
+        public static ViewMapping Instance { get; } = new ViewMapping();
+
+        public ReadOnlyCollection<ExportRendererAttribute> Renderers { get; private set; }
+        
+        public ReadOnlyCollection<ExportViewAttribute> Views { get; private set; }
+
+        public void Init()
+        {
+            var assemblies = Device.Instance.GetAssemblies().ToList();
+            Renderers = assemblies
+                .Where(item => item.GetCustomAttribute<ExportRendererAttribute>() != null)
+                .SelectMany(item => item.GetCustomAttributes<ExportRendererAttribute>()).ToList().AsReadOnly();
+            Views = assemblies
+                .Where(item => item.GetCustomAttribute<ExportViewAttribute>() != null)
+                .SelectMany(item => item.GetCustomAttributes<ExportViewAttribute>()).ToList().AsReadOnly();
+        }
+
+    }
+
+    public partial class Device
+    {
+        private Device()
+        {
+            
+        }
+        public static Device Instance { get; } = new Device();
+    }
+
     public partial class Initialization
     {
-        public static Initialization Instance { get; } = new Initialization();
-
-        public List<ExportRendererAttribute> Renderers { get; private set; }
-
         public static void Init()
         {
-            Instance.Renderers = Instance.GetAssemblies()
-                .SelectMany(item => item.GetCustomAttributes<ExportRendererAttribute>()).ToList();
+            ViewMapping.Instance.Init();
         }
     }
 }

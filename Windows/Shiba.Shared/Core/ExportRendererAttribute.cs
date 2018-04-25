@@ -5,13 +5,13 @@ namespace Shiba.Core
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
     public class ExportRendererAttribute : Attribute
     {
-        public ExportRendererAttribute(string layoutName, Type rendererType)
+        public ExportRendererAttribute(Type viewType, Type rendererType)
         {
-            LayoutName = layoutName;
+            ViewType = viewType;
             RendererType = rendererType;
         }
-        
-        public string LayoutName { get; }
+
+        public Type ViewType { get; }
         public Type RendererType { get; }
     }
 }

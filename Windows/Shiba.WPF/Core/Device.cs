@@ -4,9 +4,9 @@ using System.Reflection;
 
 namespace Shiba.Core
 {
-    public partial class Initialization
+    public partial class Device
     {
-        private IEnumerable<Assembly> GetAssemblies()
+        public IEnumerable<Assembly> GetAssemblies()
         {
             return AppDomain.CurrentDomain.GetAssemblies();
         }

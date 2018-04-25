@@ -1,8 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Shiba.Controls
 {
+    [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
+    sealed class ExportViewAttribute : Attribute
+    {
+        public ExportViewAttribute(string viewName, Type viewType)
+        {
+            ViewName = viewName;
+            ViewType = viewType;
+        }
+
+        public string ViewName { get; }
+        public Type ViewType { get; }
+    }
+
     public class SbEvent
     {
         public string Target { get; set; }
@@ -43,6 +57,11 @@ namespace Shiba.Controls
 
     public class View
     {
+        public View(Dictionary<string, object> arrtibute)
+        {
+            
+        }
+
         public float Width { get; set; } = float.NaN;
         public float Height { get; set; } = float.NaN;
         public float MinWidth { get; set; } = float.NaN;
@@ -64,5 +83,9 @@ namespace Shiba.Controls
     public class ViewGroup : View
     {
         public List<View> Children { get; set; }
+
+        public ViewGroup(Dictionary<string, object> arrtibute) : base(arrtibute)
+        {
+        }
     }
 }
