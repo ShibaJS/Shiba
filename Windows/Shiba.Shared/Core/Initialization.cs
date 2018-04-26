@@ -25,10 +25,10 @@ namespace Shiba.Core
         {
             var assemblies = Device.Instance.GetAssemblies().ToList();
             Renderers = assemblies
-                .Where(item => item.GetCustomAttribute<ExportRendererAttribute>() != null)
+                .Where(item => item.GetCustomAttributes<ExportRendererAttribute>()?.Any() == true)
                 .SelectMany(item => item.GetCustomAttributes<ExportRendererAttribute>()).ToList().AsReadOnly();
             Views = assemblies
-                .Where(item => item.GetCustomAttribute<ExportViewAttribute>() != null)
+                .Where(item => item.GetCustomAttributes<ExportViewAttribute>()?.Any() == true)
                 .SelectMany(item => item.GetCustomAttributes<ExportViewAttribute>()).ToList().AsReadOnly();
         }
 

@@ -13,7 +13,7 @@ namespace Shiba.Parser
 {
     public class ShibaParserWrapper
     {
-        public static IParseTree ParseGrammarTree(string input)
+        private IParseTree ParseGrammarTree(string input)
         {
             var stream = CharStreams.fromstring(input);
             var lexer = new ShibaLexer(stream);
@@ -28,20 +28,20 @@ namespace Shiba.Parser
             return BuildViewTree(tree);
         }
 
-        public View BuildViewTree(IParseTree tree)
+        private View BuildViewTree(IParseTree tree)
         {
             switch (tree)
             {
                 case ShibaParser.RootContext root:
                     return BuildViewTree(root.obj());
                 case ShibaParser.ObjContext obj:
-                    var view = FindTypes(obj.Start.Text)?.FirstOrDefault()?.CreateInstance<View>();
+                    var view = FindTypes(obj.Start.Text)?.FirstOrDefault()?.CreateInstance<View>(PairToDictionary(obj.pair()));
                     //InitPair(ref view, obj.pair());
                     if (obj.obj() != null && obj.obj().Any())
                     {
                         if (!(view is ViewGroup viewGroup))
                             throw new InvalidOperationException(
-                                $"{obj.Start.Text} must be {nameof(ViewGroup)} to have child view");
+                                $"{view?.Name ?? obj.Start.Text} must be {nameof(ViewGroup)} to have child view");
                         viewGroup.Children.AddRange(obj.obj().Select(BuildViewTree));
                     }
                     return view;
@@ -52,7 +52,22 @@ namespace Shiba.Parser
 
         private Dictionary<string, object> PairToDictionary(IEnumerable<ShibaParser.PairContext> pair)
         {
-            return pair.ToDictionary(x => x.Start.Text, x => x.value().GetText() as object);
+            return pair?.ToDictionary(x => x.Start.Text, x => GetValue(x.value())) ?? new Dictionary<string, object>();
+        }
+
+        private object GetValue(ShibaParser.ValueContext context)
+        {
+            if (context.BOOLEAN() != null)
+            {
+                return bool.Parse(context.BOOLEAN().GetText());
+            }
+
+            if (context.NUMBER() != null)
+            {
+                return decimal.Parse(context.NUMBER().GetText());
+            }
+
+            return context.STRING()?.GetText()?.Trim('"');
         }
 
         //private void InitPair(ref View view, params ShibaParser.PairContext[] pairs)

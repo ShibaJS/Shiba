@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Shiba.Controls;
+
+[assembly: ExportView("view", typeof(View))]
 
 namespace Shiba.Controls
 {
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-    sealed class ExportViewAttribute : Attribute
+    public sealed class ExportViewAttribute : Attribute
     {
         public ExportViewAttribute(string viewName, Type viewType)
         {
@@ -82,7 +85,7 @@ namespace Shiba.Controls
 
     public class ViewGroup : View
     {
-        public List<View> Children { get; set; }
+        public List<View> Children { get; set; } = new List<View>();
 
         public ViewGroup(Dictionary<string, object> arrtibute) : base(arrtibute)
         {

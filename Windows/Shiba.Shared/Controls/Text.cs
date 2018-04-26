@@ -1,4 +1,15 @@
 ﻿using System.Collections.Generic;
+using Shiba.Controls;
+
+
+[assembly: ExportView("text", typeof(Text))]
+[assembly: ExportView("switch", typeof(Switch))]
+[assembly: ExportView("check", typeof(Check))]
+[assembly: ExportView("stackLayout", typeof(StackPanel))]
+[assembly: ExportView("grid", typeof(Grid))]
+[assembly: ExportView("input", typeof(Input))]
+[assembly: ExportView("img", typeof(Image))]
+
 
 namespace Shiba.Controls
 {
