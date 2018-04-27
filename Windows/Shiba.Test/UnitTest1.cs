@@ -11,7 +11,7 @@ namespace Shiba.Test
         public void Test1()
         {
             Initialization.Init();
-            var input = "grid {aaa: true, bbb: 4312412, input{aaa:false}}";
+            const string input = "stackLayout {orientation: horizontal, padding: 8, 0, alpha: 50%, input{content:\"fdsafd\"}}";
             var tree = new ShibaParserWrapper().Parse(input);
 
 //            var view = ShibaParserWrapper.BuildViewTree(tree);

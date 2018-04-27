@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using Shiba.Common;
 using Shiba.Controls;
-
 
 [assembly: ExportView("text", typeof(Text))]
 [assembly: ExportView("switch", typeof(Switch))]
@@ -21,64 +21,66 @@ namespace Shiba.Controls
 
     public class Text : View
     {
+        public Text(Dictionary<string, object> attribute) : base(attribute)
+        {
+            if (attribute.TryGetValue("content", out var content)) Content = content.To<string>();
+
+            if (attribute.TryGetValue("textColor", out var textColor)) TextColor = textColor.To<string>();
+        }
+
         public string Content { get; set; }
         public string TextColor { get; set; }
-
-        public Text(Dictionary<string, object> arrtibute) : base(arrtibute)
-        {
-        }
     }
 
     public class Switch : View
     {
-        public bool Checked { get; set; }
-
-        public Switch(Dictionary<string, object> arrtibute) : base(arrtibute)
+        public Switch(Dictionary<string, object> attribute) : base(attribute)
         {
+            if (attribute.TryGetValue("checked", out var check)) Checked = check.To<bool>();
         }
+
+        public bool Checked { get; set; }
     }
 
-    public class Check : View
+    public class Check : Switch
     {
-        public bool Checked { get; set; }
-
-        public Check(Dictionary<string, object> arrtibute) : base(arrtibute)
+        public Check(Dictionary<string, object> attribute) : base(attribute)
         {
         }
     }
 
     public class StackPanel : ViewGroup
     {
-        public Orientation Orientation { get; set; } = Orientation.Vertical;
-
-        public StackPanel(Dictionary<string, object> arrtibute) : base(arrtibute)
+        public StackPanel(Dictionary<string, object> attribute) : base(attribute)
         {
+            if (attribute.TryGetValue("orientation", out var orientation))
+                Orientation = orientation.To<string>().FirstToUpper().To<Orientation>();
         }
+
+        public Orientation Orientation { get; set; } = Orientation.Vertical;
     }
 
     public class Grid : ViewGroup
     {
-        public Grid(Dictionary<string, object> arrtibute) : base(arrtibute)
+        public Grid(Dictionary<string, object> attribute) : base(attribute)
         {
         }
     }
 
-    public class Input : View
+    public class Input : Text
     {
-        public string Content { get; set; }
-        public string TextColor { get; set; }
-
-        public Input(Dictionary<string, object> arrtibute) : base(arrtibute)
+        public Input(Dictionary<string, object> attribute) : base(attribute)
         {
         }
     }
 
     public class Image : View
     {
-        public string Source { get; set; }
-
-        public Image(Dictionary<string, object> arrtibute) : base(arrtibute)
+        public Image(Dictionary<string, object> attribute) : base(attribute)
         {
+            if (attribute.TryGetValue("source", out var source)) Source = source.To<string>();
         }
+
+        public string Source { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
@@ -67,7 +68,17 @@ namespace Shiba.Parser
                 return decimal.Parse(context.NUMBER().GetText());
             }
 
-            return context.STRING()?.GetText()?.Trim('"');
+            if (context.percent() != null)
+            {
+                return new Percent(float.Parse(context.percent().Start.Text));
+            }
+
+            if (context.thickness() != null)
+            {
+                return new Thickness(context.thickness().GetText());
+            }
+
+            return context.STRING()?.GetText()?.Trim('"') ?? context.GetText();
         }
 
         //private void InitPair(ref View view, params ShibaParser.PairContext[] pairs)

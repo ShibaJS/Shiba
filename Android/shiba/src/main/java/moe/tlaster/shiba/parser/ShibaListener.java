@@ -47,4 +47,24 @@ public interface ShibaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitValue(ShibaParser.ValueContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ShibaParser#percent}.
+	 * @param ctx the parse tree
+	 */
+	void enterPercent(ShibaParser.PercentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ShibaParser#percent}.
+	 * @param ctx the parse tree
+	 */
+	void exitPercent(ShibaParser.PercentContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ShibaParser#thickness}.
+	 * @param ctx the parse tree
+	 */
+	void enterThickness(ShibaParser.ThicknessContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ShibaParser#thickness}.
+	 * @param ctx the parse tree
+	 */
+	void exitThickness(ShibaParser.ThicknessContext ctx);
 }

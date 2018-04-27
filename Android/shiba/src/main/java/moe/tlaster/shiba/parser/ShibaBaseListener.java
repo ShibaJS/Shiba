@@ -59,6 +59,30 @@ public class ShibaBaseListener implements ShibaListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitValue(ShibaParser.ValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPercent(ShibaParser.PercentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPercent(ShibaParser.PercentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterThickness(ShibaParser.ThicknessContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitThickness(ShibaParser.ThicknessContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

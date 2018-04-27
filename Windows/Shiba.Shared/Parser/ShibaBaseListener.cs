@@ -83,6 +83,30 @@ public partial class ShibaBaseListener : IShibaListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitValue([NotNull] ShibaParser.ValueContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ShibaParser.percent"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterPercent([NotNull] ShibaParser.PercentContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ShibaParser.percent"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitPercent([NotNull] ShibaParser.PercentContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ShibaParser.thickness"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterThickness([NotNull] ShibaParser.ThicknessContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ShibaParser.thickness"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitThickness([NotNull] ShibaParser.ThicknessContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>

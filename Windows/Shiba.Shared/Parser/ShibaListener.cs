@@ -71,5 +71,25 @@ public interface IShibaListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitValue([NotNull] ShibaParser.ValueContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ShibaParser.percent"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterPercent([NotNull] ShibaParser.PercentContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ShibaParser.percent"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitPercent([NotNull] ShibaParser.PercentContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ShibaParser.thickness"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterThickness([NotNull] ShibaParser.ThicknessContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ShibaParser.thickness"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitThickness([NotNull] ShibaParser.ThicknessContext context);
 }
 } // namespace Shiba.Parser

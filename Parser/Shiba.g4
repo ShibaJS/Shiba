@@ -17,6 +17,9 @@ value
    | NUMBER
    | BOOLEAN
    | 'null'
+   | TOKEN
+   | percent
+   | thickness
    ;
 
 STRING
@@ -34,6 +37,16 @@ TOKEN
 
 NUMBER
    : '-'? INT ('.' [0-9] +)? EXP?
+   ;
+
+percent
+   : NUMBER '%'
+   ;
+
+thickness
+   : NUMBER
+   | NUMBER ',' NUMBER
+   | NUMBER ',' NUMBER ',' NUMBER ',' NUMBER
    ;
 
 
