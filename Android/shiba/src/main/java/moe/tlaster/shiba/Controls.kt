@@ -18,6 +18,10 @@ enum class Orientation {
 data class Thickness(val top: Float, val left: Float, val right: Float, val bottom: Float)
 
 open class View {
+    constructor(attribute: Map<String, Any>) {
+
+    }
+
     var width = Float.NaN
     var height = Float.NaN
     var maxWidth = Float.NaN
@@ -27,8 +31,8 @@ open class View {
     var gravity = Gravity.Start
     var margin = Thickness(0f, 0f, 0f, 0f)
     var padding = Thickness(0f, 0f, 0f, 0f)
-    var isEnabled = true
-    var backgroundColor = ""
+    var enable = true
+    var background = ""
     var click = ""
     var sizeChanged = ""
     var name = ""
@@ -48,8 +52,7 @@ open class Switch : View() {
     var checked = false
 }
 
-open class check : View() {
-    var checked = false
+open class check : Switch() {
 }
 
 open class StackPanel : ViewGroup() {
@@ -60,9 +63,7 @@ open class Grid : ViewGroup() {
 
 }
 
-open class Edit : View() {
-    var content = ""
-    var textColor = ""
+open class input : Text() {
 }
 
 open class Image : View() {
