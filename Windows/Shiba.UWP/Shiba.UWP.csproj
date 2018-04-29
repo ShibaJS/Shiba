@@ -12,7 +12,7 @@
     <DefaultLanguage>zh-CN</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.16299.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.10586.0</TargetPlatformMinVersion>
+    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -107,17 +107,25 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Core\Device.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Shiba.UWP.rd.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Antlr4.Runtime.Standard" Version="4.7.1.1" />
-    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.0.8" />
-    <PackageReference Include="Sprache" Version="2.1.2" />
-    <PackageReference Include="System.ValueTuple">
-      <Version>4.4.0</Version>
-    </PackageReference>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.1.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Shiba.Controls\Shiba.Controls.csproj">
+      <Project>{d02f967e-8a44-4b21-8368-30609a78360f}</Project>
+      <Name>Shiba.Controls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Shiba.Core\Shiba.Core.csproj">
+      <Project>{7d7792f1-d030-4261-b658-d25c29f089c6}</Project>
+      <Name>Shiba.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Shiba.Parser\Shiba.Parser.csproj">
+      <Project>{64145b89-2ecb-4e8a-bc91-8a915565ab6b}</Project>
+      <Name>Shiba.Parser</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="..\Shiba.Shared\Shiba.Shared.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

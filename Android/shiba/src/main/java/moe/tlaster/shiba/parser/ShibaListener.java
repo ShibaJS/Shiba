@@ -67,4 +67,54 @@ public interface ShibaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitThickness(ShibaParser.ThicknessContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ShibaParser#comput}.
+	 * @param ctx the parse tree
+	 */
+	void enterComput(ShibaParser.ComputContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ShibaParser#comput}.
+	 * @param ctx the parse tree
+	 */
+	void exitComput(ShibaParser.ComputContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ShibaParser#binding}.
+	 * @param ctx the parse tree
+	 */
+	void enterBinding(ShibaParser.BindingContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ShibaParser#binding}.
+	 * @param ctx the parse tree
+	 */
+	void exitBinding(ShibaParser.BindingContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ShibaParser#native}.
+	 * @param ctx the parse tree
+	 */
+	void enterNative(ShibaParser.NativeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ShibaParser#native}.
+	 * @param ctx the parse tree
+	 */
+	void exitNative(ShibaParser.NativeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ShibaParser#jsonpath}.
+	 * @param ctx the parse tree
+	 */
+	void enterJsonpath(ShibaParser.JsonpathContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ShibaParser#jsonpath}.
+	 * @param ctx the parse tree
+	 */
+	void exitJsonpath(ShibaParser.JsonpathContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ShibaParser#dic}.
+	 * @param ctx the parse tree
+	 */
+	void enterDic(ShibaParser.DicContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ShibaParser#dic}.
+	 * @param ctx the parse tree
+	 */
+	void exitDic(ShibaParser.DicContext ctx);
 }

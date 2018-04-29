@@ -3,31 +3,14 @@
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <HasSharedItems>true</HasSharedItems>
-    <SharedGUID>6edd8f89-c6a5-42f3-8701-dfb810c69c35</SharedGUID>
+    <SharedGUID>060ea7a7-cbb7-4534-9446-7e3634bc8605</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <Import_RootNamespace>Shiba</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Common\ReflectionExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\Text.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\View.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Core\ExportRendererAttribute.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Parser\ShibaBaseListener.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Parser\ShibaLexer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Parser\ShibaListener.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Parser\ShibaParser.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Parser\ShibaParserWrapper.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Renderers\IViewRenderer.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Converters" />
-    <Compile Include="$(MSBuildThisFileDirectory)Core\Initialization.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)Parser\Shiba.interp" />
-    <None Include="$(MSBuildThisFileDirectory)Parser\Shiba.tokens" />
-    <None Include="$(MSBuildThisFileDirectory)Parser\ShibaLexer.interp" />
-    <None Include="$(MSBuildThisFileDirectory)Parser\ShibaLexer.tokens" />
+    <Compile Include="$(MSBuildThisFileDirectory)NativeRenderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Renderers\TextRenderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ShibaHost.cs" />
   </ItemGroup>
 </Project>

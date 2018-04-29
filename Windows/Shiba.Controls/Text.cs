@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Shiba.Common;
 using Shiba.Controls;
+using Shiba.Controls.Common;
 
 [assembly: ExportView("text", typeof(Text))]
 [assembly: ExportView("switch", typeof(Switch))]
@@ -28,8 +28,8 @@ namespace Shiba.Controls
             if (attribute.TryGetValue("textColor", out var textColor)) TextColor = textColor.To<string>();
         }
 
-        public string Content { get; set; }
-        public string TextColor { get; set; }
+        public string Content { get; }
+        public string TextColor { get; }
     }
 
     public class Switch : View
@@ -39,7 +39,7 @@ namespace Shiba.Controls
             if (attribute.TryGetValue("checked", out var check)) Checked = check.To<bool>();
         }
 
-        public bool Checked { get; set; }
+        public bool Checked { get; }
     }
 
     public class Check : Switch
@@ -57,7 +57,7 @@ namespace Shiba.Controls
                 Orientation = orientation.To<string>().FirstToUpper().To<Orientation>();
         }
 
-        public Orientation Orientation { get; set; } = Orientation.Vertical;
+        public Orientation Orientation { get; } = Orientation.Vertical;
     }
 
     public class Grid : ViewGroup
@@ -81,6 +81,6 @@ namespace Shiba.Controls
             if (attribute.TryGetValue("source", out var source)) Source = source.To<string>();
         }
 
-        public string Source { get; set; }
+        public string Source { get; }
     }
 }

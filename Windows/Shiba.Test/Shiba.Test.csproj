@@ -14,7 +14,8 @@
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Shiba.WPF\Shiba.WPF.csproj" />
+    <ProjectReference Include="..\Shiba.Core\Shiba.Core.csproj" />
+    <ProjectReference Include="..\Shiba.Parser\Shiba.Parser.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="file1.xml">

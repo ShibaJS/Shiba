@@ -20,6 +20,10 @@ value
    | TOKEN
    | percent
    | thickness
+   | binding
+   | native
+   | dic
+   | jsonpath
    ;
 
 STRING
@@ -49,6 +53,26 @@ thickness
    | NUMBER ',' NUMBER ',' NUMBER ',' NUMBER
    ;
 
+comput
+   : TOKEN '(' comput ')'
+   | TOKEN
+   ;
+
+binding
+   : '$bind' comput
+   ;
+
+native
+   : '$res' comput
+   ;
+
+jsonpath
+   : '$json' comput
+   ;
+
+dic
+   : '[' pair (','? pair)* ']'
+   ;
 
 fragment INT
    : '0' | [1-9] [0-9]*

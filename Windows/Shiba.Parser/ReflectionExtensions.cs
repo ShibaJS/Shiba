@@ -3,9 +3,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Shiba.Common
+namespace Shiba.Parser
 {
-    public static class ReflectionExtensions
+    internal static class ReflectionExtensions
     {
         
         public static T To<T>(this object value)
@@ -64,18 +64,6 @@ namespace Shiba.Common
             return Expression.Lambda<Func<object>>(
                 Expression.New(constructor)
             ).Compile().Invoke();
-        }
-    }
-
-    public static class StringExtensions
-    {
-        public static string FirstToUpper(this string input)
-        {    switch (input)
-            {
-                case null: throw new ArgumentNullException(nameof(input));
-                case "": throw new ArgumentException($"{nameof(input)} cannot be empty", nameof(input));
-                default: return input.First().ToString().ToUpper() + input.Substring(1);
-            }
         }
     }
 }

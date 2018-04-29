@@ -91,5 +91,55 @@ public interface IShibaListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitThickness([NotNull] ShibaParser.ThicknessContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ShibaParser.comput"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterComput([NotNull] ShibaParser.ComputContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ShibaParser.comput"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitComput([NotNull] ShibaParser.ComputContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ShibaParser.binding"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBinding([NotNull] ShibaParser.BindingContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ShibaParser.binding"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBinding([NotNull] ShibaParser.BindingContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ShibaParser.native"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterNative([NotNull] ShibaParser.NativeContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ShibaParser.native"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitNative([NotNull] ShibaParser.NativeContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ShibaParser.jsonpath"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterJsonpath([NotNull] ShibaParser.JsonpathContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ShibaParser.jsonpath"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitJsonpath([NotNull] ShibaParser.JsonpathContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="ShibaParser.dic"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDic([NotNull] ShibaParser.DicContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ShibaParser.dic"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDic([NotNull] ShibaParser.DicContext context);
 }
 } // namespace Shiba.Parser

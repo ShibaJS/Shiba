@@ -95,7 +95,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Shiba.WPF\Shiba.WPF.csproj">
-      <Project>{e8caaada-0f5d-4454-b942-bd5f7ce2ba33}</Project>
+      <Project>{fe732db3-d266-4336-b3a6-dc8debaece12}</Project>
       <Name>Shiba.WPF</Name>
     </ProjectReference>
   </ItemGroup>

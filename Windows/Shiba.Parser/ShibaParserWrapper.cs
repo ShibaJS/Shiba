@@ -6,9 +6,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using Shiba.Common;
 using Shiba.Controls;
-using Shiba.Core;
 
 namespace Shiba.Parser
 {
@@ -58,6 +56,10 @@ namespace Shiba.Parser
 
         private object GetValue(ShibaParser.ValueContext context)
         {
+            if (context == null)
+            {
+                return null;
+            }
             if (context.BOOLEAN() != null)
             {
                 return bool.Parse(context.BOOLEAN().GetText());
@@ -78,7 +80,45 @@ namespace Shiba.Parser
                 return new Thickness(context.thickness().GetText());
             }
 
+            if (context.binding() != null)
+            {
+                return new Binding(CreateComput(context.binding().comput()));
+            }
+
+            if (context.native() != null)
+            {
+                return new NativeResource(CreateComput(context.native().comput()));
+            }
+
+            if (context.jsonpath() != null)
+            {
+                return new JsonPath(CreateComput(context.jsonpath().comput()));
+            }
+
+            if (context.dic() != null)
+            {
+                var pair = context.dic().pair().FirstOrDefault(it => it.TOKEN().Symbol.Text == "Windows");
+                return GetValue(pair?.value());
+            }
+
             return context.STRING()?.GetText()?.Trim('"') ?? context.GetText();
+        }
+
+        private Comput CreateComput(ShibaParser.ComputContext comput)
+        {
+            if (comput.comput() != null)
+            {
+                return new Comput
+                {
+                    FuncName = comput.comput().TOKEN().Symbol.Text,
+                    InnerComput = CreateComput(comput.comput())
+                };
+            }
+
+            return new Comput
+            {
+                Value = comput.TOKEN().Symbol.Text
+            };
         }
 
         //private void InitPair(ref View view, params ShibaParser.PairContext[] pairs)
