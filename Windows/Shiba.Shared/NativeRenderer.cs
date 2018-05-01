@@ -20,33 +20,33 @@ namespace Shiba
     internal static class NativeRenderer
     {
         private static readonly ShibaParserWrapper Parser = new ShibaParserWrapper();
-        private static readonly ConcurrentDictionary<Type, IViewRenderer> Renderer = new ConcurrentDictionary<Type, IViewRenderer>();
+        private static readonly ConcurrentDictionary<string, IViewRenderer> Renderer = new ConcurrentDictionary<string, IViewRenderer>();
 
-        public static UIElement Render(string layout)
+        public static UIElement Render(string layout, object datacontext = null)
         {
             var viewTree = Parser.Parse(layout);
-            return Render(viewTree);
+            return Render(viewTree, datacontext);
         }
 
-        public static UIElement Render(View view)
+        public static UIElement Render(View view, object datacontext = null)
         {
-            var attribute = ViewMapping.Instance.Renderers.LastOrDefault(it => it.ViewType == view.GetType());
+            var attribute = ViewMapping.Instance.Renderers.LastOrDefault(it => it.ViewName == view.ViewName);
             if (attribute == null)
             {
                 return null;
             }
 
-            var renderer = Renderer.GetOrAdd(attribute.RendererType, CreateRenderer);
-            var target = renderer.Render(view) as UIElement;
-            if (view is ViewGroup viewGroup && target is Panel panel)
+            var renderer = Renderer.GetOrAdd(attribute.ViewName, CreateRenderer);
+            var target = renderer.Render(view, datacontext) as UIElement;
+            if (view.Children.Any() && target is Panel panel)
             {
-                viewGroup.Children.ForEach(it => panel.Children.Add(Render(it)));
+                view.Children.ForEach(it => panel.Children.Add(Render(it)));
             }
 
             return target;
         }
 
-        private static IViewRenderer CreateRenderer(Type arg)
+        private static IViewRenderer CreateRenderer(string arg)
         {
             throw new NotImplementedException();
         }

@@ -2,29 +2,29 @@
 
 namespace Shiba.Controls
 {
-    [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-    public sealed class ExportViewAttribute : Attribute
-    {
-        public ExportViewAttribute(string viewName, Type viewType)
-        {
-            ViewName = viewName;
-            ViewType = viewType;
-        }
+    //[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
+    //public sealed class ExportViewAttribute : Attribute
+    //{
+    //    public ExportViewAttribute(string viewName, Type viewType)
+    //    {
+    //        ViewName = viewName;
+    //        ViewType = viewType;
+    //    }
 
-        public string ViewName { get; }
-        public Type ViewType { get; }
-    }
+    //    public string ViewName { get; }
+    //    public Type ViewType { get; }
+    //}
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
     public class ExportRendererAttribute : Attribute
     {
-        public ExportRendererAttribute(Type viewType, Type rendererType)
+        public ExportRendererAttribute(string viewName, Type rendererType)
         {
-            ViewType = viewType;
             RendererType = rendererType;
+            ViewName = viewName;
         }
 
-        public Type ViewType { get; }
+        public string ViewName { get; }
         public Type RendererType { get; }
     }
 }

@@ -54,8 +54,12 @@ thickness
    ;
 
 comput
-   : TOKEN '(' comput ')'
-   | TOKEN
+   : func
+   | value
+   ;
+
+func
+   : TOKEN '(' comput (',' value)? ')'
    ;
 
 binding

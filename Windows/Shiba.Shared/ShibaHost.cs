@@ -33,7 +33,7 @@ namespace Shiba
                 return;
             }
 
-            Content = NativeRenderer.Render(value);
+            Content = NativeRenderer.Render(value, DataContext);
         }
     }
 }

@@ -34,14 +34,12 @@ namespace Shiba.Parser
                 case ShibaParser.RootContext root:
                     return BuildViewTree(root.obj());
                 case ShibaParser.ObjContext obj:
-                    var view = FindTypes(obj.Start.Text)?.FirstOrDefault()?.CreateInstance<View>(PairToDictionary(obj.pair()));
+                    //var view = FindTypes(obj.Start.Text)?.FirstOrDefault()?.CreateInstance<View>(PairToDictionary(obj.pair()));
+                    var view = new View(obj.Start.Text, PairToDictionary(obj.pair()));
                     //InitPair(ref view, obj.pair());
                     if (obj.obj() != null && obj.obj().Any())
                     {
-                        if (!(view is ViewGroup viewGroup))
-                            throw new InvalidOperationException(
-                                $"{view?.Name ?? obj.Start.Text} must be {nameof(ViewGroup)} to have child view");
-                        viewGroup.Children.AddRange(obj.obj().Select(BuildViewTree));
+                        view.Children.AddRange(obj.obj().Select(BuildViewTree));
                     }
                     return view;
                 default:
@@ -106,18 +104,19 @@ namespace Shiba.Parser
 
         private Comput CreateComput(ShibaParser.ComputContext comput)
         {
-            if (comput.comput() != null)
+            if (comput.func() != null)
             {
                 return new Comput
                 {
-                    FuncName = comput.comput().TOKEN().Symbol.Text,
-                    InnerComput = CreateComput(comput.comput())
+                    FuncName = comput.func().TOKEN().Symbol.Text,
+                    InnerComput = CreateComput(comput.getAltNumber())
                 };
             }
 
             return new Comput
             {
-                Value = comput.TOKEN().Symbol.Text
+                Value = GetValue(comput.RuleIndex)
+                
             };
         }
 
@@ -149,9 +148,9 @@ namespace Shiba.Parser
         //    }
         //}
 
-        private IEnumerable<Type> FindTypes(string name)
-        {
-            return ViewMapping.Instance.Views.Where(item => item.ViewName == name).Select(item => item.ViewType);
-        }
+        //private IEnumerable<Type> FindTypes(string name)
+        //{
+        //    return ViewMapping.Instance.Views.Where(item => item.ViewName == name).Select(item => item.ViewType);
+        //}
     }
 }
