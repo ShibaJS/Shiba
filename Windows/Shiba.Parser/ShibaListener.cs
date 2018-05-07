@@ -72,6 +72,16 @@ public interface IShibaListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitValue([NotNull] ShibaParser.ValueContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="ShibaParser.staticvalue"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterStaticvalue([NotNull] ShibaParser.StaticvalueContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ShibaParser.staticvalue"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitStaticvalue([NotNull] ShibaParser.StaticvalueContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="ShibaParser.percent"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -92,15 +102,15 @@ public interface IShibaListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitThickness([NotNull] ShibaParser.ThicknessContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ShibaParser.comput"/>.
+	/// Enter a parse tree produced by <see cref="ShibaParser.calc"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterComput([NotNull] ShibaParser.ComputContext context);
+	void EnterCalc([NotNull] ShibaParser.CalcContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="ShibaParser.comput"/>.
+	/// Exit a parse tree produced by <see cref="ShibaParser.calc"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitComput([NotNull] ShibaParser.ComputContext context);
+	void ExitCalc([NotNull] ShibaParser.CalcContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="ShibaParser.func"/>.
 	/// </summary>
@@ -112,6 +122,16 @@ public interface IShibaListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitFunc([NotNull] ShibaParser.FuncContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="ShibaParser.paramter"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterParamter([NotNull] ShibaParser.ParamterContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ShibaParser.paramter"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitParamter([NotNull] ShibaParser.ParamterContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="ShibaParser.binding"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -122,15 +142,15 @@ public interface IShibaListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitBinding([NotNull] ShibaParser.BindingContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ShibaParser.native"/>.
+	/// Enter a parse tree produced by <see cref="ShibaParser.resource"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterNative([NotNull] ShibaParser.NativeContext context);
+	void EnterResource([NotNull] ShibaParser.ResourceContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="ShibaParser.native"/>.
+	/// Exit a parse tree produced by <see cref="ShibaParser.resource"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitNative([NotNull] ShibaParser.NativeContext context);
+	void ExitResource([NotNull] ShibaParser.ResourceContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="ShibaParser.jsonpath"/>.
 	/// </summary>

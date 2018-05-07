@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using Shiba.Controls;
 using Shiba.Core;
 using Shiba.Renderers;
+using Binding = Shiba.Controls.Binding;
 #if WINDOWS_UWP
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 using NativeBinding = Windows.UI.Xaml.Data.Binding;
 #else
+using System.Windows.Data;
 using System.Windows.Controls;
 using System.Windows;
 using NativeBinding = System.Windows.Data.Binding;
@@ -31,7 +35,6 @@ namespace Shiba.Renderers
     {
         public object Render(View view, object dataContext)
         {
-
             var target = new TNativeView();
 
             if (view.TryGet("visible", out var visible))
@@ -44,7 +47,6 @@ namespace Shiba.Renderers
 
             if (target is FrameworkElement frameworkElement)
             {
-
                 if (view.TryGet("width", out var width))
                 {
                     switch (width)
@@ -98,9 +100,18 @@ namespace Shiba.Renderers
             switch (value)
             {
                 case Binding binding:
-                    
+                    return new NativeBinding
+                    {
+                        Source = dataContext,
+                        Converter = new BindingConverter(binding)
+                    };
                     break;
                 case JsonPath json:
+                    return new NativeBinding
+                    {
+                        Source = dataContext,
+                        Converter = new JsonConverter(json)
+                    };
                     break;
                 case NativeResource native:
                     break;
@@ -117,6 +128,75 @@ namespace Shiba.Renderers
         {
 
         }
+    }
+
+    internal class JsonConverter : ShibaConverter
+    {
+        private JsonPath _json;
+
+        public JsonConverter(JsonPath json)
+        {
+            _json = json;
+        }
+
+        protected override object Convert(object value, Type targetType)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override object ConvertBack(object value, Type targetType)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    internal class BindingConverter : ShibaConverter
+    {
+        private Binding _binding;
+
+        public BindingConverter(Binding binding)
+        {
+            _binding = binding;
+        }
+
+        protected override object Convert(object value, Type targetType)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override object ConvertBack(object value, Type targetType)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    internal abstract class ShibaConverter : IValueConverter
+    {
+#if WINDOWS_UWP
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            return Convert(value, targetType);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            return ConvertBack(value, targetType);
+        }
+#else
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return Convert(value, targetType);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return ConvertBack(value, targetType);
+        }
+#endif
+
+        protected abstract object Convert(object value, Type targetType);
+
+        protected abstract object ConvertBack(object value, Type targetType);
     }
 
     public class TextRenderer : ViewRenderer<TextBlock>

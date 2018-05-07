@@ -84,6 +84,18 @@ public partial class ShibaBaseListener : IShibaListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitValue([NotNull] ShibaParser.ValueContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="ShibaParser.staticvalue"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterStaticvalue([NotNull] ShibaParser.StaticvalueContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ShibaParser.staticvalue"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitStaticvalue([NotNull] ShibaParser.StaticvalueContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="ShibaParser.percent"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -108,17 +120,17 @@ public partial class ShibaBaseListener : IShibaListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitThickness([NotNull] ShibaParser.ThicknessContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ShibaParser.comput"/>.
+	/// Enter a parse tree produced by <see cref="ShibaParser.calc"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterComput([NotNull] ShibaParser.ComputContext context) { }
+	public virtual void EnterCalc([NotNull] ShibaParser.CalcContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="ShibaParser.comput"/>.
+	/// Exit a parse tree produced by <see cref="ShibaParser.calc"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitComput([NotNull] ShibaParser.ComputContext context) { }
+	public virtual void ExitCalc([NotNull] ShibaParser.CalcContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="ShibaParser.func"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -132,6 +144,18 @@ public partial class ShibaBaseListener : IShibaListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitFunc([NotNull] ShibaParser.FuncContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="ShibaParser.paramter"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterParamter([NotNull] ShibaParser.ParamterContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ShibaParser.paramter"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitParamter([NotNull] ShibaParser.ParamterContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="ShibaParser.binding"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -144,17 +168,17 @@ public partial class ShibaBaseListener : IShibaListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitBinding([NotNull] ShibaParser.BindingContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ShibaParser.native"/>.
+	/// Enter a parse tree produced by <see cref="ShibaParser.resource"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterNative([NotNull] ShibaParser.NativeContext context) { }
+	public virtual void EnterResource([NotNull] ShibaParser.ResourceContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="ShibaParser.native"/>.
+	/// Exit a parse tree produced by <see cref="ShibaParser.resource"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitNative([NotNull] ShibaParser.NativeContext context) { }
+	public virtual void ExitResource([NotNull] ShibaParser.ResourceContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="ShibaParser.jsonpath"/>.
 	/// <para>The default implementation does nothing.</para>

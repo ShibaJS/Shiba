@@ -18,26 +18,26 @@ public class ShibaParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
-		T__9=10, T__10=11, T__11=12, T__12=13, STRING=14, BOOLEAN=15, TOKEN=16, 
-		NUMBER=17, Hws=18, Vws=19, DocComment=20, BlockComment=21, LineComment=22, 
-		LineCommentExt=23;
+		T__9=10, T__10=11, T__11=12, T__12=13, T__13=14, T__14=15, STRING=16, 
+		BOOLEAN=17, TOKEN=18, NUMBER=19, Hws=20, Vws=21, DocComment=22, BlockComment=23, 
+		LineComment=24, LineCommentExt=25;
 	public static final int
-		RULE_root = 0, RULE_obj = 1, RULE_pair = 2, RULE_value = 3, RULE_percent = 4, 
-		RULE_thickness = 5, RULE_comput = 6, RULE_func = 7, RULE_binding = 8, 
-		RULE_native = 9, RULE_jsonpath = 10, RULE_dic = 11;
+		RULE_root = 0, RULE_obj = 1, RULE_pair = 2, RULE_value = 3, RULE_staticvalue = 4, 
+		RULE_percent = 5, RULE_thickness = 6, RULE_calc = 7, RULE_func = 8, RULE_paramter = 9, 
+		RULE_binding = 10, RULE_resource = 11, RULE_jsonpath = 12, RULE_dic = 13;
 	public static final String[] ruleNames = {
-		"root", "obj", "pair", "value", "percent", "thickness", "comput", "func", 
-		"binding", "native", "jsonpath", "dic"
+		"root", "obj", "pair", "value", "staticvalue", "percent", "thickness", 
+		"calc", "func", "paramter", "binding", "resource", "jsonpath", "dic"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
-		null, "'{'", "','", "'}'", "':'", "'null'", "'%'", "'('", "')'", "'$bind'", 
-		"'$res'", "'$json'", "'['", "']'"
+		null, "'{'", "','", "'}'", "':'", "'='", "'null'", "'%'", "'$calc'", "'('", 
+		"')'", "'$bind'", "'$res'", "'$json'", "'['", "']'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
 		null, null, null, null, null, null, null, null, null, null, null, null, 
-		null, null, "STRING", "BOOLEAN", "TOKEN", "NUMBER", "Hws", "Vws", "DocComment", 
-		"BlockComment", "LineComment", "LineCommentExt"
+		null, null, null, null, "STRING", "BOOLEAN", "TOKEN", "NUMBER", "Hws", 
+		"Vws", "DocComment", "BlockComment", "LineComment", "LineCommentExt"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -112,7 +112,7 @@ public class ShibaParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(24);
+			setState(28);
 			obj();
 			}
 		}
@@ -162,78 +162,78 @@ public class ShibaParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(26);
+			setState(30);
 			match(TOKEN);
-			setState(47);
+			setState(51);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==T__0) {
 				{
-				setState(27);
+				setState(31);
 				match(T__0);
-				setState(44);
+				setState(48);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==TOKEN) {
 					{
-					setState(30);
+					setState(34);
 					_errHandler.sync(this);
 					switch ( getInterpreter().adaptivePredict(_input,0,_ctx) ) {
 					case 1:
 						{
-						setState(28);
+						setState(32);
 						pair();
 						}
 						break;
 					case 2:
 						{
-						setState(29);
+						setState(33);
 						obj();
 						}
 						break;
 					}
-					setState(41);
+					setState(45);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 					while (_la==T__1 || _la==TOKEN) {
 						{
 						{
-						setState(33);
+						setState(37);
 						_errHandler.sync(this);
 						_la = _input.LA(1);
 						if (_la==T__1) {
 							{
-							setState(32);
+							setState(36);
 							match(T__1);
 							}
 						}
 
-						setState(37);
+						setState(41);
 						_errHandler.sync(this);
 						switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
 						case 1:
 							{
-							setState(35);
+							setState(39);
 							pair();
 							}
 							break;
 						case 2:
 							{
-							setState(36);
+							setState(40);
 							obj();
 							}
 							break;
 						}
 						}
 						}
-						setState(43);
+						setState(47);
 						_errHandler.sync(this);
 						_la = _input.LA(1);
 					}
 					}
 				}
 
-				setState(46);
+				setState(50);
 				match(T__2);
 				}
 			}
@@ -273,14 +273,23 @@ public class ShibaParser extends Parser {
 	public final PairContext pair() throws RecognitionException {
 		PairContext _localctx = new PairContext(_ctx, getState());
 		enterRule(_localctx, 4, RULE_pair);
+		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(49);
+			setState(53);
 			match(TOKEN);
-			setState(50);
-			match(T__3);
-			setState(51);
+			setState(54);
+			_la = _input.LA(1);
+			if ( !(_la==T__3 || _la==T__4) ) {
+			_errHandler.recoverInline(this);
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
+				consume();
+			}
+			setState(55);
 			value();
 			}
 		}
@@ -296,27 +305,23 @@ public class ShibaParser extends Parser {
 	}
 
 	public static class ValueContext extends ParserRuleContext {
-		public TerminalNode STRING() { return getToken(ShibaParser.STRING, 0); }
-		public TerminalNode NUMBER() { return getToken(ShibaParser.NUMBER, 0); }
-		public TerminalNode BOOLEAN() { return getToken(ShibaParser.BOOLEAN, 0); }
-		public TerminalNode TOKEN() { return getToken(ShibaParser.TOKEN, 0); }
-		public PercentContext percent() {
-			return getRuleContext(PercentContext.class,0);
-		}
-		public ThicknessContext thickness() {
-			return getRuleContext(ThicknessContext.class,0);
+		public StaticvalueContext staticvalue() {
+			return getRuleContext(StaticvalueContext.class,0);
 		}
 		public BindingContext binding() {
 			return getRuleContext(BindingContext.class,0);
 		}
-		public NativeContext native() {
-			return getRuleContext(NativeContext.class,0);
-		}
-		public DicContext dic() {
-			return getRuleContext(DicContext.class,0);
+		public ResourceContext resource() {
+			return getRuleContext(ResourceContext.class,0);
 		}
 		public JsonpathContext jsonpath() {
 			return getRuleContext(JsonpathContext.class,0);
+		}
+		public CalcContext calc() {
+			return getRuleContext(CalcContext.class,0);
+		}
+		public DicContext dic() {
+			return getRuleContext(DicContext.class,0);
 		}
 		public ValueContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -336,84 +341,149 @@ public class ShibaParser extends Parser {
 		ValueContext _localctx = new ValueContext(_ctx, getState());
 		enterRule(_localctx, 6, RULE_value);
 		try {
-			setState(64);
+			setState(63);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,6,_ctx) ) {
+			switch (_input.LA(1)) {
+			case T__5:
+			case STRING:
+			case BOOLEAN:
+			case TOKEN:
+			case NUMBER:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(57);
+				staticvalue();
+				}
+				break;
+			case T__10:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(58);
+				binding();
+				}
+				break;
+			case T__11:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(59);
+				resource();
+				}
+				break;
+			case T__12:
+				enterOuterAlt(_localctx, 4);
+				{
+				setState(60);
+				jsonpath();
+				}
+				break;
+			case T__7:
+				enterOuterAlt(_localctx, 5);
+				{
+				setState(61);
+				calc();
+				}
+				break;
+			case T__13:
+				enterOuterAlt(_localctx, 6);
+				{
+				setState(62);
+				dic();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class StaticvalueContext extends ParserRuleContext {
+		public TerminalNode STRING() { return getToken(ShibaParser.STRING, 0); }
+		public TerminalNode NUMBER() { return getToken(ShibaParser.NUMBER, 0); }
+		public TerminalNode BOOLEAN() { return getToken(ShibaParser.BOOLEAN, 0); }
+		public TerminalNode TOKEN() { return getToken(ShibaParser.TOKEN, 0); }
+		public PercentContext percent() {
+			return getRuleContext(PercentContext.class,0);
+		}
+		public ThicknessContext thickness() {
+			return getRuleContext(ThicknessContext.class,0);
+		}
+		public StaticvalueContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_staticvalue; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ShibaListener ) ((ShibaListener)listener).enterStaticvalue(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ShibaListener ) ((ShibaListener)listener).exitStaticvalue(this);
+		}
+	}
+
+	public final StaticvalueContext staticvalue() throws RecognitionException {
+		StaticvalueContext _localctx = new StaticvalueContext(_ctx, getState());
+		enterRule(_localctx, 8, RULE_staticvalue);
+		try {
+			setState(72);
+			_errHandler.sync(this);
+			switch ( getInterpreter().adaptivePredict(_input,7,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(53);
+				setState(65);
 				match(STRING);
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(54);
+				setState(66);
 				match(NUMBER);
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(55);
+				setState(67);
 				match(BOOLEAN);
 				}
 				break;
 			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(56);
-				match(T__4);
+				setState(68);
+				match(T__5);
 				}
 				break;
 			case 5:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(57);
+				setState(69);
 				match(TOKEN);
 				}
 				break;
 			case 6:
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(58);
+				setState(70);
 				percent();
 				}
 				break;
 			case 7:
 				enterOuterAlt(_localctx, 7);
 				{
-				setState(59);
+				setState(71);
 				thickness();
-				}
-				break;
-			case 8:
-				enterOuterAlt(_localctx, 8);
-				{
-				setState(60);
-				binding();
-				}
-				break;
-			case 9:
-				enterOuterAlt(_localctx, 9);
-				{
-				setState(61);
-				native();
-				}
-				break;
-			case 10:
-				enterOuterAlt(_localctx, 10);
-				{
-				setState(62);
-				dic();
-				}
-				break;
-			case 11:
-				enterOuterAlt(_localctx, 11);
-				{
-				setState(63);
-				jsonpath();
 				}
 				break;
 			}
@@ -447,14 +517,14 @@ public class ShibaParser extends Parser {
 
 	public final PercentContext percent() throws RecognitionException {
 		PercentContext _localctx = new PercentContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_percent);
+		enterRule(_localctx, 10, RULE_percent);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(66);
+			setState(74);
 			match(NUMBER);
-			setState(67);
-			match(T__5);
+			setState(75);
+			match(T__6);
 			}
 		}
 		catch (RecognitionException re) {
@@ -489,45 +559,45 @@ public class ShibaParser extends Parser {
 
 	public final ThicknessContext thickness() throws RecognitionException {
 		ThicknessContext _localctx = new ThicknessContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_thickness);
+		enterRule(_localctx, 12, RULE_thickness);
 		try {
-			setState(80);
+			setState(88);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,7,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,8,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(69);
+				setState(77);
 				match(NUMBER);
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(70);
+				setState(78);
 				match(NUMBER);
-				setState(71);
+				setState(79);
 				match(T__1);
-				setState(72);
+				setState(80);
 				match(NUMBER);
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(73);
+				setState(81);
 				match(NUMBER);
-				setState(74);
+				setState(82);
 				match(T__1);
-				setState(75);
+				setState(83);
 				match(NUMBER);
-				setState(76);
+				setState(84);
 				match(T__1);
-				setState(77);
+				setState(85);
 				match(NUMBER);
-				setState(78);
+				setState(86);
 				match(T__1);
-				setState(79);
+				setState(87);
 				match(NUMBER);
 				}
 				break;
@@ -544,48 +614,34 @@ public class ShibaParser extends Parser {
 		return _localctx;
 	}
 
-	public static class ComputContext extends ParserRuleContext {
+	public static class CalcContext extends ParserRuleContext {
 		public FuncContext func() {
 			return getRuleContext(FuncContext.class,0);
 		}
-		public ValueContext value() {
-			return getRuleContext(ValueContext.class,0);
-		}
-		public ComputContext(ParserRuleContext parent, int invokingState) {
+		public CalcContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_comput; }
+		@Override public int getRuleIndex() { return RULE_calc; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ShibaListener ) ((ShibaListener)listener).enterComput(this);
+			if ( listener instanceof ShibaListener ) ((ShibaListener)listener).enterCalc(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ShibaListener ) ((ShibaListener)listener).exitComput(this);
+			if ( listener instanceof ShibaListener ) ((ShibaListener)listener).exitCalc(this);
 		}
 	}
 
-	public final ComputContext comput() throws RecognitionException {
-		ComputContext _localctx = new ComputContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_comput);
+	public final CalcContext calc() throws RecognitionException {
+		CalcContext _localctx = new CalcContext(_ctx, getState());
+		enterRule(_localctx, 14, RULE_calc);
 		try {
-			setState(84);
-			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,8,_ctx) ) {
-			case 1:
-				enterOuterAlt(_localctx, 1);
-				{
-				setState(82);
-				func();
-				}
-				break;
-			case 2:
-				enterOuterAlt(_localctx, 2);
-				{
-				setState(83);
-				value();
-				}
-				break;
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(90);
+			match(T__7);
+			setState(91);
+			func();
 			}
 		}
 		catch (RecognitionException re) {
@@ -601,11 +657,11 @@ public class ShibaParser extends Parser {
 
 	public static class FuncContext extends ParserRuleContext {
 		public TerminalNode TOKEN() { return getToken(ShibaParser.TOKEN, 0); }
-		public ComputContext comput() {
-			return getRuleContext(ComputContext.class,0);
+		public List<ParamterContext> paramter() {
+			return getRuleContexts(ParamterContext.class);
 		}
-		public ValueContext value() {
-			return getRuleContext(ValueContext.class,0);
+		public ParamterContext paramter(int i) {
+			return getRuleContext(ParamterContext.class,i);
 		}
 		public FuncContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -623,31 +679,90 @@ public class ShibaParser extends Parser {
 
 	public final FuncContext func() throws RecognitionException {
 		FuncContext _localctx = new FuncContext(_ctx, getState());
-		enterRule(_localctx, 14, RULE_func);
+		enterRule(_localctx, 16, RULE_func);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(86);
+			setState(93);
 			match(TOKEN);
-			setState(87);
-			match(T__6);
-			setState(88);
-			comput();
-			setState(91);
+			setState(94);
+			match(T__8);
+			setState(95);
+			paramter();
+			setState(100);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (_la==T__1) {
+			while (_la==T__1) {
 				{
-				setState(89);
+				{
+				setState(96);
 				match(T__1);
-				setState(90);
+				setState(97);
+				paramter();
+				}
+				}
+				setState(102);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			setState(103);
+			match(T__9);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ParamterContext extends ParserRuleContext {
+		public ValueContext value() {
+			return getRuleContext(ValueContext.class,0);
+		}
+		public FuncContext func() {
+			return getRuleContext(FuncContext.class,0);
+		}
+		public ParamterContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_paramter; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ShibaListener ) ((ShibaListener)listener).enterParamter(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ShibaListener ) ((ShibaListener)listener).exitParamter(this);
+		}
+	}
+
+	public final ParamterContext paramter() throws RecognitionException {
+		ParamterContext _localctx = new ParamterContext(_ctx, getState());
+		enterRule(_localctx, 18, RULE_paramter);
+		try {
+			setState(107);
+			_errHandler.sync(this);
+			switch ( getInterpreter().adaptivePredict(_input,10,_ctx) ) {
+			case 1:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(105);
 				value();
 				}
-			}
-
-			setState(93);
-			match(T__7);
+				break;
+			case 2:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(106);
+				func();
+				}
+				break;
 			}
 		}
 		catch (RecognitionException re) {
@@ -662,8 +777,8 @@ public class ShibaParser extends Parser {
 	}
 
 	public static class BindingContext extends ParserRuleContext {
-		public ComputContext comput() {
-			return getRuleContext(ComputContext.class,0);
+		public StaticvalueContext staticvalue() {
+			return getRuleContext(StaticvalueContext.class,0);
 		}
 		public BindingContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -681,14 +796,14 @@ public class ShibaParser extends Parser {
 
 	public final BindingContext binding() throws RecognitionException {
 		BindingContext _localctx = new BindingContext(_ctx, getState());
-		enterRule(_localctx, 16, RULE_binding);
+		enterRule(_localctx, 20, RULE_binding);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(95);
-			match(T__8);
-			setState(96);
-			comput();
+			setState(109);
+			match(T__10);
+			setState(110);
+			staticvalue();
 			}
 		}
 		catch (RecognitionException re) {
@@ -702,34 +817,34 @@ public class ShibaParser extends Parser {
 		return _localctx;
 	}
 
-	public static class NativeContext extends ParserRuleContext {
-		public ComputContext comput() {
-			return getRuleContext(ComputContext.class,0);
+	public static class ResourceContext extends ParserRuleContext {
+		public StaticvalueContext staticvalue() {
+			return getRuleContext(StaticvalueContext.class,0);
 		}
-		public NativeContext(ParserRuleContext parent, int invokingState) {
+		public ResourceContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_native; }
+		@Override public int getRuleIndex() { return RULE_resource; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ShibaListener ) ((ShibaListener)listener).enterNative(this);
+			if ( listener instanceof ShibaListener ) ((ShibaListener)listener).enterResource(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ShibaListener ) ((ShibaListener)listener).exitNative(this);
+			if ( listener instanceof ShibaListener ) ((ShibaListener)listener).exitResource(this);
 		}
 	}
 
-	public final NativeContext native() throws RecognitionException {
-		NativeContext _localctx = new NativeContext(_ctx, getState());
-		enterRule(_localctx, 18, RULE_native);
+	public final ResourceContext resource() throws RecognitionException {
+		ResourceContext _localctx = new ResourceContext(_ctx, getState());
+		enterRule(_localctx, 22, RULE_resource);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(98);
-			match(T__9);
-			setState(99);
-			comput();
+			setState(112);
+			match(T__11);
+			setState(113);
+			staticvalue();
 			}
 		}
 		catch (RecognitionException re) {
@@ -744,8 +859,8 @@ public class ShibaParser extends Parser {
 	}
 
 	public static class JsonpathContext extends ParserRuleContext {
-		public ComputContext comput() {
-			return getRuleContext(ComputContext.class,0);
+		public StaticvalueContext staticvalue() {
+			return getRuleContext(StaticvalueContext.class,0);
 		}
 		public JsonpathContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -763,14 +878,14 @@ public class ShibaParser extends Parser {
 
 	public final JsonpathContext jsonpath() throws RecognitionException {
 		JsonpathContext _localctx = new JsonpathContext(_ctx, getState());
-		enterRule(_localctx, 20, RULE_jsonpath);
+		enterRule(_localctx, 24, RULE_jsonpath);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(101);
-			match(T__10);
-			setState(102);
-			comput();
+			setState(115);
+			match(T__12);
+			setState(116);
+			staticvalue();
 			}
 		}
 		catch (RecognitionException re) {
@@ -807,41 +922,41 @@ public class ShibaParser extends Parser {
 
 	public final DicContext dic() throws RecognitionException {
 		DicContext _localctx = new DicContext(_ctx, getState());
-		enterRule(_localctx, 22, RULE_dic);
+		enterRule(_localctx, 26, RULE_dic);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(104);
-			match(T__11);
-			setState(105);
+			setState(118);
+			match(T__13);
+			setState(119);
 			pair();
-			setState(112);
+			setState(126);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__1 || _la==TOKEN) {
 				{
 				{
-				setState(107);
+				setState(121);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==T__1) {
 					{
-					setState(106);
+					setState(120);
 					match(T__1);
 					}
 				}
 
-				setState(109);
+				setState(123);
 				pair();
 				}
 				}
-				setState(114);
+				setState(128);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(115);
-			match(T__12);
+			setState(129);
+			match(T__14);
 			}
 		}
 		catch (RecognitionException re) {
@@ -856,36 +971,40 @@ public class ShibaParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\31x\4\2\t\2\4\3\t"+
-		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4"+
-		"\f\t\f\4\r\t\r\3\2\3\2\3\3\3\3\3\3\3\3\5\3!\n\3\3\3\5\3$\n\3\3\3\3\3\5"+
-		"\3(\n\3\7\3*\n\3\f\3\16\3-\13\3\5\3/\n\3\3\3\5\3\62\n\3\3\4\3\4\3\4\3"+
-		"\4\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\5\5C\n\5\3\6\3\6\3\6\3"+
-		"\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\5\7S\n\7\3\b\3\b\5\bW\n\b\3"+
-		"\t\3\t\3\t\3\t\3\t\5\t^\n\t\3\t\3\t\3\n\3\n\3\n\3\13\3\13\3\13\3\f\3\f"+
-		"\3\f\3\r\3\r\3\r\5\rn\n\r\3\r\7\rq\n\r\f\r\16\rt\13\r\3\r\3\r\3\r\2\2"+
-		"\16\2\4\6\b\n\f\16\20\22\24\26\30\2\2\2\u0081\2\32\3\2\2\2\4\34\3\2\2"+
-		"\2\6\63\3\2\2\2\bB\3\2\2\2\nD\3\2\2\2\fR\3\2\2\2\16V\3\2\2\2\20X\3\2\2"+
-		"\2\22a\3\2\2\2\24d\3\2\2\2\26g\3\2\2\2\30j\3\2\2\2\32\33\5\4\3\2\33\3"+
-		"\3\2\2\2\34\61\7\22\2\2\35.\7\3\2\2\36!\5\6\4\2\37!\5\4\3\2 \36\3\2\2"+
-		"\2 \37\3\2\2\2!+\3\2\2\2\"$\7\4\2\2#\"\3\2\2\2#$\3\2\2\2$\'\3\2\2\2%("+
-		"\5\6\4\2&(\5\4\3\2\'%\3\2\2\2\'&\3\2\2\2(*\3\2\2\2)#\3\2\2\2*-\3\2\2\2"+
-		"+)\3\2\2\2+,\3\2\2\2,/\3\2\2\2-+\3\2\2\2. \3\2\2\2./\3\2\2\2/\60\3\2\2"+
-		"\2\60\62\7\5\2\2\61\35\3\2\2\2\61\62\3\2\2\2\62\5\3\2\2\2\63\64\7\22\2"+
-		"\2\64\65\7\6\2\2\65\66\5\b\5\2\66\7\3\2\2\2\67C\7\20\2\28C\7\23\2\29C"+
-		"\7\21\2\2:C\7\7\2\2;C\7\22\2\2<C\5\n\6\2=C\5\f\7\2>C\5\22\n\2?C\5\24\13"+
-		"\2@C\5\30\r\2AC\5\26\f\2B\67\3\2\2\2B8\3\2\2\2B9\3\2\2\2B:\3\2\2\2B;\3"+
-		"\2\2\2B<\3\2\2\2B=\3\2\2\2B>\3\2\2\2B?\3\2\2\2B@\3\2\2\2BA\3\2\2\2C\t"+
-		"\3\2\2\2DE\7\23\2\2EF\7\b\2\2F\13\3\2\2\2GS\7\23\2\2HI\7\23\2\2IJ\7\4"+
-		"\2\2JS\7\23\2\2KL\7\23\2\2LM\7\4\2\2MN\7\23\2\2NO\7\4\2\2OP\7\23\2\2P"+
-		"Q\7\4\2\2QS\7\23\2\2RG\3\2\2\2RH\3\2\2\2RK\3\2\2\2S\r\3\2\2\2TW\5\20\t"+
-		"\2UW\5\b\5\2VT\3\2\2\2VU\3\2\2\2W\17\3\2\2\2XY\7\22\2\2YZ\7\t\2\2Z]\5"+
-		"\16\b\2[\\\7\4\2\2\\^\5\b\5\2][\3\2\2\2]^\3\2\2\2^_\3\2\2\2_`\7\n\2\2"+
-		"`\21\3\2\2\2ab\7\13\2\2bc\5\16\b\2c\23\3\2\2\2de\7\f\2\2ef\5\16\b\2f\25"+
-		"\3\2\2\2gh\7\r\2\2hi\5\16\b\2i\27\3\2\2\2jk\7\16\2\2kr\5\6\4\2ln\7\4\2"+
-		"\2ml\3\2\2\2mn\3\2\2\2no\3\2\2\2oq\5\6\4\2pm\3\2\2\2qt\3\2\2\2rp\3\2\2"+
-		"\2rs\3\2\2\2su\3\2\2\2tr\3\2\2\2uv\7\17\2\2v\31\3\2\2\2\16 #\'+.\61BR"+
-		"V]mr";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\33\u0086\4\2\t\2"+
+		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
+		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\3\2\3\2\3\3\3\3\3\3\3\3\5\3"+
+		"%\n\3\3\3\5\3(\n\3\3\3\3\3\5\3,\n\3\7\3.\n\3\f\3\16\3\61\13\3\5\3\63\n"+
+		"\3\3\3\5\3\66\n\3\3\4\3\4\3\4\3\4\3\5\3\5\3\5\3\5\3\5\3\5\5\5B\n\5\3\6"+
+		"\3\6\3\6\3\6\3\6\3\6\3\6\5\6K\n\6\3\7\3\7\3\7\3\b\3\b\3\b\3\b\3\b\3\b"+
+		"\3\b\3\b\3\b\3\b\3\b\5\b[\n\b\3\t\3\t\3\t\3\n\3\n\3\n\3\n\3\n\7\ne\n\n"+
+		"\f\n\16\nh\13\n\3\n\3\n\3\13\3\13\5\13n\n\13\3\f\3\f\3\f\3\r\3\r\3\r\3"+
+		"\16\3\16\3\16\3\17\3\17\3\17\5\17|\n\17\3\17\7\17\177\n\17\f\17\16\17"+
+		"\u0082\13\17\3\17\3\17\3\17\2\2\20\2\4\6\b\n\f\16\20\22\24\26\30\32\34"+
+		"\2\3\3\2\6\7\2\u008e\2\36\3\2\2\2\4 \3\2\2\2\6\67\3\2\2\2\bA\3\2\2\2\n"+
+		"J\3\2\2\2\fL\3\2\2\2\16Z\3\2\2\2\20\\\3\2\2\2\22_\3\2\2\2\24m\3\2\2\2"+
+		"\26o\3\2\2\2\30r\3\2\2\2\32u\3\2\2\2\34x\3\2\2\2\36\37\5\4\3\2\37\3\3"+
+		"\2\2\2 \65\7\24\2\2!\62\7\3\2\2\"%\5\6\4\2#%\5\4\3\2$\"\3\2\2\2$#\3\2"+
+		"\2\2%/\3\2\2\2&(\7\4\2\2\'&\3\2\2\2\'(\3\2\2\2(+\3\2\2\2),\5\6\4\2*,\5"+
+		"\4\3\2+)\3\2\2\2+*\3\2\2\2,.\3\2\2\2-\'\3\2\2\2.\61\3\2\2\2/-\3\2\2\2"+
+		"/\60\3\2\2\2\60\63\3\2\2\2\61/\3\2\2\2\62$\3\2\2\2\62\63\3\2\2\2\63\64"+
+		"\3\2\2\2\64\66\7\5\2\2\65!\3\2\2\2\65\66\3\2\2\2\66\5\3\2\2\2\678\7\24"+
+		"\2\289\t\2\2\29:\5\b\5\2:\7\3\2\2\2;B\5\n\6\2<B\5\26\f\2=B\5\30\r\2>B"+
+		"\5\32\16\2?B\5\20\t\2@B\5\34\17\2A;\3\2\2\2A<\3\2\2\2A=\3\2\2\2A>\3\2"+
+		"\2\2A?\3\2\2\2A@\3\2\2\2B\t\3\2\2\2CK\7\22\2\2DK\7\25\2\2EK\7\23\2\2F"+
+		"K\7\b\2\2GK\7\24\2\2HK\5\f\7\2IK\5\16\b\2JC\3\2\2\2JD\3\2\2\2JE\3\2\2"+
+		"\2JF\3\2\2\2JG\3\2\2\2JH\3\2\2\2JI\3\2\2\2K\13\3\2\2\2LM\7\25\2\2MN\7"+
+		"\t\2\2N\r\3\2\2\2O[\7\25\2\2PQ\7\25\2\2QR\7\4\2\2R[\7\25\2\2ST\7\25\2"+
+		"\2TU\7\4\2\2UV\7\25\2\2VW\7\4\2\2WX\7\25\2\2XY\7\4\2\2Y[\7\25\2\2ZO\3"+
+		"\2\2\2ZP\3\2\2\2ZS\3\2\2\2[\17\3\2\2\2\\]\7\n\2\2]^\5\22\n\2^\21\3\2\2"+
+		"\2_`\7\24\2\2`a\7\13\2\2af\5\24\13\2bc\7\4\2\2ce\5\24\13\2db\3\2\2\2e"+
+		"h\3\2\2\2fd\3\2\2\2fg\3\2\2\2gi\3\2\2\2hf\3\2\2\2ij\7\f\2\2j\23\3\2\2"+
+		"\2kn\5\b\5\2ln\5\22\n\2mk\3\2\2\2ml\3\2\2\2n\25\3\2\2\2op\7\r\2\2pq\5"+
+		"\n\6\2q\27\3\2\2\2rs\7\16\2\2st\5\n\6\2t\31\3\2\2\2uv\7\17\2\2vw\5\n\6"+
+		"\2w\33\3\2\2\2xy\7\20\2\2y\u0080\5\6\4\2z|\7\4\2\2{z\3\2\2\2{|\3\2\2\2"+
+		"|}\3\2\2\2}\177\5\6\4\2~{\3\2\2\2\177\u0082\3\2\2\2\u0080~\3\2\2\2\u0080"+
+		"\u0081\3\2\2\2\u0081\u0083\3\2\2\2\u0082\u0080\3\2\2\2\u0083\u0084\7\21"+
+		"\2\2\u0084\35\3\2\2\2\17$\'+/\62\65AJZfm{\u0080";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

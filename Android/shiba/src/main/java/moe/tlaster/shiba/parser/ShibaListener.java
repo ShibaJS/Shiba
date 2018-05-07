@@ -48,6 +48,16 @@ public interface ShibaListener extends ParseTreeListener {
 	 */
 	void exitValue(ShibaParser.ValueContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ShibaParser#staticvalue}.
+	 * @param ctx the parse tree
+	 */
+	void enterStaticvalue(ShibaParser.StaticvalueContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ShibaParser#staticvalue}.
+	 * @param ctx the parse tree
+	 */
+	void exitStaticvalue(ShibaParser.StaticvalueContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ShibaParser#percent}.
 	 * @param ctx the parse tree
 	 */
@@ -68,15 +78,15 @@ public interface ShibaListener extends ParseTreeListener {
 	 */
 	void exitThickness(ShibaParser.ThicknessContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ShibaParser#comput}.
+	 * Enter a parse tree produced by {@link ShibaParser#calc}.
 	 * @param ctx the parse tree
 	 */
-	void enterComput(ShibaParser.ComputContext ctx);
+	void enterCalc(ShibaParser.CalcContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ShibaParser#comput}.
+	 * Exit a parse tree produced by {@link ShibaParser#calc}.
 	 * @param ctx the parse tree
 	 */
-	void exitComput(ShibaParser.ComputContext ctx);
+	void exitCalc(ShibaParser.CalcContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ShibaParser#func}.
 	 * @param ctx the parse tree
@@ -88,6 +98,16 @@ public interface ShibaListener extends ParseTreeListener {
 	 */
 	void exitFunc(ShibaParser.FuncContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ShibaParser#paramter}.
+	 * @param ctx the parse tree
+	 */
+	void enterParamter(ShibaParser.ParamterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ShibaParser#paramter}.
+	 * @param ctx the parse tree
+	 */
+	void exitParamter(ShibaParser.ParamterContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ShibaParser#binding}.
 	 * @param ctx the parse tree
 	 */
@@ -98,15 +118,15 @@ public interface ShibaListener extends ParseTreeListener {
 	 */
 	void exitBinding(ShibaParser.BindingContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ShibaParser#native}.
+	 * Enter a parse tree produced by {@link ShibaParser#resource}.
 	 * @param ctx the parse tree
 	 */
-	void enterNative(ShibaParser.NativeContext ctx);
+	void enterResource(ShibaParser.ResourceContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ShibaParser#native}.
+	 * Exit a parse tree produced by {@link ShibaParser#resource}.
 	 * @param ctx the parse tree
 	 */
-	void exitNative(ShibaParser.NativeContext ctx);
+	void exitResource(ShibaParser.ResourceContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ShibaParser#jsonpath}.
 	 * @param ctx the parse tree

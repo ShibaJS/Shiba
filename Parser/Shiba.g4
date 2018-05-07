@@ -9,10 +9,19 @@ obj
    ;
 
 pair
-   : TOKEN ':' value
+   : TOKEN (':' | '=') value
    ;
 
 value
+   : staticvalue
+   | binding
+   | resource
+   | jsonpath
+   | calc
+   | dic
+   ;
+
+staticvalue
    : STRING
    | NUMBER
    | BOOLEAN
@@ -20,10 +29,6 @@ value
    | TOKEN
    | percent
    | thickness
-   | binding
-   | native
-   | dic
-   | jsonpath
    ;
 
 STRING
@@ -53,25 +58,29 @@ thickness
    | NUMBER ',' NUMBER ',' NUMBER ',' NUMBER
    ;
 
-comput
-   : func
-   | value
+calc
+   : '$calc' func
+   ;
+   
+func
+   : TOKEN '(' paramter (',' paramter)* ')'
    ;
 
-func
-   : TOKEN '(' comput (',' value)? ')'
+paramter
+   : value
+   | func
    ;
 
 binding
-   : '$bind' comput
+   : '$bind' staticvalue
    ;
 
-native
-   : '$res' comput
+resource
+   : '$res' staticvalue
    ;
 
 jsonpath
-   : '$json' comput
+   : '$json' staticvalue
    ;
 
 dic

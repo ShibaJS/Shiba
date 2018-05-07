@@ -64,6 +64,18 @@ public class ShibaBaseListener implements ShibaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterStaticvalue(ShibaParser.StaticvalueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStaticvalue(ShibaParser.StaticvalueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterPercent(ShibaParser.PercentContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -88,13 +100,13 @@ public class ShibaBaseListener implements ShibaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterComput(ShibaParser.ComputContext ctx) { }
+	@Override public void enterCalc(ShibaParser.CalcContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitComput(ShibaParser.ComputContext ctx) { }
+	@Override public void exitCalc(ShibaParser.CalcContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -112,6 +124,18 @@ public class ShibaBaseListener implements ShibaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterParamter(ShibaParser.ParamterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParamter(ShibaParser.ParamterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterBinding(ShibaParser.BindingContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -124,13 +148,13 @@ public class ShibaBaseListener implements ShibaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNative(ShibaParser.NativeContext ctx) { }
+	@Override public void enterResource(ShibaParser.ResourceContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNative(ShibaParser.NativeContext ctx) { }
+	@Override public void exitResource(ShibaParser.ResourceContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

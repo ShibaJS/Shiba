@@ -52,12 +52,13 @@ namespace Shiba.Parser
             return pair?.ToDictionary(x => x.Start.Text, x => GetValue(x.value())) ?? new Dictionary<string, object>();
         }
 
-        private object GetValue(ShibaParser.ValueContext context)
+        private object GetStaticValue(ShibaParser.StaticvalueContext context)
         {
-            if (context == null)
+            if (context == null || context.GetText() == "null")
             {
                 return null;
             }
+            
             if (context.BOOLEAN() != null)
             {
                 return bool.Parse(context.BOOLEAN().GetText());
@@ -78,19 +79,46 @@ namespace Shiba.Parser
                 return new Thickness(context.thickness().GetText());
             }
 
-            if (context.binding() != null)
+            if (context.STRING() != null)
             {
-                return new Binding(CreateComput(context.binding().comput()));
+                return context.STRING().GetText();
             }
 
-            if (context.native() != null)
+            if (context.TOKEN() != null)
             {
-                return new NativeResource(CreateComput(context.native().comput()));
+                return new Token(context.TOKEN().GetText());
+            }
+
+            return null;
+        }
+        
+        
+        private object GetValue(ShibaParser.ValueContext context)
+        {
+            if (context == null)
+            {
+                return null;
+            }
+
+            var staticValue = GetStaticValue(context.staticvalue());
+            if (staticValue != null)
+            {
+                return staticValue;
+            }
+
+            if (context.binding() != null)
+            {
+                return new Binding(GetStaticValue(context.binding().staticvalue()));
+            }
+
+            if (context.resource() != null)
+            {
+                return new NativeResource(GetStaticValue(context.resource().staticvalue()));
             }
 
             if (context.jsonpath() != null)
             {
-                return new JsonPath(CreateComput(context.jsonpath().comput()));
+                return new JsonPath(GetStaticValue(context.resource().staticvalue()));
             }
 
             if (context.dic() != null)
@@ -99,26 +127,27 @@ namespace Shiba.Parser
                 return GetValue(pair?.value());
             }
 
-            return context.STRING()?.GetText()?.Trim('"') ?? context.GetText();
+            return context?.staticvalue().STRING()?.GetText()?.Trim('"') ?? context.GetText();
         }
+        
+        
 
-        private Comput CreateComput(ShibaParser.ComputContext comput)
-        {
-            if (comput.func() != null)
-            {
-                return new Comput
-                {
-                    FuncName = comput.func().TOKEN().Symbol.Text,
-                    InnerComput = CreateComput(comput.getAltNumber())
-                };
-            }
-
-            return new Comput
-            {
-                Value = GetValue(comput.RuleIndex)
-                
-            };
-        }
+//        private Comput CreateComput(ShibaParser.ComputContext comput)
+//        {
+//            if (comput.func() != null)
+//            {
+//                return new Comput
+//                {
+//                    FuncName = comput.func().TOKEN().Symbol.Text,
+//                    Paramter = comput.func().comput().Select(CreateComput).ToArray()
+//                };
+//            }
+//
+//            return new Comput
+//            {
+//                Value = GetValue(comput.value())
+//            };
+//        }
 
         //private void InitPair(ref View view, params ShibaParser.PairContext[] pairs)
         //{

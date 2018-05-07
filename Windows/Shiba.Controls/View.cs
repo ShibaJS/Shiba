@@ -38,52 +38,60 @@ namespace Shiba.Controls
         }
     }
 
-    public interface IValueConverter
+//    public class Comput
+//    {
+//        public string FuncName { get; set; }
+//        public object Value { get; set; }
+//        public Comput[] Paramter { get; set; }
+//    }
+
+    internal interface IStaticValue
     {
-        object Convert(object value, object paramter);
-        object ConvertBack(object value, object paramter);
+        object Value { get; }
     }
 
-    public class Comput
+    public struct Token
     {
-        public Comput InnerComput { get; set; }
-        public string FuncName { get; set; }
-        public object Value { get; set; }
-        public object Paramter { get; set; }
-    }
-
-    internal interface IComputValue
-    {
-        Comput Value { get; }
-    }
-
-    public struct Binding : IComputValue
-    {
-        public Binding(Comput value)
+        public Token(object value)
         {
             Value = value;
         }
 
-        public Comput Value { get; }
+        public object Value { get; }
     }
 
-    public struct JsonPath : IComputValue
+    public class Calculate
     {
-        public JsonPath(Comput value)
+        
+    }
+    
+    public struct Binding : IStaticValue
+    {
+        public Binding(object value)
         {
             Value = value;
         }
 
-        public Comput Value { get; }
+        public object Value { get; }
     }
 
-    public struct NativeResource : IComputValue
+    public struct JsonPath : IStaticValue
     {
-        public NativeResource(Comput value)
+        public JsonPath(object value)
         {
             Value = value;
         }
 
-        public Comput Value { get; }
+        public object Value { get; }
+    }
+
+    public struct NativeResource : IStaticValue
+    {
+        public NativeResource(object value)
+        {
+            Value = value;
+        }
+
+        public object Value { get; }
     }
 }
