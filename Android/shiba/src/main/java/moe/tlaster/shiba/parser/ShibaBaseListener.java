@@ -100,18 +100,6 @@ public class ShibaBaseListener implements ShibaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCalc(ShibaParser.CalcContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCalc(ShibaParser.CalcContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterFunc(ShibaParser.FuncContext ctx) { }
 	/**
 	 * {@inheritDoc}

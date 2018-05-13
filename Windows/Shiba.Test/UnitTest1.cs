@@ -11,7 +11,7 @@ namespace Shiba.Test
         public void Test1()
         {
             Initialization.Init();
-            const string input = "stackLayout {orientation: horizontal, padding: 8, 0, alpha: 50%, input{content:$bind fdsafds(dsafs(dasfd, dfsa), dfsafs)}}";
+            const string input = "stackLayout {orientation: horizontal, padding: [8, 0], alpha: 50%, etgsa: $bind aaa, input{content: fdsafds(dsafs($bind dasfd, dfsa), dfsafs)}}";
             var tree = new ShibaParserWrapper().Parse(input);
 
 //            var view = ShibaParserWrapper.BuildViewTree(tree);

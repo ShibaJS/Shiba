@@ -120,18 +120,6 @@ public partial class ShibaBaseListener : IShibaListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitThickness([NotNull] ShibaParser.ThicknessContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ShibaParser.calc"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterCalc([NotNull] ShibaParser.CalcContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ShibaParser.calc"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitCalc([NotNull] ShibaParser.CalcContext context) { }
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="ShibaParser.func"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

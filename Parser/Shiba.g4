@@ -17,7 +17,7 @@ value
    | binding
    | resource
    | jsonpath
-   | calc
+   | func
    | dic
    ;
 
@@ -25,10 +25,14 @@ staticvalue
    : STRING
    | NUMBER
    | BOOLEAN
-   | 'null'
+   | NULL
    | TOKEN
    | percent
    | thickness
+   ;
+
+NULL
+   : 'null'
    ;
 
 STRING
@@ -53,13 +57,9 @@ percent
    ;
 
 thickness
-   : NUMBER
-   | NUMBER ',' NUMBER
-   | NUMBER ',' NUMBER ',' NUMBER ',' NUMBER
-   ;
-
-calc
-   : '$calc' func
+   : '[' NUMBER ']'
+   | '[' NUMBER ',' NUMBER ']'
+   | '[' NUMBER ',' NUMBER ',' NUMBER ',' NUMBER ']'
    ;
    
 func

@@ -102,16 +102,6 @@ public interface IShibaListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitThickness([NotNull] ShibaParser.ThicknessContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ShibaParser.calc"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterCalc([NotNull] ShibaParser.CalcContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ShibaParser.calc"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitCalc([NotNull] ShibaParser.CalcContext context);
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="ShibaParser.func"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

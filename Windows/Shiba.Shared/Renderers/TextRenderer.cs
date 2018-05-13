@@ -55,6 +55,7 @@ namespace Shiba.Renderers
                             frameworkElement.Width = doubleValue;
                             break;
                         default:
+                            frameworkElement.SetResourceReference();
                             frameworkElement.SetBinding(FrameworkElement.WidthProperty, GetBinding(dataContext, width));
                             break;
                     }
