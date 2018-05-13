@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace Shiba.Controls.Common
 {
@@ -12,14 +10,15 @@ namespace Shiba.Controls.Common
         {
             if (typeof(T).GetTypeInfo().IsEnum)
             {
-                return (T)Enum.Parse(typeof(T), value?.ToString() ?? throw new ArgumentNullException());
+                return (T) Enum.Parse(typeof(T), value?.ToString() ?? throw new ArgumentNullException());
             }
+
             switch (value)
             {
                 case T resultValue:
                     return resultValue;
                 case IConvertible convertible:
-                    return (T)Convert.ChangeType(convertible, typeof(T));
+                    return (T) Convert.ChangeType(convertible, typeof(T));
                 default:
                     throw new InvalidCastException($"Can not cast ${value?.GetType()} to {typeof(T)}");
             }

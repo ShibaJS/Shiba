@@ -35,7 +35,11 @@ namespace Shiba.Parser
                     //var view = FindTypes(obj.Start.Text)?.FirstOrDefault()?.CreateInstance<View>(PairToDictionary(obj.pair()));
                     var view = new View(obj.Start.Text, PairToDictionary(obj.pair()));
                     //InitPair(ref view, obj.pair());
-                    if (obj.obj() != null && obj.obj().Any()) view.Children.AddRange(obj.obj().Select(BuildViewTree));
+                    if (obj.obj() != null && obj.obj().Any())
+                    {
+                        view.Children.AddRange(obj.obj().Select(BuildViewTree));
+                    }
+
                     return view;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -50,55 +54,86 @@ namespace Shiba.Parser
 
         private IToken GetStaticValue(ShibaParser.StaticvalueContext context)
         {
-            if (context == null) return null;
+            if (context == null)
+            {
+                return null;
+            }
 
-            if (context.NULL() != null) return new NullToken(context.NULL().Symbol.Column, context.NULL().Symbol.Line);
+            if (context.NULL() != null)
+            {
+                return new NullToken(context.NULL().Symbol.Column, context.NULL().Symbol.Line);
+            }
 
             if (context.BOOLEAN() != null)
+            {
                 return new BoolToken(bool.Parse(context.BOOLEAN().GetText()), context.BOOLEAN().Symbol.Column,
                     context.BOOLEAN().Symbol.Line);
+            }
 
             if (context.NUMBER() != null)
+            {
                 return new NumberToken(decimal.Parse(context.NUMBER().GetText()), context.NUMBER().Symbol.Column,
                     context.NUMBER().Symbol.Line);
+            }
 
             if (context.percent() != null)
+            {
                 return new PercentToken(new Percent(float.Parse(context.percent().Start.Text)),
                     context.percent().Start.Column, context.percent().Start.Line);
+            }
 
             if (context.thickness() != null)
+            {
                 return new ThicknessToken(new Thickness(context.thickness().GetText()),
                     context.thickness().Start.Column, context.thickness().Start.Line);
+            }
 
             if (context.STRING() != null)
+            {
                 return new StringToken(context.STRING().GetText(), context.STRING().Symbol.Column,
                     context.STRING().Symbol.Line);
+            }
 
             if (context.TOKEN() != null)
+            {
                 return new Token(context.TOKEN().GetText(), context.TOKEN().Symbol.Column, context.TOKEN().Symbol.Line);
+            }
 
-            return null;
+            throw new NotSupportedException(
+                $"Not support context at line {context.Start.Line}, column {context.Start.Column}");
         }
 
 
         private IToken GetValue(ShibaParser.ValueContext context)
         {
-            if (context == null) return null;
+            if (context == null)
+            {
+                return null;
+            }
 
             var staticValue = GetStaticValue(context.staticvalue());
-            if (staticValue != null) return staticValue;
+            if (staticValue != null)
+            {
+                return staticValue;
+            }
 
             if (context.binding() != null)
+            {
                 return new BindingToken(new Binding(GetStaticValue(context.binding().staticvalue())),
                     context.binding().Start.Column, context.binding().Start.Line);
+            }
 
             if (context.resource() != null)
+            {
                 return new NativeResourceToken(new NativeResource(GetStaticValue(context.resource().staticvalue())),
                     context.resource().Start.Column, context.resource().Start.Line);
+            }
 
             if (context.jsonpath() != null)
+            {
                 return new JsonPathToken(new JsonPath(GetStaticValue(context.resource().staticvalue())),
                     context.resource().Start.Column, context.resource().Start.Line);
+            }
 
             if (context.dic() != null)
             {
@@ -112,68 +147,22 @@ namespace Shiba.Parser
                     context.func().Start.Line);
             }
 
-            throw new NotSupportedException($"Not support context at line {context.Start.Line}, column {context.Start.Column}");
+            throw new NotSupportedException(
+                $"Not support context at line {context.Start.Line}, column {context.Start.Column}");
         }
 
         private Function GetFunc(ShibaParser.FuncContext func)
         {
-            return new Function(func.TOKEN().Symbol.Text, func.paramter().Select(item => item.func() != null ? GetFunc(item.func()) as IParamter : GetValueParamter(item.value()) as IParamter).ToArray());
+            return new Function(func.TOKEN().Symbol.Text,
+                func.paramter().Select(item =>
+                    item.func() != null
+                        ? GetFunc(item.func()) as IParamter
+                        : GetValueParamter(item.value()) as IParamter).ToArray());
         }
 
         private ValueParamter GetValueParamter(ShibaParser.ValueContext value)
         {
             return new ValueParamter(GetValue(value));
         }
-
-
-//        private Comput CreateComput(ShibaParser.ComputContext comput)
-//        {
-//            if (comput.func() != null)
-//            {
-//                return new Comput
-//                {
-//                    FuncName = comput.func().TOKEN().Symbol.Text,
-//                    Paramter = comput.func().comput().Select(CreateComput).ToArray()
-//                };
-//            }
-//
-//            return new Comput
-//            {
-//                Value = GetValue(comput.value())
-//            };
-//        }
-
-        //private void InitPair(ref View view, params ShibaParser.PairContext[] pairs)
-        //{
-        //    var properties = view.GetType().GetRuntimeProperties().ToArray();
-        //    foreach (var pair in pairs)
-        //    {
-        //        var property = properties.FirstOrDefault(item =>
-        //            string.Equals(item.Name, pair.Start.Text, StringComparison.OrdinalIgnoreCase));
-        //        if (property == null)
-        //        {
-        //            throw new MissingMemberException();
-        //        }
-        //        if (property.CanWrite)
-        //        {
-        //            object targetValue = null;
-        //            try
-        //            {
-        //                targetValue = Convert.ChangeType(pair.value().GetText(), property.PropertyType);
-        //            }
-        //            catch (Exception e)
-        //            {
-        //                Debug.WriteLine(e.Message);
-        //                Debug.WriteLine(e.StackTrace);
-        //            }
-
-        //        }
-        //    }
-        //}
-
-        //private IEnumerable<Type> FindTypes(string name)
-        //{
-        //    return ViewMapping.Instance.Views.Where(item => item.ViewName == name).Select(item => item.ViewType);
-        //}
     }
 }

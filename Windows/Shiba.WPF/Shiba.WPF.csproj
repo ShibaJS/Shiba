@@ -87,4 +87,5 @@
   </ItemGroup>
   <Import Project="..\Shiba.Shared\Shiba.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\Shiba.Internal\Shiba.Internal.projitems" Label="Shared" />
 </Project>

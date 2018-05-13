@@ -16,4 +16,6 @@
     <ProjectReference Include="..\Shiba.Controls\Shiba.Controls.csproj" />
   </ItemGroup>
 
+  <Import Project="..\Shiba.Internal\Shiba.Internal.projitems" Label="Shared" />
+
 </Project>

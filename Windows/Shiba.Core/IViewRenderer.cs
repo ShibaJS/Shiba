@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Shiba.Controls;
+﻿using Shiba.Controls;
 
 namespace Shiba.Core
 {

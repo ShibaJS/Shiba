@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Shiba.Controls
 {
@@ -47,7 +46,7 @@ namespace Shiba.Controls
 
     internal interface IStaticValue
     {
-        object Value { get; }
+        IToken Value { get; }
     }
 
     public interface IToken
@@ -253,31 +252,31 @@ namespace Shiba.Controls
 
     public struct Binding : IStaticValue
     {
-        public Binding(object value)
+        public Binding(IToken value)
         {
             Value = value;
         }
 
-        public object Value { get; }
+        public IToken Value { get; }
     }
 
     public struct JsonPath : IStaticValue
     {
-        public JsonPath(object value)
+        public JsonPath(IToken value)
         {
             Value = value;
         }
 
-        public object Value { get; }
+        public IToken Value { get; }
     }
 
     public struct NativeResource : IStaticValue
     {
-        public NativeResource(object value)
+        public NativeResource(IToken value)
         {
             Value = value;
         }
 
-        public object Value { get; }
+        public IToken Value { get; }
     }
 }

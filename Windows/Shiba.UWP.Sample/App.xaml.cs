@@ -4,7 +4,6 @@ using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using Shiba.Core;
 
 namespace Shiba.UWP.Sample
 {
@@ -52,7 +51,11 @@ namespace Shiba.UWP.Sample
 
             if (e.PrelaunchActivated == false)
             {
-                if (rootFrame.Content == null) rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                if (rootFrame.Content == null)
+                {
+                    rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                }
+
                 // 确保当前窗口处于活动状态
                 Window.Current.Activate();
             }

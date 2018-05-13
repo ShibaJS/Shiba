@@ -23,10 +23,13 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shiba.Shared", "Shiba.Share
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shiba.WPF", "Shiba.WPF\Shiba.WPF.csproj", "{FE732DB3-D266-4336-B3A6-DC8DEBAECE12}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shiba.Internal", "Shiba.Internal\Shiba.Internal.shproj", "{C4F3DEF1-94A9-4AEC-A352-8DCE3669D0FC}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Shiba.Shared\Shiba.Shared.projitems*{060ea7a7-cbb7-4534-9446-7e3634bc8605}*SharedItemsImports = 13
 		Shiba.Shared\Shiba.Shared.projitems*{0ece2838-de51-461f-8386-75d7de285d53}*SharedItemsImports = 4
+		Shiba.Internal\Shiba.Internal.projitems*{c4f3def1-94a9-4aec-a352-8dce3669d0fc}*SharedItemsImports = 13
 		Shiba.Shared\Shiba.Shared.projitems*{fe732db3-d266-4336-b3a6-dc8debaece12}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

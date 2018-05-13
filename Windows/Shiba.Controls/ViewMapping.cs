@@ -2,17 +2,13 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
+using Shiba.Internal;
 
 namespace Shiba.Controls
 {
     public class ViewMapping
     {
-        private ViewMapping()
-        {
-
-        }
-
-        public static ViewMapping Instance { get; } = new ViewMapping();
+        public static ViewMapping Instance => Singleton<ViewMapping>.Instance;
 
         public ReadOnlyCollection<ExportRendererAttribute> Renderers { get; private set; }
 
@@ -23,6 +19,5 @@ namespace Shiba.Controls
                 .Where(item => item.GetCustomAttributes<ExportRendererAttribute>()?.Any() == true)
                 .SelectMany(item => item.GetCustomAttributes<ExportRendererAttribute>()).ToList().AsReadOnly();
         }
-
     }
 }

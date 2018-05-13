@@ -12,4 +12,6 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
+  <Import Project="..\Shiba.Internal\Shiba.Internal.projitems" Label="Shared" />
+
 </Project>

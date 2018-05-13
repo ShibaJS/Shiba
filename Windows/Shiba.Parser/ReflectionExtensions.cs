@@ -7,13 +7,13 @@ namespace Shiba.Parser
 {
     internal static class ReflectionExtensions
     {
-        
         public static T To<T>(this object value)
         {
             if (typeof(T).GetTypeInfo().IsEnum)
             {
                 return (T) Enum.Parse(typeof(T), value?.ToString());
             }
+
             switch (value)
             {
                 case T resultValue:
@@ -25,7 +25,7 @@ namespace Shiba.Parser
             }
         }
 
-        public static T CreateInstance<T>(this string typeName, params object[] param) where T: class
+        public static T CreateInstance<T>(this string typeName, params object[] param) where T : class
         {
             return typeName.CreateInstence(param) as T;
         }
@@ -46,7 +46,7 @@ namespace Shiba.Parser
             if (param != null)
             {
                 constructor = type?.GetConstructors()?
-                    .FirstOrDefault(c => 
+                    .FirstOrDefault(c =>
                         !c.GetParameters()
                             .Where((t, i) => t.ParameterType != param.ElementAtOrDefault(i)?.GetType())
                             .Any());
@@ -56,11 +56,16 @@ namespace Shiba.Parser
                 constructor = type?.GetConstructor(Type.EmptyTypes);
             }
 
-            if (constructor == null) return null;
+            if (constructor == null)
+            {
+                return null;
+            }
+
             if (param != null && param.Length > 0)
             {
                 return constructor.Invoke(param);
             }
+
             return Expression.Lambda<Func<object>>(
                 Expression.New(constructor)
             ).Compile().Invoke();

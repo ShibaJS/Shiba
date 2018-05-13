@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Shiba.Controls;
 using Shiba.Core;
 using Shiba.Parser;
-
 #if WINDOWS_UWP
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;    
+using Windows.UI.Xaml.Controls;
+
 #else
 using System.Windows;
 using System.Windows.Controls;
@@ -20,7 +18,9 @@ namespace Shiba
     internal static class NativeRenderer
     {
         private static readonly ShibaParserWrapper Parser = new ShibaParserWrapper();
-        private static readonly ConcurrentDictionary<string, IViewRenderer> Renderer = new ConcurrentDictionary<string, IViewRenderer>();
+
+        private static readonly ConcurrentDictionary<string, IViewRenderer> Renderer =
+            new ConcurrentDictionary<string, IViewRenderer>();
 
         public static UIElement Render(string layout, object datacontext = null)
         {
