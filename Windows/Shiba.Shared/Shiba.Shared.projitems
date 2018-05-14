@@ -11,6 +11,8 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)NativeRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Renderers\TextRenderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Shiba.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ShibaHost.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Singleton.cs" />
   </ItemGroup>
 </Project>

@@ -72,20 +72,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Shiba.Controls\Shiba.Controls.csproj">
-      <Project>{d02f967e-8a44-4b21-8368-30609a78360f}</Project>
-      <Name>Shiba.Controls</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Shiba.Core\Shiba.Core.csproj">
-      <Project>{7d7792f1-d030-4261-b658-d25c29f089c6}</Project>
-      <Name>Shiba.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Shiba.Parser\Shiba.Parser.csproj">
-      <Project>{64145b89-2ecb-4e8a-bc91-8a915565ab6b}</Project>
-      <Name>Shiba.Parser</Name>
+    <ProjectReference Include="..\Shiba\Shiba.csproj">
+      <Project>{d0b763d5-a804-4822-be17-4cf9d0b62488}</Project>
+      <Name>Shiba</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="..\Shiba.Shared\Shiba.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\Shiba.Internal\Shiba.Internal.projitems" Label="Shared" />
 </Project>

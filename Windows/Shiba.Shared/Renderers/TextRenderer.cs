@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Shiba.Controls;
-using Shiba.Core;
 using Shiba.Internal;
 using Shiba.Renderers;
 using Binding = Shiba.Controls.Binding;
@@ -58,15 +57,9 @@ namespace Shiba.Renderers
                             frameworkElement.Width = doubleValue;
                             break;
                         case NativeResource resource:
-
-                            if (!(resource.Value is Token token))
-                            {
-                                throw new NotSupportedException(
-                                    $"Not support native resource at line {resource.Value.Line}, colunm {resource.Value.Column}");
-                            }
 #if !WINDOWS_UWP
                             frameworkElement.SetResourceReference(FrameworkElement.WidthProperty,
-                                Initialization.Configuration.ResourceValueResolver.GetValue(token.Value));
+                                AbstractShiba.Instance.Configuration.ResourceValueResolver.GetValue(resource.Value.GetTokenValue()));
 #else
                             //TODO:
 #endif
@@ -93,15 +86,9 @@ namespace Shiba.Renderers
             {
                 case Binding binding:
                 {
-                    if (!(binding.Value is Token token))
-                    {
-                        throw new NotSupportedException(
-                            $"Not support binding at line {binding.Value.Line}, colunm {binding.Value.Column}");
-                    }
-
                     return new NativeBinding
                     {
-                        Path = new PropertyPath(token.Value),
+                        Path = new PropertyPath(binding.Value.GetTokenValue()),
                         Source = dataContext,
                         Converter = Singleton<BindingConverter>.Instance,
                         Mode = BindingMode.OneWay
@@ -109,33 +96,21 @@ namespace Shiba.Renderers
                 }
                 case JsonPath json:
                 {
-                    if (!(json.Value is Token token))
-                    {
-                        throw new NotSupportedException(
-                            $"Not support json path at line {json.Value.Line}, colunm {json.Value.Column}");
-                    }
-
                     return new NativeBinding
                     {
                         Source = dataContext,
-                        ConverterParameter = token.Value,
+                        ConverterParameter = json.Value.GetTokenValue(),
                         Converter = Singleton<JsonConverter>.Instance
                     };
                 }
                 case Function function:
                 {
                     var bindings = GetFunctionBindings(function).ToList();
-                    if (bindings.Count == 1)
+                    if (bindings.Count == 1 && bindings.FirstOrDefault() is Binding binding)
                     {
-                        if (!(bindings.FirstOrDefault().Value is Token token))
-                        {
-                            throw new NotSupportedException(
-                                $"Not support binding at line {bindings.FirstOrDefault().Value.Line}, colunm {bindings.FirstOrDefault().Value.Column}");
-                        }
-
                         return new NativeBinding
                         {
-                            Path = new PropertyPath(token.Value),
+                            Path = new PropertyPath(binding.Value.GetTokenValue()),
                             Source = dataContext,
                             Converter = Singleton<SingleBindingFunctionConverter>.Instance,
                             ConverterParameter = function
@@ -156,34 +131,38 @@ namespace Shiba.Renderers
             throw new NotSupportedException();
         }
 
-        private IEnumerable<Binding> GetFunctionBindings(IParamter paramter)
+        private IEnumerable<IBindingValue> GetFunctionBindings(IParamter paramter)
         {
-            while (true)
+
+            switch (paramter)
             {
-                switch (paramter)
-                {
-                    case Function func:
-                        foreach (var binding in func.Paramters.SelectMany(GetFunctionBindings))
-                        {
-                            yield return binding;
-                        }
+                case Function func:
+                    foreach (var binding in func.Paramters.SelectMany(GetFunctionBindings))
+                    {
+                        yield return binding;
+                    }
 
-                        break;
-                    case ValueParamter valueParamter:
-                        switch (valueParamter.Value)
-                        {
-                            case BindingToken token:
-                                yield return token.Value;
-                                break;
-                            case FunctionToken functionToken:
-                                paramter = functionToken.Value;
-                                continue;
-                        }
-
-                        break;
-                }
-
-                break;
+                    break;
+                case ValueParamter valueParamter:
+                    switch (valueParamter.Value)
+                    {
+                        case BindingToken token:
+                            yield return token.Value;
+                            break;
+                        case JsonPathToken jsonPathToken:
+                            yield return jsonPathToken.Value;
+                            break;
+                        case NativeResourceToken resourceToken:
+                            yield return resourceToken.Value;
+                            break;
+                        case FunctionToken functionToken:
+                            foreach (var functionBinding in GetFunctionBindings(functionToken.Value))
+                            {
+                                yield return functionBinding;
+                            }
+                            break;
+                    }
+                    break;
             }
         }
 
@@ -192,21 +171,11 @@ namespace Shiba.Renderers
         }
     }
 
-    internal class SingleBindingFunctionConverter : ShibaConverter
+    internal class SingleBindingFunctionConverter : FunctionConverter
     {
-        protected override object Convert(object value, Type targetType, object parameter)
+        protected override object GetValueFromDataContext(object dataContext, IBindingValue value)
         {
-            if (!(parameter is Function function))
-            {
-                throw new ArgumentException();
-            }
-
-            throw new NotImplementedException();
-        }
-
-        protected override object ConvertBack(object value, Type targetType, object parameter)
-        {
-            throw new NotImplementedException();
+            return dataContext;
         }
     }
 
@@ -219,7 +188,49 @@ namespace Shiba.Renderers
                 throw new ArgumentException();
             }
 
-            throw new NotImplementedException();
+            return Execute(function, value).CheckIfIsBoolean(targetType);
+        }
+        
+        private object Execute(Function function, object bindingValue)
+        {
+            return AbstractShiba.Instance.Configuration.ConverterExecutor.Execute(function.Name,
+                function.Paramters.Select(it => GetParamterValue(it, bindingValue)));
+        }
+
+        private object GetParamterValue(IParamter it, object bindingValue)
+        {
+            switch (it)
+            {
+                case Function function:
+                    return Execute(function, bindingValue);
+                case ValueParamter valueParamter:
+                    if (valueParamter.Value.GetValue() is IBindingValue value)
+                    {
+                        return GetValueFromDataContext(bindingValue, value);
+                    }
+                    else
+                    {
+                        return valueParamter.Value.GetValue();
+                   }
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        protected virtual object GetValueFromDataContext(object dataContext, IBindingValue value)
+        {
+            switch (value)
+            {
+                case Binding binding:
+                    return AbstractShiba.Instance.Configuration.BindingValueResolver.GetValue(dataContext, value.Value.GetTokenValue());
+                case JsonPath jsonPath:
+                    return AbstractShiba.Instance.Configuration.JsonValueResolver.GetValue(dataContext,
+                        jsonPath.Value.GetTokenValue());
+                case NativeResource resource:
+                    return AbstractShiba.Instance.Configuration.ResourceValueResolver.GetValue(resource.Value.GetTokenValue());
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         protected override object ConvertBack(object value, Type targetType, object parameter)
@@ -228,11 +239,23 @@ namespace Shiba.Renderers
         }
     }
 
+    internal static class TokenExtensions
+    {
+        public static string GetTokenValue(this IToken value)
+        {
+            if (value is Token token)
+            {
+                return token.Value;
+            }
+            throw new ArgumentOutOfRangeException($"Line {value.Line}, colunm {value.Column} should be token");
+        }
+    }
+    
     internal class JsonConverter : ShibaConverter
     {
         protected override object Convert(object value, Type targetType, object parameter)
         {
-            return Initialization.Configuration.JsonValueResolver.GetValue(value, parameter + "");
+            return AbstractShiba.Instance.Configuration.JsonValueResolver.GetValue(value, parameter + "").CheckIfIsBoolean(targetType);
         }
 
         protected override object ConvertBack(object value, Type targetType, object parameter)
@@ -241,9 +264,9 @@ namespace Shiba.Renderers
         }
     }
 
-    internal class BindingConverter : ShibaConverter
+    internal static class ConverterExtensions
     {
-        protected override object Convert(object value, Type targetType, object parameter)
+        public static object CheckIfIsBoolean(this object value, Type targetType)
         {
             if (targetType == typeof(Visibility) && value is bool boolValue)
             {
@@ -251,6 +274,14 @@ namespace Shiba.Renderers
             }
 
             return value;
+        }
+    }
+
+    internal class BindingConverter : ShibaConverter
+    {
+        protected override object Convert(object value, Type targetType, object parameter)
+        {
+            return value.CheckIfIsBoolean(targetType);
         }
 
         protected override object ConvertBack(object value, Type targetType, object parameter)

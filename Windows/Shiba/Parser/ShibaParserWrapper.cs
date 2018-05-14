@@ -137,7 +137,7 @@ namespace Shiba.Parser
 
             if (context.dic() != null)
             {
-                var pair = context.dic().pair().FirstOrDefault(it => it.TOKEN().Symbol.Text == "Windows");
+                var pair = context.dic().pair().FirstOrDefault(it => it.TOKEN().Symbol.Text == AbstractShiba.Instance.Configuration.PlatformType);
                 return GetValue(pair?.value());
             }
 

@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Linq;
 using Shiba.Controls;
-using Shiba.Core;
 using Shiba.Parser;
 #if WINDOWS_UWP
 using Windows.UI.Xaml;
@@ -30,7 +29,7 @@ namespace Shiba
 
         public static UIElement Render(View view, object datacontext = null)
         {
-            var attribute = ViewMapping.Instance.Renderers.LastOrDefault(it => it.ViewName == view.ViewName);
+            var attribute = AbstractShiba.Instance.ViewMapping.Renderers.LastOrDefault(it => it.ViewName == view.ViewName);
             if (attribute == null)
             {
                 return null;

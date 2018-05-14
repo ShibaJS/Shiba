@@ -1,6 +1,4 @@
-﻿using Shiba.Controls;
-
-namespace Shiba.Core
+﻿namespace Shiba.Controls
 {
     public interface IViewRenderer
     {

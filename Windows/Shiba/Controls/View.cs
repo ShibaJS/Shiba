@@ -44,7 +44,7 @@ namespace Shiba.Controls
 //        public Comput[] Paramter { get; set; }
 //    }
 
-    internal interface IStaticValue
+    public interface IBindingValue
     {
         IToken Value { get; }
     }
@@ -53,98 +53,77 @@ namespace Shiba.Controls
     {
         int Line { get; }
         int Column { get; }
+        object GetValue();
     }
 
     public interface IToken<out T> : IToken
     {
         T Value { get; }
     }
-
-    public struct BindingToken : IToken<Binding>
+    
+    public abstract class TokenBase<T> : IToken<T>
     {
-        public BindingToken(Binding value, int column, int line)
+        protected TokenBase(T value, int column, int line)
         {
+            Line = line;
             Value = value;
             Column = column;
-            Line = line;
         }
 
         public int Line { get; }
         public int Column { get; }
-        public Binding Value { get; }
-    }
 
-    public struct NativeResourceToken : IToken<NativeResource>
-    {
-        public NativeResourceToken(NativeResource value, int column, int line)
+        public object GetValue()
         {
-            Value = value;
-            Column = column;
-            Line = line;
+            return Value;
         }
 
-        public int Line { get; }
-        public int Column { get; }
-        public NativeResource Value { get; }
+        public T Value { get; }
     }
 
-    public struct JsonPathToken : IToken<JsonPath>
+    public sealed class BindingToken : TokenBase<Binding>
     {
-        public JsonPathToken(JsonPath value, int column, int line)
+        public BindingToken(Binding value, int column, int line) : base(value, column, line)
         {
-            Value = value;
-            Column = column;
-            Line = line;
         }
-
-        public int Line { get; }
-        public int Column { get; }
-        public JsonPath Value { get; }
     }
 
-    public struct FunctionToken : IToken<Function>
+    public sealed class NativeResourceToken : TokenBase<NativeResource>
     {
-        public FunctionToken(Function value, int column, int line)
+        public NativeResourceToken(NativeResource value, int column, int line) : base(value, column, line)
         {
-            Value = value;
-            Column = column;
-            Line = line;
         }
-
-        public int Line { get; }
-        public int Column { get; }
-        public Function Value { get; }
     }
 
-    public struct ThicknessToken : IToken<Thickness>
+    public sealed class JsonPathToken : TokenBase<JsonPath>
     {
-        public ThicknessToken(Thickness value, int column, int line)
+        public JsonPathToken(JsonPath value, int column, int line) : base(value, column, line)
         {
-            Value = value;
-            Column = column;
-            Line = line;
         }
-
-        public int Column { get; }
-        public int Line { get; }
-        public Thickness Value { get; }
     }
 
-    public struct PercentToken : IToken<Percent>
+    public sealed class FunctionToken : TokenBase<Function>
     {
-        public PercentToken(Percent value, int column, int line)
+        public FunctionToken(Function value, int column, int line) : base(value, column, line)
         {
-            Value = value;
-            Column = column;
-            Line = line;
         }
-
-        public int Column { get; }
-        public int Line { get; }
-        public Percent Value { get; }
     }
 
-    public struct NullToken : IToken
+    public sealed class ThicknessToken : TokenBase<Thickness>
+    {
+        public ThicknessToken(Thickness value, int column, int line) : base(value, column, line)
+        {
+        }
+    }
+
+    public sealed class PercentToken : TokenBase<Percent>
+    {
+        public PercentToken(Percent value, int column, int line) : base(value, column, line)
+        {
+        }
+    }
+
+    public sealed class NullToken : IToken
     {
         public NullToken(int column, int line)
         {
@@ -153,63 +132,40 @@ namespace Shiba.Controls
         }
 
         public int Column { get; }
+        public object GetValue()
+        {
+            return null;
+        }
+
         public int Line { get; }
     }
 
-    public struct StringToken : IToken<string>
+    public sealed class StringToken : TokenBase<string>
     {
-        public StringToken(string value, int column, int line)
+        public StringToken(string value, int column, int line) : base(value, column, line)
         {
-            Value = value;
-            Column = column;
-            Line = line;
         }
-
-        public int Column { get; }
-        public int Line { get; }
-        public string Value { get; }
     }
 
-    public struct NumberToken : IToken<decimal>
+    public sealed class NumberToken : TokenBase<decimal>
     {
-        public NumberToken(decimal value, int column, int line)
+        public NumberToken(decimal value, int column, int line) : base(value, column, line)
         {
-            Value = value;
-            Column = column;
-            Line = line;
         }
-
-        public int Column { get; }
-        public int Line { get; }
-        public decimal Value { get; }
     }
 
-    public struct BoolToken : IToken<bool>
+    public sealed class BoolToken : TokenBase<bool>
     {
-        public BoolToken(bool value, int column, int line)
+        public BoolToken(bool value, int column, int line) : base(value, column, line)
         {
-            Value = value;
-            Column = column;
-            Line = line;
         }
-
-        public int Column { get; }
-        public int Line { get; }
-        public bool Value { get; }
     }
 
-    public struct Token : IToken<string>
+    public sealed class Token : TokenBase<string>
     {
-        public Token(string value, int column, int line)
+        public Token(string value, int column, int line) : base(value, column, line)
         {
-            Value = value;
-            Column = column;
-            Line = line;
         }
-
-        public int Column { get; }
-        public int Line { get; }
-        public string Value { get; }
     }
 
 
@@ -250,7 +206,7 @@ namespace Shiba.Controls
         //}
     }
 
-    public struct Binding : IStaticValue
+    public struct Binding : IBindingValue
     {
         public Binding(IToken value)
         {
@@ -260,7 +216,7 @@ namespace Shiba.Controls
         public IToken Value { get; }
     }
 
-    public struct JsonPath : IStaticValue
+    public struct JsonPath : IBindingValue
     {
         public JsonPath(IToken value)
         {
@@ -270,7 +226,7 @@ namespace Shiba.Controls
         public IToken Value { get; }
     }
 
-    public struct NativeResource : IStaticValue
+    public struct NativeResource : IBindingValue
     {
         public NativeResource(IToken value)
         {
