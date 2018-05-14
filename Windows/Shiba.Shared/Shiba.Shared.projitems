@@ -9,8 +9,10 @@
     <Import_RootNamespace>Shiba</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Converter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NativeRenderer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Renderers\TextRenderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Renderers\ConvertExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TextRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Shiba.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ShibaHost.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Singleton.cs" />

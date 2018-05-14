@@ -7,24 +7,6 @@ namespace Shiba.Parser
 {
     internal static class ReflectionExtensions
     {
-        public static T To<T>(this object value)
-        {
-            if (typeof(T).GetTypeInfo().IsEnum)
-            {
-                return (T) Enum.Parse(typeof(T), value?.ToString());
-            }
-
-            switch (value)
-            {
-                case T resultValue:
-                    return resultValue;
-                case IConvertible convertible:
-                    return (T) Convert.ChangeType(convertible, typeof(T));
-                default:
-                    throw new InvalidCastException($"Can not cast ${value?.GetType()} to {typeof(T)}");
-            }
-        }
-
         public static T CreateInstance<T>(this string typeName, params object[] param) where T : class
         {
             return typeName.CreateInstence(param) as T;

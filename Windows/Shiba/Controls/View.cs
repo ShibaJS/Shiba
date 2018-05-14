@@ -24,7 +24,7 @@ namespace Shiba.Controls
         public List<View> Children { get; } = new List<View>();
         public Dictionary<string, IToken> Properties { get; }
 
-        public bool TryGet(string key, out object value)
+        public bool TryGet(string key, out IToken value)
         {
             if (Properties.ContainsKey(key))
             {
