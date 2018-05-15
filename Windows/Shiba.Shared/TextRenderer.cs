@@ -29,6 +29,7 @@ using System.Windows.Media;
 
 [assembly: ExportRenderer("text", typeof(TextRenderer))]
 [assembly: ExportRenderer("stack", typeof(StackRenderer))]
+[assembly: ExportRenderer("input", typeof(InputRenderer))]
 //[assembly: ExportRenderer("switch", typeof(Switch))]
 //[assembly: ExportRenderer("check", typeof(Check))]
 //[assembly: ExportRenderer("stackLayout", typeof(StackPanel))]
@@ -39,7 +40,7 @@ using System.Windows.Media;
 
 namespace Shiba.Renderers
 {
-    public class PropertyMap
+    public sealed class PropertyMap
     {
         public PropertyMap(string name, DependencyProperty dependencyProperty, Type type, Func<object, object> converter = null)
         {
@@ -53,6 +54,8 @@ namespace Shiba.Renderers
         public DependencyProperty DependencyProperty { get; }
         public Type Type { get; }
         public Func<object, object> Converter { get; }
+        public bool IsTwoWay { get; set; }
+
     }
     
     public class ViewRenderer<TNativeView> : IViewRenderer
@@ -93,30 +96,26 @@ namespace Shiba.Renderers
         public object Render(View view, object dataContext)
         {
             var target = new TNativeView();
-            foreach (var item in PropertyMaps())
+            var maps = PropertyMaps().ToList();
+            foreach (var item in view.Properties)
             {
-                SetValue(item.Name, view, target, item.DependencyProperty, dataContext, item.Type, item.Converter);
+                var property = maps.FirstOrDefault(it => it.Name == item.Key);
+                if (property != null)
+                {
+                    SetValue(property, view, target, dataContext);
+                }
             }
             Render(view, ref target);
             return target;
         }
 
-        protected void SetValue(string name, View view, DependencyObject dependencyObject, DependencyProperty property,
-            object dataContext, Type type, Func<object, object> converter = null)
+        protected void SetValue(PropertyMap propertyMap, View view, TNativeView target, object dataContext)
         {
-            if (view.TryGet(name, out var value))
-            {
-                SetValue(dependencyObject, property, value, dataContext, type, converter);
-            }
-        }
-        
-        protected void SetValue(DependencyObject dependencyObject, DependencyProperty property, IToken token, object dataContext, Type type, Func<object, object> converter = null)
-        {
-            if (token is NullToken)
+            if (!view.TryGet(propertyMap.Name, out var token) || token is NullToken)
             {
                 return;
             }
-
+            
             var value = token.GetValue();
 
             if (value == null)
@@ -124,16 +123,16 @@ namespace Shiba.Renderers
                 return;
             }
 
-            if (value.GetType() == type)
+            if (value.GetType() == propertyMap.Type)
             {
-                dependencyObject.SetValue(property, converter == null ? value : converter.Invoke(value));
+                target.SetValue(propertyMap.DependencyProperty, propertyMap.Converter == null ? value : propertyMap.Converter.Invoke(value));
                 return;
             }
 
-            if (value.CanChangeType(type))
+            if (value.CanChangeType(propertyMap.Type))
             {
-                var targetValue = Convert.ChangeType(value, type);
-                dependencyObject.SetValue(property, converter == null ? targetValue : converter.Invoke(targetValue));
+                var targetValue = Convert.ChangeType(value, propertyMap.Type);
+                target.SetValue(propertyMap.DependencyProperty, propertyMap.Converter == null ? targetValue : propertyMap.Converter.Invoke(targetValue));
             }
             
             switch (value)
@@ -141,14 +140,14 @@ namespace Shiba.Renderers
                 case NativeResource resource:
                 {
 #if !WINDOWS_UWP
-                    if (dependencyObject is FrameworkElement frameworkElement)
+                    if (target is FrameworkElement frameworkElement)
                     {
-                        frameworkElement.SetResourceReference(property, resource.Value.GetTokenValue());                            
+                        frameworkElement.SetResourceReference(propertyMap.DependencyProperty, resource.Value.GetTokenValue());                            
                     }
                     else
                     {
 #endif
-                        dependencyObject.SetValue(property, AbstractShiba.Instance.Configuration.ResourceValueResolver.GetValue(resource.Value.GetTokenValue()));
+                        target.SetValue(propertyMap.DependencyProperty, AbstractShiba.Instance.Configuration.ResourceValueResolver.GetValue(resource.Value.GetTokenValue()));
 #if !WINDOWS_UWP
                     }
 #endif
@@ -157,16 +156,16 @@ namespace Shiba.Renderers
 
                 case IBindingValue bindingValue:
                 {
-                    if (dependencyObject is FrameworkElement frameworkElement)
+                    if (target is FrameworkElement frameworkElement)
                     {
-                        frameworkElement.SetBinding(property, GetBinding(dataContext, bindingValue));
+                        frameworkElement.SetBinding(propertyMap.DependencyProperty, GetBinding(dataContext, bindingValue, propertyMap.IsTwoWay));
                     }
                 }
                     break;
-            }
+            }            
         }
 
-        private BindingBase GetBinding(object dataContext, IBindingValue value)
+        private BindingBase GetBinding(object dataContext, IBindingValue value, bool isTwoWay)
         {
             switch (value)
             {
@@ -177,7 +176,8 @@ namespace Shiba.Renderers
                         Path = new PropertyPath(binding.Value.GetTokenValue()),
                         Source = dataContext,
                         Converter = Singleton<BindingConverter>.Instance,
-                        Mode = BindingMode.OneWay
+                        Mode = isTwoWay ? BindingMode.TwoWay : BindingMode.OneWay,
+                        UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
                     };
                 }
                 case JsonPath json:
@@ -277,9 +277,12 @@ namespace Shiba.Renderers
             {
                 yield return propertyMap;
             }
-            yield return new PropertyMap("text", TextBlock.TextProperty, typeof(string));
-            yield return new PropertyMap("textSize", TextBlock.FontSizeProperty, typeof(double));
-            yield return new PropertyMap("textColor", TextBlock.ForegroundProperty, typeof(string), ColorConverter);
+            yield return new PropertyMap("text", TextBox.TextProperty, typeof(string))
+            {
+                IsTwoWay = true
+            };
+            yield return new PropertyMap("textSize", TextBox.FontSizeProperty, typeof(double));
+            yield return new PropertyMap("textColor", TextBox.ForegroundProperty, typeof(string), ColorConverter);
 
         }
     }

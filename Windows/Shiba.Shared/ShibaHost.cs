@@ -35,5 +35,27 @@ namespace Shiba
 
             Content = NativeRenderer.Render(value, DataContext);
         }
+
+//        public ShibaHost()
+//        {
+//            DataContextChanged += OnDataContextChanged;
+//        }
+//#if WINDOWS_UWP
+//        private void OnDataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+//#else
+//        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+//#endif
+//        {
+//            Refresh();
+//        }
+
+//        public void Refresh()
+//        {
+//            if (string.IsNullOrEmpty(Layout))
+//            {
+//                return;
+//            }
+//            Content = NativeRenderer.Render(Layout, DataContext);
+//        }
     }
 }

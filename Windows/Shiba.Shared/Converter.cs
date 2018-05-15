@@ -66,7 +66,7 @@ namespace Shiba
             switch (value)
             {
                 case Controls.Binding binding:
-                    return AbstractShiba.Instance.Configuration.BindingValueResolver.GetValue(dataContext, value.Value.GetTokenValue());
+                    return AbstractShiba.Instance.Configuration.BindingValueResolver.GetValue(dataContext, binding.Value.GetTokenValue());
                 case JsonPath jsonPath:
                     return AbstractShiba.Instance.Configuration.JsonValueResolver.GetValue(dataContext,
                         jsonPath.Value.GetTokenValue());
@@ -106,6 +106,16 @@ namespace Shiba
 
             return value;
         }
+
+        public static object CheckIfIsVisibility(this object value, Type targetType)
+        {
+            if (targetType == typeof(bool) && value is Visibility visibility)
+            {
+                return visibility == Visibility.Visible;
+            }
+
+            return value;
+        }
     }
 
     internal class BindingConverter : ShibaConverter
@@ -117,7 +127,7 @@ namespace Shiba
 
         protected override object ConvertBack(object value, Type targetType, object parameter)
         {
-            throw new NotImplementedException();
+            return value.CheckIfIsVisibility(targetType);
         }
     }
 

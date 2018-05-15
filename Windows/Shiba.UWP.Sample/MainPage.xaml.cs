@@ -1,9 +1,32 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Windows.UI.Xaml.Controls;
 
 // https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x804 上介绍了“空白页”项模板
 
 namespace Shiba.UWP.Sample
 {
+    class Model : INotifyPropertyChanged
+    {
+        private string _uwpText = "UWP!";
+
+        public string UWPText
+        {
+            get => _uwpText;
+            set
+            {
+                _uwpText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
     /// <summary>
     ///     可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
@@ -12,10 +35,11 @@ namespace Shiba.UWP.Sample
         public MainPage()
         {
             InitializeComponent();
+            Host.DataContext = new Model();
             this.Host.Layout = this.Layout;
         }
 
         public string Layout { get; set; } =
-            "stack{ text { text=\"test!!!\" } text { text=\"test!!!\" textColor=red } }";
+            "stack { text { text=[WPF: $bind Text, UWP:$bind UWPText] } input { text=[WPF: $bind Text, UWP:$bind UWPText] } }";
     }
 }

@@ -21,13 +21,13 @@ namespace Shiba
         private static readonly ConcurrentDictionary<string, IViewRenderer> Renderer =
             new ConcurrentDictionary<string, IViewRenderer>();
 
-        public static UIElement Render(string layout, object datacontext = null)
+        public static UIElement Render(string layout, object datacontext)
         {
             var viewTree = Parser.Parse(layout);
             return Render(viewTree, datacontext);
         }
 
-        public static UIElement Render(View view, object datacontext = null)
+        public static UIElement Render(View view, object datacontext)
         {
             var attribute = AbstractShiba.Instance.ViewMapping.Renderers.LastOrDefault(it => it.ViewName == view.ViewName);
             if (attribute == null)
@@ -39,7 +39,7 @@ namespace Shiba
             var target = renderer.Render(view, datacontext) as UIElement;
             if (view.Children.Any() && target is Panel panel)
             {
-                view.Children.ForEach(it => panel.Children.Add(Render(it)));
+                view.Children.ForEach(it => panel.Children.Add(Render(it, datacontext)));
             }
 
             return target;

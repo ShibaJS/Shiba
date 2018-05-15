@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
 using Shiba.Controls;
 
 namespace Shiba
@@ -52,7 +54,20 @@ namespace Shiba
     {
         public object GetValue(object dataContext, string name)
         {
-            throw new NotImplementedException();
+            if (dataContext == null || string.IsNullOrEmpty(name))
+            {
+                return null;
+            }
+
+            var propertyInfo = dataContext.GetType().GetTypeInfo().DeclaredProperties.FirstOrDefault(it =>
+                string.Equals(it.Name, name, StringComparison.OrdinalIgnoreCase));
+            
+            if (propertyInfo == null)
+            {
+                return null;
+            }
+
+            return propertyInfo.GetValue(dataContext);
         }
     }
 

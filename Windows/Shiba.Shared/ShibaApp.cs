@@ -14,6 +14,7 @@ namespace Shiba.WPF
         {
             Instance = new ShibaApp(c =>
             {
+                
                 c.PlatformType =
 #if WINDOWS_UWP
                     "UWP"
