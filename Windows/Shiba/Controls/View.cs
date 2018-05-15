@@ -145,6 +145,7 @@ namespace Shiba.Controls
         public StringToken(string value, int column, int line) : base(value, column, line)
         {
         }
+        
     }
 
     public sealed class NumberToken : TokenBase<decimal>

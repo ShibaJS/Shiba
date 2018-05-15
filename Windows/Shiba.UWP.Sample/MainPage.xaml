@@ -5,7 +5,10 @@
     xmlns:local="using:Shiba.UWP.Sample"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:shiba="using:Shiba"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" />
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
+        <shiba:ShibaHost x:Name="Host"/>
+    </Grid>
 </Page>

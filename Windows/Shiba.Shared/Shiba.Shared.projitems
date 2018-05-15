@@ -13,7 +13,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)NativeRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Renderers\ConvertExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TextRenderer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Shiba.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ShibaApp.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ShibaHost.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Singleton.cs" />
   </ItemGroup>

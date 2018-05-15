@@ -11,6 +11,7 @@ using Windows.UI;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 using NativeBinding = Windows.UI.Xaml.Data.Binding;
 using NativeThickness = Windows.UI.Xaml.Thickness;
 
@@ -21,11 +22,13 @@ using System.Windows.Data;
 using System.Windows.Controls;
 using System.Windows;
 using NativeBinding = System.Windows.Data.Binding;
+using System.Windows.Media;
 
 #endif
 
 
 [assembly: ExportRenderer("text", typeof(TextRenderer))]
+[assembly: ExportRenderer("stack", typeof(StackRenderer))]
 //[assembly: ExportRenderer("switch", typeof(Switch))]
 //[assembly: ExportRenderer("check", typeof(Check))]
 //[assembly: ExportRenderer("stackLayout", typeof(StackPanel))]
@@ -74,7 +77,6 @@ namespace Shiba.Renderers
             yield return new PropertyMap("alpha", UIElement.OpacityProperty, typeof(double));
             yield return new PropertyMap("name", FrameworkElement.NameProperty, typeof(string));
             yield return new PropertyMap("background", Control.BackgroundProperty, typeof(string), ColorConverter);
-
         }
 
         protected object ColorConverter(object arg)
@@ -84,7 +86,7 @@ namespace Shiba.Renderers
                 throw new ArgumentException("background value should be string");
             }
 
-            return value.ToNativeColor();
+            return new SolidColorBrush(value.ToNativeColor());
         }
 
 
@@ -98,7 +100,6 @@ namespace Shiba.Renderers
             Render(view, ref target);
             return target;
         }
-
 
         protected void SetValue(string name, View view, DependencyObject dependencyObject, DependencyProperty property,
             object dataContext, Type type, Func<object, object> converter = null)
@@ -125,14 +126,14 @@ namespace Shiba.Renderers
 
             if (value.GetType() == type)
             {
-                dependencyObject.SetValue(property, converter?.Invoke(value) ?? value);
+                dependencyObject.SetValue(property, converter == null ? value : converter.Invoke(value));
                 return;
             }
 
             if (value.CanChangeType(type))
             {
                 var targetValue = Convert.ChangeType(value, type);
-                dependencyObject.SetValue(property, converter?.Invoke(targetValue) ?? targetValue);
+                dependencyObject.SetValue(property, converter == null ? targetValue : converter.Invoke(targetValue));
             }
             
             switch (value)
@@ -265,6 +266,49 @@ namespace Shiba.Renderers
                 return token.Value;
             }
             throw new ArgumentOutOfRangeException($"Line {value.Line}, colunm {value.Column} should be token");
+        }
+    }
+
+    public class InputRenderer : ViewRenderer<TextBox>
+    {
+        public override IEnumerable<PropertyMap> PropertyMaps()
+        {
+            foreach (var propertyMap in base.PropertyMaps())
+            {
+                yield return propertyMap;
+            }
+            yield return new PropertyMap("text", TextBlock.TextProperty, typeof(string));
+            yield return new PropertyMap("textSize", TextBlock.FontSizeProperty, typeof(double));
+            yield return new PropertyMap("textColor", TextBlock.ForegroundProperty, typeof(string), ColorConverter);
+
+        }
+    }
+
+    public class StackRenderer : ViewRenderer<StackPanel>
+    {
+        public override IEnumerable<PropertyMap> PropertyMaps()
+        {
+            return base.PropertyMaps().Concat(GetPropertys());
+        }
+
+        private IEnumerable<PropertyMap> GetPropertys()
+        {
+            yield return new PropertyMap("orientation", StackPanel.OrientationProperty, typeof(string), OrientationConverter);
+        }
+
+        private object OrientationConverter(object arg)
+        {
+            if (!(arg is string value))
+            {
+                throw new ArgumentException();
+            }
+            
+            if (Enum.TryParse(value, true, out Orientation result))
+            {
+                return result;
+            }
+
+            throw new ArgumentOutOfRangeException();
         }
     }
     

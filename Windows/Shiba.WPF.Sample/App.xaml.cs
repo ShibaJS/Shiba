@@ -7,5 +7,9 @@ namespace Shiba.WPF.Sample
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            ShibaApp.Init();
+        }
     }
 }

@@ -12,6 +12,10 @@ namespace Shiba.UWP.Sample
         public MainPage()
         {
             InitializeComponent();
+            this.Host.Layout = this.Layout;
         }
+
+        public string Layout { get; set; } =
+            "stack{ text { text=\"test!!!\" } text { text=\"test!!!\" textColor=red } }";
     }
 }

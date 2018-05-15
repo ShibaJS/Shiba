@@ -90,7 +90,7 @@ namespace Shiba.Parser
 
             if (context.STRING() != null)
             {
-                return new StringToken(context.STRING().GetText(), context.STRING().Symbol.Column,
+                return new StringToken(context.STRING().GetText().Trim('"'), context.STRING().Symbol.Column,
                     context.STRING().Symbol.Line);
             }
 

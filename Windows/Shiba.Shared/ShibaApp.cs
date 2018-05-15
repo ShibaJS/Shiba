@@ -8,11 +8,11 @@ namespace Shiba.UWP
 namespace Shiba.WPF
 #endif
 {
-    public class Shiba : AbstractShiba
+    public class ShibaApp : AbstractShiba
     {
-        static Shiba()
+        public static void Init(Action<ShibaConfiguration> action = null)
         {
-            Instance = new Shiba(c =>
+            Instance = new ShibaApp(c =>
             {
                 c.PlatformType =
 #if WINDOWS_UWP
@@ -21,10 +21,11 @@ namespace Shiba.WPF
                     "WPF"
 #endif
                     ;
+                action?.Invoke(c);
             });
         }
 
-        public Shiba(Action<ShibaConfiguration> action = null) : base(action)
+        private ShibaApp(Action<ShibaConfiguration> action = null) : base(action)
         {
         }
     }

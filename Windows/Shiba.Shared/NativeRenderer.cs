@@ -35,7 +35,7 @@ namespace Shiba
                 return null;
             }
 
-            var renderer = Renderer.GetOrAdd(attribute.ViewName, CreateRenderer);
+            var renderer = Renderer.GetOrAdd(attribute.ViewName, type => CreateRenderer(attribute));
             var target = renderer.Render(view, datacontext) as UIElement;
             if (view.Children.Any() && target is Panel panel)
             {
@@ -45,9 +45,9 @@ namespace Shiba
             return target;
         }
 
-        private static IViewRenderer CreateRenderer(string arg)
+        private static IViewRenderer CreateRenderer(ExportRendererAttribute arg)
         {
-            throw new NotImplementedException();
+            return Activator.CreateInstance(arg.RendererType) as IViewRenderer;
         }
     }
 }
