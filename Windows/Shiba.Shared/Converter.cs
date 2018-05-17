@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Shiba.Controls;
 using Shiba.Renderers;
+using Binding = Shiba.Controls.Binding;
 #if WINDOWS_UWP
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
@@ -11,6 +10,7 @@ using Windows.UI.Xaml.Data;
 using System.Windows;
 using System.Windows.Data;
 using System.Globalization;
+
 #endif
 
 namespace Shiba
@@ -38,7 +38,7 @@ namespace Shiba
         private object Execute(Function function, object bindingValue)
         {
             return AbstractShiba.Instance.Configuration.ConverterExecutor.Execute(function.Name,
-                function.Paramters.Select(it => GetParamterValue(it, bindingValue)));
+                function.Paramters.Select(it => GetParamterValue(it, bindingValue)).ToArray());
         }
 
         private object GetParamterValue(IParamter it, object bindingValue)
@@ -48,13 +48,14 @@ namespace Shiba
                 case Function function:
                     return Execute(function, bindingValue);
                 case ValueParamter valueParamter:
-                    if (valueParamter.Value.GetValue() is IBindingValue value)
+                    switch (valueParamter.Value.GetValue())
                     {
-                        return GetValueFromDataContext(bindingValue, value);
-                    }
-                    else
-                    {
-                        return valueParamter.Value.GetValue();
+                        case IBindingValue value:
+                            return GetValueFromDataContext(bindingValue, value);
+                        case Function function:
+                            return Execute(function, bindingValue);
+                        default:
+                            return valueParamter.Value.GetValue();
                     }
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -65,13 +66,15 @@ namespace Shiba
         {
             switch (value)
             {
-                case Controls.Binding binding:
-                    return AbstractShiba.Instance.Configuration.BindingValueResolver.GetValue(dataContext, binding.Value.GetTokenValue());
+                case Binding binding:
+                    return AbstractShiba.Instance.Configuration.BindingValueResolver.GetValue(dataContext,
+                        binding.Value.GetTokenValue());
                 case JsonPath jsonPath:
                     return AbstractShiba.Instance.Configuration.JsonValueResolver.GetValue(dataContext,
                         jsonPath.Value.GetTokenValue());
                 case NativeResource resource:
-                    return AbstractShiba.Instance.Configuration.ResourceValueResolver.GetValue(resource.Value.GetTokenValue());
+                    return AbstractShiba.Instance.Configuration.ResourceValueResolver.GetValue(
+                        resource.Value.GetTokenValue());
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -82,11 +85,13 @@ namespace Shiba
             throw new NotImplementedException();
         }
     }
+
     internal class JsonConverter : ShibaConverter
     {
         protected override object Convert(object value, Type targetType, object parameter)
         {
-            return AbstractShiba.Instance.Configuration.JsonValueResolver.GetValue(value, parameter + "").CheckIfIsBoolean(targetType);
+            return AbstractShiba.Instance.Configuration.JsonValueResolver.GetValue(value, parameter + "")
+                .CheckIfIsBoolean(targetType);
         }
 
         protected override object ConvertBack(object value, Type targetType, object parameter)
@@ -159,5 +164,4 @@ namespace Shiba
 
         protected abstract object ConvertBack(object value, Type targetType, object parameter);
     }
-
 }

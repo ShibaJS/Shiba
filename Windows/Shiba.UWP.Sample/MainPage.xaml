@@ -9,6 +9,31 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
-        <shiba:ShibaHost x:Name="Host"/>
+        <ListView x:Name="ListView">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <!--<local:Text >
+                        <local:Text.Value>
+                            fdasfdsafdsa
+                        </local:Text.Value>
+                    </local:Text>-->
+                    <StackPanel>
+                        <TextBlock Text="{Binding UWPText}"/>
+                        <shiba:ShibaHost>
+                            <shiba:ShibaHost.Layout>
+                                stack {
+                                    text { 
+                                        text=[WPF: $bind Text, UWP: awesome(reverse($bind UWPText))] 
+                                    } 
+                                    input { 
+                                        text=[WPF: $bind Text, UWP: $bind UWPText] 
+                                    }
+                                }
+                            </shiba:ShibaHost.Layout>
+                        </shiba:ShibaHost>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </Page>

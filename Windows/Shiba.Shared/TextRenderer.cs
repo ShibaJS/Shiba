@@ -153,19 +153,19 @@ namespace Shiba.Renderers
 #endif
                 }
                     break;
-
-                case IBindingValue bindingValue:
+                case Function _:
+                case IBindingValue _:
                 {
                     if (target is FrameworkElement frameworkElement)
                     {
-                        frameworkElement.SetBinding(propertyMap.DependencyProperty, GetBinding(dataContext, bindingValue, propertyMap.IsTwoWay));
+                        frameworkElement.SetBinding(propertyMap.DependencyProperty, GetBinding(dataContext, value, propertyMap.IsTwoWay));
                     }
                 }
                     break;
             }            
         }
 
-        private BindingBase GetBinding(object dataContext, IBindingValue value, bool isTwoWay)
+        protected BindingBase GetBinding(object dataContext, object value, bool isTwoWay)
         {
             switch (value)
             {

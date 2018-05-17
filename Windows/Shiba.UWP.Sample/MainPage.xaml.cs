@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Controls;
 
@@ -35,8 +36,12 @@ namespace Shiba.UWP.Sample
         public MainPage()
         {
             InitializeComponent();
-            Host.DataContext = new Model();
-            this.Host.Layout = this.Layout;
+            var items = Enumerable.Range(0, 1000).Select(it => new Model
+            {
+                UWPText = $"UWP! {it}"
+            }).ToList();
+            ListView.ItemsSource = items;
+
         }
 
         public string Layout { get; set; } =

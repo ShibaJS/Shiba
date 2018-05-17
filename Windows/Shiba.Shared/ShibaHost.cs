@@ -1,4 +1,6 @@
-﻿#if WINDOWS_UWP
+﻿
+using System.Diagnostics;
+#if WINDOWS_UWP
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -10,7 +12,7 @@ using System.Windows.Controls;
 
 namespace Shiba
 {
-    public class ShibaHost : ContentPresenter
+    public class ShibaHost : ContentControl
     {
         public static readonly DependencyProperty LayoutProperty = DependencyProperty.Register(
             nameof(Layout), typeof(string), typeof(ShibaHost), new PropertyMetadata(default(string), OnLayoutChanged));
@@ -32,30 +34,12 @@ namespace Shiba
             {
                 return;
             }
-
             Content = NativeRenderer.Render(value, DataContext);
         }
 
-//        public ShibaHost()
-//        {
-//            DataContextChanged += OnDataContextChanged;
-//        }
-//#if WINDOWS_UWP
-//        private void OnDataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
-//#else
-//        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-//#endif
-//        {
-//            Refresh();
-//        }
-
-//        public void Refresh()
-//        {
-//            if (string.IsNullOrEmpty(Layout))
-//            {
-//                return;
-//            }
-//            Content = NativeRenderer.Render(Layout, DataContext);
-//        }
+        public void ReLayout()
+        {
+            OnLayoutChanged(Layout);
+        }
     }
 }

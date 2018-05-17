@@ -45,6 +45,8 @@ namespace Shiba.UWP.Sample
                     //TODO: 从之前挂起的应用程序加载状态
                 }
                 ShibaApp.Init();
+                AbstractShiba.Instance.AddConverter("function awesome(value) { return value + \" is awesome!\" }");
+                AbstractShiba.Instance.AddConverter("function reverse(value) { return value.split(\"\").reverse().join(\"\"); }");
                 // 将框架放在当前窗口中
                 Window.Current.Content = rootFrame;
             }

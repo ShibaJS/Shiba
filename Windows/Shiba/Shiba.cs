@@ -1,6 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Esprima.Ast;
+using Jint;
+using Jint.Native;
+using Jint.Native.Function;
+using Newtonsoft.Json.Linq;
 using Shiba.Controls;
 
 namespace Shiba
@@ -18,12 +24,20 @@ namespace Shiba
         public ShibaConfiguration Configuration { get; } = new ShibaConfiguration();
 
         public static AbstractShiba Instance { get; protected set; }
+
+        public void AddConverter(string converter)
+        {
+            if (Configuration?.ConverterExecutor is DefaultConverterExecutor executor)
+            {
+                executor.Register(converter);
+            }
+        }
     }
 
     public class ShibaConfiguration
     {
         public IJsonValueResolver JsonValueResolver { get; set; } = new DefaultJsonValueResolver();
-        public IValueResolver ResourceValueResolver { get; set; } = new DefaultResourceValueResolver();
+        public IValueResolver ResourceValueResolver { get; set; }
         public IBindingValueResolver BindingValueResolver { get; set; } = new DefaultBindingValueResolver();
         public IConverterExecutor ConverterExecutor { get; set; } = new DefaultConverterExecutor();
         public string PlatformType { get; set; } = "Windows";
@@ -36,9 +50,32 @@ namespace Shiba
     
     public class DefaultConverterExecutor : IConverterExecutor
     {
+        private readonly Engine _engine;
+
+        public DefaultConverterExecutor(Engine engine = null)
+        {
+            _engine = engine ?? new Engine();
+        }
+
+        public void Register(string converter)
+        {
+            _engine.Execute(converter);
+        }
+
         public object Execute(string functionName, params object[] paramters)
         {
-            throw new NotImplementedException();
+            var jsConverter = _engine.GetValue(functionName);
+            if (jsConverter != null && jsConverter.Is<FunctionInstance>())
+            {
+                var res = jsConverter.Invoke(paramters.Select(it =>
+                {
+                    var a = JsValue.FromObject(_engine, it);
+                    return a;
+                }).ToArray()).ToObject();
+                return res;
+            }
+
+            throw new EntryPointNotFoundException();
         }
     }
 
@@ -46,7 +83,12 @@ namespace Shiba
     {
         public object GetValue(object dataContext, string path)
         {
-            throw new NotImplementedException();
+            if (!(dataContext is JObject jObject) || string.IsNullOrEmpty(path))
+            {
+                return null;
+            }
+
+            return jObject[path].Value<object>();
         }
     }
     
@@ -71,13 +113,7 @@ namespace Shiba
         }
     }
 
-    public class DefaultResourceValueResolver : IValueResolver
-    {
-        public object GetValue(object value)
-        {
-            throw new NotImplementedException();
-        }
-    }
+
 
     public interface IBindingValueResolver
     {
