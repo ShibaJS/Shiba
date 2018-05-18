@@ -39,13 +39,6 @@ namespace Shiba.WPF.Sample
         public MainWindow()
         {
             InitializeComponent();
-            var items = Enumerable.Range(0, 1000).Select(it => new Model
-            {
-                Text = $"WPF! {it}"
-            }).ToList();
-            ListView.ItemsSource = items;
-            //Host.DataContext = new Model();
-            //this.Host.Layout = this.Layout;
         }
 
         public string Layout { get; set; } =

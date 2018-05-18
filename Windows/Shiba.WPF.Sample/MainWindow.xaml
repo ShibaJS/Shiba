@@ -9,24 +9,5 @@
         d:DataContext="{d:DesignInstance local:MainWindow}"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <ListBox x:Name="ListView">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <!--<local:Text >
-                        <local:Text.Value>
-                            fdasfdsafdsa
-                        </local:Text.Value>
-                    </local:Text>-->
-                    <StackPanel>
-                        <TextBlock Text="{Binding Text}"/>
-                        <shiba:ShibaHost>
-                            <shiba:ShibaHost.Layout>
-                                stack { text { text=[WPF: awesome(reverse($bind Text)), UWP:$bind UWPText] } input { text=[WPF: $bind Text, UWP:$bind UWPText] } }
-                            </shiba:ShibaHost.Layout>
-                        </shiba:ShibaHost>
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
     </Grid>
 </Window>
