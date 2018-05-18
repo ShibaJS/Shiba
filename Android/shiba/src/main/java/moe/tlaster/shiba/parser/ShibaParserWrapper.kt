@@ -7,19 +7,13 @@ import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.tree.ParseTree
 
-
-
-
-
 interface IToken {
     val line: Int
     val column: Int
     val value: Any?
 }
 
-
-interface IBindingValue
-{
+interface IBindingValue {
     val value: IToken
 }
 
@@ -64,7 +58,7 @@ class ShibaParserWrapper {
     private fun parseGrammarTree(input: String): ParseTree {
         val stream = CharStreams.fromString(input)
         val lexer = ShibaLexer(stream)
-        val tokens =  CommonTokenStream(lexer)
+        val tokens = CommonTokenStream(lexer)
         val parser = ShibaParser(tokens).apply {
             buildParseTree = true
         }
@@ -94,7 +88,7 @@ class ShibaParserWrapper {
         return pair.map { it.start.text to getValue(it.value()) }.toMap()
     }
 
-    private fun getStaticValue(value: ShibaParser.StaticvalueContext?) : IToken? {
+    private fun getStaticValue(value: ShibaParser.StaticvalueContext?): IToken? {
         if (value == null) {
             return null;
         }
@@ -112,7 +106,7 @@ class ShibaParserWrapper {
         }
 
         if (value.percent() != null) {
-            return PercentToken(value.percent().start.line, value.percent().start.charPositionInLine, Percent(value.percent().text))
+            return PercentToken(value.percent().start.line, value.percent().start.charPositionInLine, Percent(value.percent().start.text))
         }
 
         if (value.thickness() != null) {
@@ -140,15 +134,18 @@ class ShibaParserWrapper {
         }
 
         if (value.binding() != null) {
-            return BindingToken(value.binding().start.line, value.binding().start.charPositionInLine, Binding(getStaticValue(value.binding().staticvalue())?:throw IllegalStateException()))
+            return BindingToken(value.binding().start.line, value.binding().start.charPositionInLine, Binding(getStaticValue(value.binding().staticvalue())
+                    ?: throw IllegalStateException()))
         }
 
         if (value.resource() != null) {
-            return NativeResourceToken(value.resource().start.line, value.resource().start.charPositionInLine, NativeResource(getStaticValue(value.resource().staticvalue()) ?: throw IllegalStateException()))
+            return NativeResourceToken(value.resource().start.line, value.resource().start.charPositionInLine, NativeResource(getStaticValue(value.resource().staticvalue())
+                    ?: throw IllegalStateException()))
         }
 
         if (value.jsonpath() != null) {
-            return JsonPathToken(value.jsonpath().start.line, value.jsonpath().start.charPositionInLine, JsonPath(getStaticValue(value.jsonpath().staticvalue()) ?: throw IllegalStateException()))
+            return JsonPathToken(value.jsonpath().start.line, value.jsonpath().start.charPositionInLine, JsonPath(getStaticValue(value.jsonpath().staticvalue())
+                    ?: throw IllegalStateException()))
         }
 
         if (value.dic() != null) {
@@ -165,7 +162,7 @@ class ShibaParserWrapper {
     }
 
     private fun getFunc(func: ShibaParser.FuncContext): Function {
-        return Function(func.TOKEN().symbol.text, func.paramter().map { if(it.func() == null) getValueParameter(it.value()) else getFunc(it.func()) }.toList())
+        return Function(func.TOKEN().symbol.text, func.paramter().map { if (it.func() == null) getValueParameter(it.value()) else getFunc(it.func()) }.toList())
     }
 
     private fun getValueParameter(value: ShibaParser.ValueContext): ValueParamter {
