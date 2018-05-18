@@ -1,5 +1,7 @@
 package moe.tlaster.shiba
 
+import moe.tlaster.shiba.parser.IToken
+
 /**
  * Created by SE on 3/5.
  */
@@ -65,5 +67,5 @@ data class Percent(val percent: String?) {
 
 }
 
-open class View(val viewName: String, val properties: Map<String, Any>, val children: ArrayList<View> = ArrayList()) {
+open class View(val viewName: String, val properties: Map<String, IToken>, val children: ArrayList<View> = ArrayList()) {
 }

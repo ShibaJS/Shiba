@@ -18,6 +18,7 @@ namespace Shiba
     {
         private static readonly ShibaParserWrapper Parser = new ShibaParserWrapper();
 
+        //TODO: Dictionary means it does not support multiple renderr for one view (like Xamarin.Forms custom renderer)
         private static readonly ConcurrentDictionary<string, IViewRenderer> Renderer =
             new ConcurrentDictionary<string, IViewRenderer>();
 

@@ -1,6 +1,7 @@
 package moe.tlaster.shiba.parser
 
 import moe.tlaster.shiba.Percent
+import moe.tlaster.shiba.Shiba
 import moe.tlaster.shiba.Thickness
 import moe.tlaster.shiba.View
 import org.antlr.v4.runtime.CharStreams
@@ -74,7 +75,7 @@ class ShibaParserWrapper {
         return when (tree) {
             is ShibaParser.RootContext -> buildViewTree(tree.obj())
             is ShibaParser.ObjContext -> {
-                val view = View(tree.start.text, pairToMap(tree.pair()))
+                val view = View(viewName = tree.start.text, properties = pairToMap(tree.pair()))
                 if (tree.obj() != null && tree.obj().any()) {
                     view.children.addAll(tree.obj().map { buildViewTree(it) })
                 }
@@ -149,7 +150,7 @@ class ShibaParserWrapper {
         }
 
         if (value.dic() != null) {
-            val pair = value.dic().pair().firstOrNull { it.TOKEN().symbol.text == "Android" }
+            val pair = value.dic().pair().firstOrNull { it.TOKEN().symbol.text == Shiba.shibaConfiguration.platformType }
             return getValue(pair?.value())
         }
 
