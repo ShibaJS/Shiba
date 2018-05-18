@@ -21,7 +21,7 @@ data class Thickness(val value: String?) {
             right = 0F
             bottom = 0F
         } else {
-            val values = value.trim('[').trim(']').split(',').map { it.trim() }
+            val values = value.trim('[', ']').split(',').map { it.trim() }
             when (values.count()) {
                 1 -> {
                     val result = values[0].toFloat()

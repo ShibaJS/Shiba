@@ -7,7 +7,7 @@ namespace Shiba.Controls
     {
         public Thickness(string value)
         {
-            var values = value.Split(',').Select(item => item.Trim()).ToArray();
+            var values = value.Trim('[', ']').Split(',').Select(item => item.Trim()).ToArray();
             switch (values.Length)
             {
                 case 1:
