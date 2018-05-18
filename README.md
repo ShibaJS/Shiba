@@ -46,8 +46,7 @@ stack {
 }
 ```
 # How does it work
-Shiba will 'translate' the Shiba layout into native layout at runtime, for example
-When you define a Shiba layout in UWP like this:
+Shiba will 'translate' the Shiba layout into native layout at runtime, for example, when you define a Shiba layout in UWP like this:
 ```
 <Grid>
   <ShibaHost>
@@ -74,14 +73,22 @@ You will get this at runtime:
 
 # Goal
 Not like other cross-platform framework, Shiba is NOT a framework to replace the native development, Shiba will replace the UI code which is not complex but will change frequently.  
-Shiba will also provide a easy way to define your costom layout translator
+Shiba will also provide a easy way to define your costom layout translator.  
+You can mix your native code with Shiba, you can also use Shiba to create a simple application without writing native code.
 
 # Progress
-- [x] WPF && UWP  
-- [ ] Android  
-- [ ] iOS  
-- [ ] macOS  
-- [ ] Xamarin support
+- [ ] Core rendering
+  - [x] WPF && UWP  
+  - [ ] Android  
+  - [ ] iOS  
+  - [ ] macOS  
+  - [ ] Xamarin support
+- [ ] Basic layout renderer
+  - [ ] WPF && UWP  
+  - [ ] Android  
+  - [ ] iOS  
+  - [ ] macOS  
+  - [ ] Xamarin support
 
 # LICENSE
 The MIT License (MIT)
