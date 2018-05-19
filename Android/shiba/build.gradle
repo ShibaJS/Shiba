@@ -36,6 +36,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "org.antlr:antlr4:4.7.1" // use ANTLR version 4
     implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.squareup.duktape:duktape-android:1.2.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'

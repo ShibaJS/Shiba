@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import android.content.res.TypedArray
+import android.util.Log
 
 
 class ShibaHost : FrameLayout {
@@ -21,22 +22,21 @@ class ShibaHost : FrameLayout {
     }
 
     var layout: String? = null
-        set(value) {
-            field = value
-            onLayoutChanged(value)
-        }
 
     var dataContext: Any? = null
-
-    private fun onLayoutChanged(value: String?) {
-        removeAllViews()
-        if (value == null) {
-            return
+        set(value) {
+            val temp = field
+            if (temp is INotifyPropertyChanged) {
+                temp.propertyChanged.clear()
+            }
+            field = value
         }
-        load(value, null)
-    }
+
 
     public fun load(layout: String, dataContext: Any?) {
+        removeAllViews()
+        this.layout = layout
+        this.dataContext = dataContext
         addView(NativeRenderer.render(layout, dataContext, context))
     }
 
@@ -49,7 +49,8 @@ class ShibaHost : FrameLayout {
     }
 
     override fun onDetachedFromWindow() {
+        dataContext = null
+        layout = null
         super.onDetachedFromWindow()
-        //TODO: clear INotifyPropertyChanged callback
     }
 }

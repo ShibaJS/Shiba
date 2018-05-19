@@ -20,13 +20,47 @@ class PropertyChangedSubscription(val name: String, val setter: (View, Any?) -> 
 
 internal data class PropertyMethod(val getter: Method?, val setter: Method?)
 
+internal class SingleParamterFunctionConverter : FunctionConverter() {
+    override fun getValueFromDataContext(value: IBindingValue, dataContext: Any?): Any? {
+        return dataContext
+    }
+}
+
+internal open class FunctionConverter {
+    public fun executeFunction(function: Function, dataContext: Any?) : Any? {
+        return Shiba.configuration.converterExecutor.execute(function.name, function.paramter.map { getParameterValue(it, dataContext) })
+    }
+
+    private fun getParameterValue(paramter: IParamter, dataContext: Any?) : Any? {
+        return when (paramter) {
+            is Function -> executeFunction(paramter, dataContext)
+            is ValueParamter -> {
+                when (paramter.value.value) {
+                    is IBindingValue -> getValueFromDataContext(paramter.value.value as IBindingValue, dataContext)
+                    is Function -> executeFunction(paramter.value.value as Function, dataContext)
+                    else -> paramter.value.value
+                }
+            }
+            else -> null
+        }
+    }
+
+    open fun getValueFromDataContext(value: IBindingValue, dataContext: Any?): Any? {
+        return when (value) {
+            is moe.tlaster.shiba.parser.Binding -> Shiba.configuration.bindingValueResolver.getValue(dataContext, value.getTokenValue())
+            is JsonPath -> Shiba.configuration.jsonValueResolver.getValue(dataContext, value.getTokenValue())
+            is NativeResource -> Shiba.configuration.resourceValueResolver.getValue(value.getTokenValue())
+            else -> null
+        }
+    }
+}
+
 open class ViewRenderer<T> : IViewRenderer where T : View {
 
     override fun renderer(view: moe.tlaster.shiba.View, dataContext: Any?, context: Context): View {
         val target = createView(context).apply {
             layoutParams = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         }
-
 
         val contextBindings = Shiba.typeCache.getOrPut(dataContext?.javaClass, {
             dataContext
@@ -38,29 +72,27 @@ open class ViewRenderer<T> : IViewRenderer where T : View {
                     ?.toMap()
         })
         val propertyChangedSubscription = ArrayList<PropertyChangedSubscription>()
-        val propertyChanged: (Any, String) -> Unit = { sender, name ->
-            val subscriptions = propertyChangedSubscription.filter { item -> item.name == name }
-            val propertyMethod = Shiba.typeCache[sender.javaClass]?.get(name)
-            if (propertyMethod?.getter != null && subscriptions.any()) {
-                subscriptions.filter { !it.isChanging }.forEach { it.setter.invoke(target, propertyMethod.getter.invoke(sender)) }
-            }
-        }
         view.properties.forEach { key, value ->
             propertyCache.findLast { it.name == key }
                     ?.let {
                         val subscription = setValue(it, value, target, dataContext)
                         if (subscription != null) {
-                            propertyChangedSubscription.add(subscription)
+                            propertyChangedSubscription += subscription
                         }
                     }
         }
         if (contextBindings != null && dataContext is INotifyPropertyChanged) {
-            if (dataContext.propertyChanged == null) {
-                dataContext.propertyChanged = PropertyChanged()
-            }
-            dataContext.propertyChanged!! += propertyChanged
+            dataContext.propertyChanged += {sender: Any, name: String -> handlePropertyChanged(sender, name, target, propertyChangedSubscription) }
         }
         return target
+    }
+
+    private fun handlePropertyChanged(sender: Any, name: String, target: View, propertyChangedSubscription: List<PropertyChangedSubscription>) {
+        val subscriptions = propertyChangedSubscription.filter { item -> item.name == name }
+        val propertyMethod = Shiba.typeCache[sender.javaClass]?.get(name)
+        if (propertyMethod?.getter != null && subscriptions.any()) {
+            subscriptions.filter { !it.isChanging }.forEach { it.setter.invoke(target, propertyMethod.getter.invoke(sender)) }
+        }
     }
 
     private fun generatePropertyMethod(method: Map.Entry<String, List<Method>>): PropertyMethod {
@@ -77,11 +109,15 @@ open class ViewRenderer<T> : IViewRenderer where T : View {
         }
         val value = token.value ?: return null
         when (value) {
-            is NativeResource -> {
-                propertyMap.setter.invoke(target, Shiba.configuration.resourceValueResolver.getValue(value))
-            }
             is Function -> {
-
+                val bindings = getFunctionBindings(value)
+                if (bindings.count() == 1) {
+                    return PropertyChangedSubscription(bindings.first().getTokenValue(), {view, notifyValue ->
+                        propertyMap.setter.invoke(view, Shiba.SingleParamterFunctionConverter.executeFunction(value, notifyValue))
+                    })
+                } else {
+                    throw NotImplementedError()
+                }
             }
             is IBindingValue -> {
                 return getBinding(dataContext, value, target, propertyMap)
@@ -91,35 +127,50 @@ open class ViewRenderer<T> : IViewRenderer where T : View {
         return null
     }
 
+    private fun getFunctionBindings(paramter: IParamter) : List<IBindingValue> {
+        return when(paramter) {
+            is Function -> {
+                paramter.paramter.map { getFunctionBindings(it) }.flatten()
+            }
+            is ValueParamter -> {
+                when (paramter.value.value) {
+                    is IBindingValue -> listOf(paramter.value.value as IBindingValue)
+                    is Function -> getFunctionBindings(paramter.value.value as Function)
+                    else -> throw IllegalArgumentException()
+                }
+            }
+            else -> throw IllegalArgumentException()
+        }
+    }
+
     private fun getBinding(dataContext: Any?, value: IBindingValue, target: View, propertyMap: PropertyMap): PropertyChangedSubscription? {
         when (value) {
             is moe.tlaster.shiba.parser.Binding -> {
-                val targetValue = Shiba.configuration.bindingValueResolver.getValue(dataContext, propertyMap.name)
+                val targetValue = Shiba.configuration.bindingValueResolver.getValue(dataContext, value.getTokenValue())
                 propertyMap.setter.invoke(target, targetValue)
                 if (propertyMap.twoway != null && dataContext != null) {
-                    val result = PropertyChangedSubscription(propertyMap.name, propertyMap.setter).apply {
+                    return PropertyChangedSubscription(value.getTokenValue(), propertyMap.setter).apply {
                         twowayCallback = {
-                            val propertyMethod = Shiba.typeCache[dataContext.javaClass]?.get(propertyMap.name)
+                            val propertyMethod = Shiba.typeCache[dataContext.javaClass]?.get(value.getTokenValue())
                             if (propertyMethod?.setter != null) {
                                 isChanging = true
                                 propertyMethod.setter.invoke(dataContext, it)
                                 isChanging = false
                             }
                         }
+                        propertyMap.twoway.invoke(target, twowayCallback!!)
                     }
-                    propertyMap.twoway.invoke(target, result.twowayCallback!!)
-                    return result
                 }
-                return PropertyChangedSubscription(propertyMap.name, propertyMap.setter)
+                return PropertyChangedSubscription(value.getTokenValue(), propertyMap.setter)
             }
             is JsonPath -> {
-                TODO()
+                propertyMap.setter.invoke(target, Shiba.configuration.jsonValueResolver.getValue(dataContext, value.getTokenValue()))
             }
             is NativeResource -> {
-                TODO()
+                propertyMap.setter.invoke(target, Shiba.configuration.resourceValueResolver.getValue(value.getTokenValue()))
             }
-            else -> return null
         }
+        return null
     }
 
     private var propertyCache: List<PropertyMap>

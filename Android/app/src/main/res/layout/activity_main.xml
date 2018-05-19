@@ -6,8 +6,13 @@
     android:layout_height="match_parent"
     tools:context="moe.tlaster.shibasample.MainActivity">
 
-    <moe.tlaster.shiba.ShibaHost
-        android:id="@+id/host"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <!--<moe.tlaster.shiba.ShibaHost-->
+        <!--android:id="@+id/host"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"/>-->
 </android.support.constraint.ConstraintLayout>

@@ -14,33 +14,38 @@ interface IToken {
     val value: Any?
 }
 
+
+fun IBindingValue.getTokenValue(): String {
+    return value.value.toString()
+}
+
 interface IBindingValue {
     val value: IToken
 }
 
-abstract class TokenBase<T>(override val line: Int, override val column: Int, override val value: Any) : IToken
+abstract class TokenBase<T>(override val line: Int, override val column: Int, override val value: T) : IToken
 
-class BindingToken(line: Int, column: Int, value: Any) : TokenBase<Binding>(line, column, value)
+class BindingToken(line: Int, column: Int, value: Binding) : TokenBase<Binding>(line, column, value)
 
-class NativeResourceToken(line: Int, column: Int, value: Any) : TokenBase<NativeResource>(line, column, value)
+class NativeResourceToken(line: Int, column: Int, value: NativeResource) : TokenBase<NativeResource>(line, column, value)
 
-class JsonPathToken(line: Int, column: Int, value: Any) : TokenBase<JsonPath>(line, column, value)
+class JsonPathToken(line: Int, column: Int, value: JsonPath) : TokenBase<JsonPath>(line, column, value)
 
-class FunctionToken(line: Int, column: Int, value: Any) : TokenBase<Function>(line, column, value)
+class FunctionToken(line: Int, column: Int, value: Function) : TokenBase<Function>(line, column, value)
 
-class ThicknessToken(line: Int, column: Int, value: Any) : TokenBase<Thickness>(line, column, value)
+class ThicknessToken(line: Int, column: Int, value: Thickness) : TokenBase<Thickness>(line, column, value)
 
-class PercentToken(line: Int, column: Int, value: Any) : TokenBase<Percent>(line, column, value)
+class PercentToken(line: Int, column: Int, value: Percent) : TokenBase<Percent>(line, column, value)
 
 class NullToken(override val line: Int, override val column: Int, override val value: Any? = null) : IToken
 
-class StringToken(line: Int, column: Int, value: Any) : TokenBase<String>(line, column, value)
+class StringToken(line: Int, column: Int, value: String) : TokenBase<String>(line, column, value)
 
-class NumberToken(line: Int, column: Int, value: Any) : TokenBase<Number>(line, column, value)
+class NumberToken(line: Int, column: Int, value: Number) : TokenBase<Number>(line, column, value)
 
-class BoolToken(line: Int, column: Int, value: Any) : TokenBase<Boolean>(line, column, value)
+class BoolToken(line: Int, column: Int, value: Boolean) : TokenBase<Boolean>(line, column, value)
 
-class SimpleToken(line: Int, column: Int, value: Any) : TokenBase<String>(line, column, value)
+class SimpleToken(line: Int, column: Int, value: String) : TokenBase<String>(line, column, value)
 
 class Function(val name: String, val paramter: List<IParamter>) : IParamter
 

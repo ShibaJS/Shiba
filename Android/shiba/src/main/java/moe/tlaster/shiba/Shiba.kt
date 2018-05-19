@@ -3,6 +3,9 @@ package moe.tlaster.shiba
 import android.util.ArrayMap
 import java.lang.reflect.Method
 import java.util.concurrent.ConcurrentHashMap
+import com.squareup.duktape.Duktape
+
+
 
 
 data class ViewMap(val name: String, val renderer: IViewRenderer)
@@ -32,8 +35,9 @@ interface IValueResolver {
 }
 
 class DefaultConverterExecutor : IConverterExecutor {
+    var duktape = Duktape.create()
     override fun execute(name: String, vararg parameters: Any?): Any? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            
     }
 }
 
@@ -62,6 +66,8 @@ object Shiba {
     val viewMapping = ArrayList<ViewMap>()
     val configuration = ShibaConfiguration()
     internal val typeCache = ArrayMap<Class<Any>, Map<String, PropertyMethod>>()
+    internal val FunctionConverter = moe.tlaster.shiba.FunctionConverter()
+    internal val SingleParamterFunctionConverter = moe.tlaster.shiba.SingleParamterFunctionConverter()
 
     init {
         addRenderer("stack", StackRenderer())
