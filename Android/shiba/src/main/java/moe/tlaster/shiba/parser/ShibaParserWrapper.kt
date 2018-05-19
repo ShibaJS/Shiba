@@ -96,7 +96,7 @@ class ShibaParserWrapper {
 
     private fun getStaticValue(value: ShibaParser.StaticvalueContext?): IToken? {
         if (value == null) {
-            return null;
+            return null
         }
 
         if (value.NULL() != null) {

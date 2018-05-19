@@ -4,12 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
-    <TextView
+    <TextView xmlns:tools="http://schemas.android.com/tools"
+        tools:text="fdsafsa"
+        android:padding="8dp"
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <moe.tlaster.shiba.ShibaHost
         android:id="@+id/host"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </LinearLayout>

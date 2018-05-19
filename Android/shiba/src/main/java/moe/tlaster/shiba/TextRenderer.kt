@@ -1,8 +1,10 @@
 package moe.tlaster.shiba
 
 import android.content.Context
+import android.content.res.Resources
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
@@ -11,6 +13,9 @@ import android.widget.TextView
 import moe.tlaster.shiba.parser.*
 import moe.tlaster.shiba.parser.Function
 import java.lang.reflect.Method
+
+internal val Number.dp: Int
+    get() = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), Resources.getSystem().displayMetrics).toInt()
 
 class PropertyMap(val name: String, val setter: (View, Any?) -> Unit, val twoway: ((View, (Any?) -> Unit) -> Unit)? = null)
 
@@ -187,14 +192,30 @@ open class ViewRenderer<T> : IViewRenderer where T : View {
                     }
                 }),
                 PropertyMap("enable", { view, it -> if (it is Boolean) view.isEnabled = it }),
-                PropertyMap("width", { view, it -> if (it is Number) view.layoutParams.width = it.toInt() }),
-                PropertyMap("height", { view, it -> if (it is Number) view.layoutParams.height = it.toInt() }),
+                PropertyMap("width", { view, it ->
+                    val param = view.layoutParams
+                    if (it is Number) param.width = it.toInt().dp
+                    else if (it is String) {
+                        if (it.equals("wrap_content", true)) param.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                        else if (it.equals("match_parent", true)) param.width = ViewGroup.LayoutParams.MATCH_PARENT
+                    }
+                    view.layoutParams = param
+                }),
+                PropertyMap("height", { view, it ->
+                    val param = view.layoutParams
+                    if (it is Number) param.height = it.toInt().dp
+                    else if (it is String) {
+                        if (it.equals("wrap_content", true)) param.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                        else if (it.equals("match_parent", true)) param.height = ViewGroup.LayoutParams.MATCH_PARENT
+                    }
+                    view.layoutParams = param
+                }),
                 PropertyMap("margin", { view, it ->
                     if (it is Thickness && view.layoutParams is ViewGroup.MarginLayoutParams) {
-                        (view.layoutParams as ViewGroup.MarginLayoutParams).setMargins(it.left.toInt(), it.top.toInt(), it.right.toInt(), it.bottom.toInt())
+                        (view.layoutParams as ViewGroup.MarginLayoutParams).setMargins(it.left.toInt().dp, it.top.toInt().dp, it.right.toInt().dp, it.bottom.toInt().dp)
                     }
                 }),
-                PropertyMap("padding", { view, it -> if (it is Thickness) view.setPaddingRelative(it.left.toInt(), it.top.toInt(), it.right.toInt(), it.bottom.toInt()) }),
+                PropertyMap("padding", { view, it -> if (it is Thickness) view.setPaddingRelative(it.left.toInt().dp, it.top.toInt().dp, it.right.toInt().dp, it.bottom.toInt().dp) }),
                 PropertyMap("alpha", { view, it -> if (it is Number) view.alpha = it.toFloat() else if (it is Percent) view.alpha = it.value.toFloat() })
 //                PropertyMap("name", {view, it -> if (it is String) })
 //                PropertyMap("background", {view, it ->  })
