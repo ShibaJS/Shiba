@@ -91,7 +91,11 @@ open class ViewRenderer<T> : IViewRenderer where T : View {
         val subscriptions = propertyChangedSubscription.filter { item -> item.name == name }
         val propertyMethod = Shiba.typeCache[sender.javaClass]?.get(name)
         if (propertyMethod?.getter != null && subscriptions.any()) {
-            subscriptions.filter { !it.isChanging }.forEach { it.setter.invoke(target, propertyMethod.getter.invoke(sender)) }
+            subscriptions.filter { !it.isChanging }.forEach {
+                it.isChanging = true
+                it.setter.invoke(target, propertyMethod.getter.invoke(sender))
+                it.isChanging = false
+            }
         }
     }
 
@@ -152,7 +156,7 @@ open class ViewRenderer<T> : IViewRenderer where T : View {
                     return PropertyChangedSubscription(value.getTokenValue(), propertyMap.setter).apply {
                         twowayCallback = {
                             val propertyMethod = Shiba.typeCache[dataContext.javaClass]?.get(value.getTokenValue())
-                            if (propertyMethod?.setter != null) {
+                            if (propertyMethod?.setter != null && !isChanging) {
                                 isChanging = true
                                 propertyMethod.setter.invoke(dataContext, it)
                                 isChanging = false
@@ -173,12 +177,7 @@ open class ViewRenderer<T> : IViewRenderer where T : View {
         return null
     }
 
-    private var propertyCache: List<PropertyMap>
-
-    init {
-        propertyCache = propertyMaps()
-    }
-
+    private var propertyCache: List<PropertyMap> = propertyMaps()
 
     protected open fun propertyMaps(): ArrayList<PropertyMap> {
         return arrayListOf(

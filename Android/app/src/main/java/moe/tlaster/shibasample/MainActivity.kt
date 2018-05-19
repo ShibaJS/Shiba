@@ -49,7 +49,7 @@ class Adapter(val context: Context) : RecyclerView.Adapter<ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemView.text.text = items[position].text
-        holder.itemView.host.load("stack { text { text = \$bind androidText } input { text = \$bind androidText} }", items[position])
+        holder.itemView.host.load("stack { text { text = \$bind androidText } input { text = \$bind androidText} input { text = \$bind androidText} }", items[position])
     }
 
 }
