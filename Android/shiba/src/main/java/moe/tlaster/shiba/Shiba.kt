@@ -16,49 +16,52 @@ class ShibaConfiguration {
 }
 
 interface IConverterExecutor {
-    fun execute(name: String, vararg parameters: Any): Any
+    fun execute(name: String, vararg parameters: Any?): Any?
 }
 
 interface IBindingValueResolver {
-    fun getValue(dataContext: Any, name: String): Any
+    fun getValue(dataContext: Any?, name: String): Any?
 }
 
 interface IJsonValueResolver {
-    fun getValue(dataContext: Any, name: String): Any
+    fun getValue(dataContext: Any?, name: String): Any?
 }
 
 interface IValueResolver {
-    fun getValue(value: Any): Any
+    fun getValue(value: Any?): Any?
 }
 
 class DefaultConverterExecutor : IConverterExecutor {
-    override fun execute(name: String, vararg parameters: Any): Any {
+    override fun execute(name: String, vararg parameters: Any?): Any? {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
 
 class DefaultJsonValueResolver : IJsonValueResolver {
-    override fun getValue(dataContext: Any, name: String): Any {
+    override fun getValue(dataContext: Any?, name: String): Any? {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
 
 class DefaultBindingValueResolver : IBindingValueResolver {
-    override fun getValue(dataContext: Any, name: String): Any {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun getValue(dataContext: Any?, name: String): Any? {
+        if (dataContext == null) {
+            return null
+        }
+        return Shiba.typeCache[dataContext.javaClass]?.get(name)?.getter?.invoke(dataContext)
     }
 }
 
 class DefaultResourceValueResolver : IValueResolver {
-    override fun getValue(value: Any): Any {
+    override fun getValue(value: Any?): Any? {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
 
 object Shiba {
     val viewMapping = ArrayList<ViewMap>()
-    val shibaConfiguration = ShibaConfiguration()
-    internal val typeCache = ArrayMap<Class<Any>, Map<String, Method>>()
+    val configuration = ShibaConfiguration()
+    internal val typeCache = ArrayMap<Class<Any>, Map<String, PropertyMethod>>()
 
     init {
         addRenderer("stack", StackRenderer())

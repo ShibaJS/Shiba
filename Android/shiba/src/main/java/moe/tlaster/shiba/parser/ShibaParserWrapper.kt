@@ -150,7 +150,7 @@ class ShibaParserWrapper {
         }
 
         if (value.dic() != null) {
-            val pair = value.dic().pair().firstOrNull { it.TOKEN().symbol.text == Shiba.shibaConfiguration.platformType }
+            val pair = value.dic().pair().firstOrNull { it.TOKEN().symbol.text == Shiba.configuration.platformType }
             return getValue(pair?.value())
         }
 
