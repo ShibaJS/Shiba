@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using Shiba.Controls;
 using Shiba.Renderers;
@@ -6,11 +7,12 @@ using Binding = Shiba.Controls.Binding;
 #if WINDOWS_UWP
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
-#else
+#elif WPF
 using System.Windows;
 using System.Windows.Data;
 using System.Globalization;
-
+#elif FORMS
+using Xamarin.Forms;
 #endif
 
 namespace Shiba
@@ -100,24 +102,32 @@ namespace Shiba
         }
     }
 
+#if !FORMS
+    
+#endif
+
     internal static class ConverterExtensions
     {
         public static object CheckIfIsBoolean(this object value, Type targetType)
         {
+#if !FORMS
             if (targetType == typeof(Visibility) && value is bool boolValue)
             {
                 return boolValue ? Visibility.Visible : Visibility.Collapsed;
             }
+#endif
 
             return value;
         }
 
         public static object CheckIfIsVisibility(this object value, Type targetType)
         {
+#if !FORMS
             if (targetType == typeof(bool) && value is Visibility visibility)
             {
                 return visibility == Visibility.Visible;
-            }
+            } 
+#endif
 
             return value;
         }
@@ -148,7 +158,8 @@ namespace Shiba
         {
             return ConvertBack(value, targetType, parameter);
         }
-#else
+
+#elif WPF || FORMS
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return Convert(value, targetType, parameter);

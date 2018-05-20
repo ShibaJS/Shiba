@@ -1,16 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+
 #if WINDOWS_UWP
 using Windows.UI.Xaml;
-#else
+#elif WPF
 using System.Windows;
+#elif FORMS
+using Xamarin.Forms;
 #endif
 
 #if WINDOWS_UWP
 namespace Shiba.UWP
-#else 
+#elif WPF 
 namespace Shiba.WPF
+#elif FORMS 
+namespace Shiba.Forms
 #endif
 {
     public class DefaultResourceValueResolver : IValueResolver
@@ -19,8 +22,10 @@ namespace Shiba.WPF
         {
 #if WINDOWS_UWP
             return Application.Current.Resources[value];
-#else
+#elif WPF
             return Application.Current.Resources[value];
+#elif FORMS
+            return Application.Current.Resources[value + ""];
 #endif
         }
     }
@@ -35,8 +40,10 @@ namespace Shiba.WPF
                 c.PlatformType =
 #if WINDOWS_UWP
                     "UWP"
-#else
+#elif WPF
                     "WPF"
+#elif FORMS
+                    "Forms"
 #endif
                     ;
                 action?.Invoke(c);

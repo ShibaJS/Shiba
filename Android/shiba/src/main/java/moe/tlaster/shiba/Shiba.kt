@@ -1,5 +1,8 @@
 package moe.tlaster.shiba
 
+import android.content.res.Resources
+import android.support.v4.content.ContextCompat
+import android.support.v4.content.res.ResourcesCompat
 import android.util.ArrayMap
 import java.lang.reflect.Method
 import java.util.concurrent.ConcurrentHashMap
@@ -11,10 +14,10 @@ import com.squareup.duktape.Duktape
 data class ViewMap(val name: String, val renderer: IViewRenderer)
 
 class ShibaConfiguration {
-    var jsonValueResolver = DefaultJsonValueResolver()
-    var resourceValueResolver = DefaultResourceValueResolver()
-    var bindingValueResolver = DefaultBindingValueResolver()
-    var converterExecutor = DefaultConverterExecutor()
+    var jsonValueResolver: IJsonValueResolver = DefaultJsonValueResolver()
+    var resourceValueResolver: IValueResolver = DefaultResourceValueResolver()
+    var bindingValueResolver: IBindingValueResolver = DefaultBindingValueResolver()
+    var converterExecutor: IConverterExecutor = DefaultConverterExecutor()
     var platformType = "Android"
 }
 
@@ -58,6 +61,7 @@ class DefaultBindingValueResolver : IBindingValueResolver {
 
 class DefaultResourceValueResolver : IValueResolver {
     override fun getValue(value: Any?): Any? {
+
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

@@ -36,11 +36,11 @@ namespace Shiba.UWP.Sample
         public MainPage()
         {
             InitializeComponent();
-            var items = Enumerable.Range(0, 1000).Select(it => new Model
-            {
-                UWPText = $"UWP! {it}"
-            }).ToList();
-            ListView.ItemsSource = items;
+            //var items = Enumerable.Range(0, 1000).Select(it => new Model
+            //{
+            //    UWPText = $"UWP! {it}"
+            //}).ToList();
+            //ListView.ItemsSource = items;
 
         }
 

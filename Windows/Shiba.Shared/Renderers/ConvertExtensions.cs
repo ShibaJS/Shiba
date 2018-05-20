@@ -4,11 +4,14 @@ using System.Reflection;
 #if WINDOWS_UWP
 using Windows.UI;
 using NativeThickness = Windows.UI.Xaml.Thickness;
-#else
+#elif WPF
 using System.Windows;
 using System.Windows.Media;
 using NativeThickness = System.Windows.Thickness;
 using System.Drawing;
+#elif FORMS 
+using Xamarin.Forms;
+using NativeThickness = Xamarin.Forms.Thickness;
 #endif
 
 namespace Shiba
@@ -53,8 +56,11 @@ namespace Shiba
                         var r = (byte)((cuint >> 16) & 0xff);
                         var g = (byte)((cuint >> 8) & 0xff);
                         var b = (byte)(cuint & 0xff);
-
+#if FORMS
+                        return Color.FromRgba(r, g, b, a);
+#else
                         return Color.FromArgb(a, r, g, b);
+#endif
                     }
 
                     case 7:
@@ -63,8 +69,11 @@ namespace Shiba
                         var r = (byte)((cuint >> 16) & 0xff);
                         var g = (byte)((cuint >> 8) & 0xff);
                         var b = (byte)(cuint & 0xff);
-
+#if FORMS
+                        return Color.FromRgb(r, g, b);
+#else
                         return Color.FromArgb(255, r, g, b);
+#endif
                     }
 
                     case 5:
@@ -78,8 +87,11 @@ namespace Shiba
                         r = (byte)(r << 4 | r);
                         g = (byte)(g << 4 | g);
                         b = (byte)(b << 4 | b);
-
+#if FORMS
+                        return Color.FromRgba(r, g, b, a);
+#else               
                         return Color.FromArgb(a, r, g, b);
+#endif
                     }
 
                     case 4:
@@ -91,8 +103,11 @@ namespace Shiba
                         r = (byte)(r << 4 | r);
                         g = (byte)(g << 4 | g);
                         b = (byte)(b << 4 | b);
-
+#if FORMS
+                        return Color.FromRgb(r, g, b);
+#else
                         return Color.FromArgb(255, r, g, b);
+#endif
                     }
 
                     default:
@@ -113,16 +128,22 @@ namespace Shiba
                         var scR = double.Parse(values[1]);
                         var scG = double.Parse(values[2]);
                         var scB = double.Parse(values[3]);
-
+#if FORMS
+                        return Color.FromRgba((byte)(scR * 255), (byte)(scG * 255), (byte)(scB * 255), (byte)(scA * 255));
+#else
                         return Color.FromArgb((byte)(scA * 255), (byte)(scR * 255), (byte)(scG * 255), (byte)(scB * 255));
+#endif
                     }
                     case 3:
                     {
                         var scR = double.Parse(values[0].Substring(3));
                         var scG = double.Parse(values[1]);
                         var scB = double.Parse(values[2]);
-
+#if FORMS
+                        return Color.FromRgb((byte)(scR * 255), (byte)(scG * 255), (byte)(scB * 255));
+#else
                         return Color.FromArgb(255, (byte)(scR * 255), (byte)(scG * 255), (byte)(scB * 255));
+#endif
                     }
                     default:
                         throw new FormatException(
@@ -131,8 +152,13 @@ namespace Shiba
 
             }
 
+#if FORMS
+            var prop = typeof(Color).GetTypeInfo().DeclaredProperties.FirstOrDefault(it =>
+                string.Equals(it.Name, colorString, StringComparison.OrdinalIgnoreCase));
+#else
             var prop = typeof(Colors).GetTypeInfo().DeclaredProperties.FirstOrDefault(it =>
                 string.Equals(it.Name, colorString, StringComparison.OrdinalIgnoreCase));
+#endif
 
             if (prop != null)
             {

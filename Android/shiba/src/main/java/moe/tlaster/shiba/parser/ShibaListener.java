@@ -6,7 +6,7 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  * This interface defines a complete listener for a parse tree produced by
  * {@link ShibaParser}.
  */
-public interface ShibaListener extends ParseTreeListener {
+interface ShibaListener extends ParseTreeListener {
 	/**
 	 * Enter a parse tree produced by {@link ShibaParser#root}.
 	 * @param ctx the parse tree

@@ -104,7 +104,7 @@ class ShibaParserWrapper {
         }
 
         if (value.BOOLEAN() != null) {
-            return BoolToken(value.BOOLEAN().symbol.line, value.BOOLEAN().symbol.charPositionInLine, value.BOOLEAN().text.toBoolean())
+            return BoolToken(value.BOOLEAN().symbol.line, value.BOOLEAN().symbol.charPositionInLine, value.BOOLEAN().text!!.toBoolean())
         }
 
         if (value.NUMBER() != null) {

@@ -9,31 +9,21 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
-        <ListView x:Name="ListView">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <!--<local:Text >
-                        <local:Text.Value>
-                            fdasfdsafdsa
-                        </local:Text.Value>
-                    </local:Text>-->
-                    <StackPanel>
-                        <TextBlock Text="{Binding UWPText}"/>
-                        <shiba:ShibaHost>
-                            <shiba:ShibaHost.Layout>
-                                stack {
-                                    text { 
-                                        text=[WPF: $bind Text, UWP: awesome(reverse($bind UWPText))] 
-                                    } 
-                                    input { 
-                                        text=[WPF: $bind Text, UWP: $bind UWPText] 
-                                    }
-                                }
-                            </shiba:ShibaHost.Layout>
-                        </shiba:ShibaHost>
-                    </StackPanel>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <shiba:ShibaHost>
+            <shiba:ShibaHost.Layout>
+                stack {
+                text {
+                text = "Hello world!"
+                }
+                input 
+                img {
+                maxWidth = 200
+                src = "http://wx3.sinaimg.cn/large/68333650gy1frhli58shij20m80gojzk.jpg"
+                }
+                check { text = "Sample CheckBox" }
+                switch { text = "Sample Switch!" }
+                }
+            </shiba:ShibaHost.Layout>
+        </shiba:ShibaHost>
     </Grid>
 </Page>

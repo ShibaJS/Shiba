@@ -1,9 +1,11 @@
-﻿using System;
+﻿#if WINDOWS_UWP || WPF
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Shiba.Controls;
 using Shiba.Internal;
 using Shiba.Renderers;
+
 using Binding = Shiba.Controls.Binding;
 using Thickness = Shiba.Controls.Thickness;
 #if WINDOWS_UWP
@@ -12,31 +14,29 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls.Primitives;
 using NativeBinding = Windows.UI.Xaml.Data.Binding;
 using NativeThickness = Windows.UI.Xaml.Thickness;
-
-
-#else
+using Windows.UI.Xaml.Media.Imaging;
+#elif WPF
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Controls;
 using System.Windows;
 using NativeBinding = System.Windows.Data.Binding;
 using System.Windows.Media;
-
+using System.Windows.Media.Imaging;
+using System.Windows.Controls.Primitives;
 #endif
 
 
+    
 [assembly: ExportRenderer("text", typeof(TextRenderer))]
 [assembly: ExportRenderer("stack", typeof(StackRenderer))]
 [assembly: ExportRenderer("input", typeof(InputRenderer))]
-//[assembly: ExportRenderer("switch", typeof(Switch))]
-//[assembly: ExportRenderer("check", typeof(Check))]
-//[assembly: ExportRenderer("stackLayout", typeof(StackPanel))]
-//[assembly: ExportRenderer("grid", typeof(Grid))]
-//[assembly: ExportRenderer("input", typeof(Input))]
-//[assembly: ExportRenderer("img", typeof(Image))]
-
+[assembly: ExportRenderer("img", typeof(ImageRenderer))]
+[assembly: ExportRenderer("switch", typeof(SwitchRenderer))]
+[assembly: ExportRenderer("check", typeof(CheckRenderer))]
 
 namespace Shiba.Renderers
 {
@@ -61,6 +61,7 @@ namespace Shiba.Renderers
     public class ViewRenderer<TNativeView> : IViewRenderer
         where TNativeView : UIElement, new()
     {
+        private List<PropertyMap> _propertyCache;
 
         public virtual IEnumerable<PropertyMap> PropertyMaps()
         {
@@ -96,10 +97,13 @@ namespace Shiba.Renderers
         public object Render(View view, object dataContext)
         {
             var target = new TNativeView();
-            var maps = PropertyMaps().ToList();
+            if (_propertyCache == null)
+            {
+                _propertyCache = PropertyMaps().ToList();
+            }
             foreach (var item in view.Properties)
             {
-                var property = maps.FirstOrDefault(it => it.Name == item.Key);
+                var property = _propertyCache.FirstOrDefault(it => it.Name == item.Key);
                 if (property != null)
                 {
                     SetValue(property, view, target, dataContext);
@@ -257,17 +261,6 @@ namespace Shiba.Renderers
         }
     }
 
-    internal static class TokenExtensions
-    {
-        public static string GetTokenValue(this IToken value)
-        {
-            if (value is Token token)
-            {
-                return token.Value;
-            }
-            throw new ArgumentOutOfRangeException($"Line {value.Line}, colunm {value.Column} should be token");
-        }
-    }
 
     public class InputRenderer : ViewRenderer<TextBox>
     {
@@ -333,4 +326,78 @@ namespace Shiba.Renderers
         {
         }
     }
+
+    public class ImageRenderer : ViewRenderer<Image>
+    {
+        public override IEnumerable<PropertyMap> PropertyMaps()
+        {
+            return base.PropertyMaps().Concat(GetPropertys());
+        }
+
+        private IEnumerable<PropertyMap> GetPropertys()
+        {
+            yield return new PropertyMap("src", Image.SourceProperty, typeof(string), SourceConverter);
+            yield return new PropertyMap("stretch", Image.StretchProperty, typeof(string), StretchConverter);
+        }
+
+        private object SourceConverter(object arg)
+        {
+            if (arg is string value && !string.IsNullOrEmpty(value))
+            {
+                return new BitmapImage(new Uri(value, UriKind.RelativeOrAbsolute));
+            }
+
+            return arg;
+        }
+
+        private object StretchConverter(object arg)
+        {
+            if (Enum.TryParse<Stretch>(arg + "", true, out var result))
+            {
+                return result;
+            }
+
+            return arg;
+        }
+    }
+#if WINDOWS_UWP
+    public class SwitchRenderer : ViewRenderer<ToggleSwitch>
+#elif WPF
+    public class SwitchRenderer : ViewRenderer<ToggleButton>
+#endif
+    {
+        public override IEnumerable<PropertyMap> PropertyMaps()
+        {
+            return base.PropertyMaps().Concat(GetPropertys());
+        }
+
+        private IEnumerable<PropertyMap> GetPropertys()
+        {
+#if WINDOWS_UWP
+            yield return new PropertyMap("isOn", ToggleSwitch.IsOnProperty, typeof(bool));
+            yield return new PropertyMap("text", ToggleSwitch.HeaderProperty, typeof(string));
+#elif WPF
+            yield return new PropertyMap("isOn", ToggleButton.IsCheckedProperty, typeof(bool));
+            yield return new PropertyMap("text", ContentControl.ContentProperty, typeof(string));
+#endif
+        }
+
+    }
+    
+    public class CheckRenderer : ViewRenderer<CheckBox>
+    {
+        public override IEnumerable<PropertyMap> PropertyMaps()
+        {
+            return base.PropertyMaps().Concat(GetPropertys());
+        }
+
+        private IEnumerable<PropertyMap> GetPropertys()
+        {
+            yield return new PropertyMap("checked", ToggleButton.IsCheckedProperty, typeof(bool));
+            yield return new PropertyMap("text", ContentControl.ContentProperty, typeof(string));
+        }
+    }
+    
 }
+
+#endif

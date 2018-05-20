@@ -9,5 +9,21 @@
         d:DataContext="{d:DesignInstance local:MainWindow}"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
+        <shiba:ShibaHost>
+            <shiba:ShibaHost.Layout>
+                stack {
+                    text {
+                        text = "Hello world!"
+                    }
+                    input 
+                    img {
+                        maxWidth = 200
+                        src = "http://wx3.sinaimg.cn/large/68333650gy1frhli58shij20m80gojzk.jpg"
+                    }
+                    check { text = "Sample CheckBox" }
+                    switch { text = "Sample Switch!" }
+                }
+            </shiba:ShibaHost.Layout>
+        </shiba:ShibaHost>
     </Grid>
 </Window>
