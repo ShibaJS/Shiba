@@ -78,16 +78,14 @@ You can mix your native code with Shiba, you can also use Shiba to create a simp
 
 # Progress
 - [ ] Core rendering
-  - [x] WPF && UWP  
-  - [ ] Android  
-  - [ ] iOS  
-  - [ ] macOS  
+  - [x] WPF && UWP   
+  - [x] Android   
+  - [ ] iOS && macOS  
   - [ ] Xamarin support
 - [ ] Basic layout renderer
-  - [ ] WPF && UWP  
+  - [x] WPF && UWP   
   - [ ] Android  
-  - [ ] iOS  
-  - [ ] macOS  
+  - [ ] iOS && macOS  
   - [ ] Xamarin support
 
 # LICENSE
