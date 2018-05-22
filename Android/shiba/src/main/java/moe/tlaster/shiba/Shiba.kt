@@ -1,14 +1,9 @@
 package moe.tlaster.shiba
 
-import android.content.res.Resources
-import android.support.v4.content.ContextCompat
-import android.support.v4.content.res.ResourcesCompat
 import android.util.ArrayMap
-import java.lang.reflect.Method
-import java.util.concurrent.ConcurrentHashMap
-import com.squareup.duktape.Duktape
-
-
+import org.mozilla.javascript.Context
+import org.mozilla.javascript.Function
+import org.mozilla.javascript.ScriptableObject
 
 
 data class ViewMap(val name: String, val renderer: IViewRenderer)
@@ -19,10 +14,15 @@ class ShibaConfiguration {
     var bindingValueResolver: IBindingValueResolver = DefaultBindingValueResolver()
     var converterExecutor: IConverterExecutor = DefaultConverterExecutor()
     var platformType = "Android"
+    public fun addConverter(converter: String) {
+        if (converterExecutor is DefaultConverterExecutor) {
+            (converterExecutor as DefaultConverterExecutor).addConverter(converter)
+        }
+    }
 }
 
 interface IConverterExecutor {
-    fun execute(name: String, vararg parameters: Any?): Any?
+    fun execute(name: String, parameters: Array<Any?>): Any?
 }
 
 interface IBindingValueResolver {
@@ -38,9 +38,24 @@ interface IValueResolver {
 }
 
 class DefaultConverterExecutor : IConverterExecutor {
-    var duktape = Duktape.create()
-    override fun execute(name: String, vararg parameters: Any?): Any? {
-        TODO()
+    private val context = Context.enter().apply {
+        optimizationLevel = -1
+    }
+    private val scope: ScriptableObject by lazy {
+        context.initStandardObjects()
+    }
+
+    public fun addConverter(converter: String) {
+        context.evaluateString(scope, converter,"JavaScript", 0, null)
+    }
+
+    override fun execute(name: String, parameters: Array<Any?>): Any? {
+        val obj = scope.get(name, scope)
+        if (obj is Function) {
+            val jsResult = obj.call(context, scope, scope, parameters)
+            return jsResult
+        }
+        return null
     }
 }
 

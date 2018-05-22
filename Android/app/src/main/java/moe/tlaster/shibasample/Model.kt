@@ -8,7 +8,7 @@ class Model : BaseNotifyObjet() {
 
     @get:Binding(name = "androidText")
     @set:Binding(name = "androidText")
-    var text = "hello world!"
+    var text = "Android"
         set(text) {
             field = text
             notifyPropertyChanged("androidText")

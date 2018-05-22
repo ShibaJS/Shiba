@@ -33,7 +33,7 @@ internal class SingleParamterFunctionConverter : FunctionConverter() {
 
 internal open class FunctionConverter {
     public fun executeFunction(function: Function, dataContext: Any?) : Any? {
-        return Shiba.configuration.converterExecutor.execute(function.name, function.paramter.map { getParameterValue(it, dataContext) })
+        return Shiba.configuration.converterExecutor.execute(function.name, function.paramter.map { getParameterValue(it, dataContext) }.toTypedArray())
     }
 
     private fun getParameterValue(paramter: IParamter, dataContext: Any?) : Any? {
@@ -121,6 +121,9 @@ open class ViewRenderer<T> : IViewRenderer where T : View {
             is Function -> {
                 val bindings = getFunctionBindings(value)
                 if (bindings.count() == 1) {
+                    val binding = bindings.first()
+                    val targetValue = Shiba.configuration.bindingValueResolver.getValue(dataContext, binding.getTokenValue())
+                    propertyMap.setter.invoke(target, Shiba.SingleParamterFunctionConverter.executeFunction(value, targetValue))
                     return PropertyChangedSubscription(bindings.first().getTokenValue(), {view, notifyValue ->
                         propertyMap.setter.invoke(view, Shiba.SingleParamterFunctionConverter.executeFunction(value, notifyValue))
                     })
