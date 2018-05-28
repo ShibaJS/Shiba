@@ -97,7 +97,7 @@ namespace Shiba.Renderers
 
         public object Render(View view, IShibaHost rootHost)
         {
-            var target = new TNativeView();
+            var target = CreateNativeView();
             if (_propertyCache == null)
             {
                 _propertyCache = PropertyMaps().ToList();
@@ -112,6 +112,11 @@ namespace Shiba.Renderers
             }
             Render(view, ref target);
             return target;
+        }
+
+        protected virtual TNativeView CreateNativeView()
+        {
+            return new TNativeView();
         }
 
         protected void SetValue(PropertyMap propertyMap, View view, TNativeView target, IShibaHost rootHost)
