@@ -28,13 +28,13 @@ namespace Shiba
         private static readonly ConcurrentDictionary<string, IViewRenderer> Renderer =
             new ConcurrentDictionary<string, IViewRenderer>();
 
-        public static NativeView Render(string layout, object datacontext)
+        public static NativeView Render(string layout, IShibaHost datacontext)
         {
             var viewTree = Parser.Parse(layout);
             return Render(viewTree, datacontext);
         }
 
-        public static NativeView Render(View view, object datacontext)
+        public static NativeView Render(View view, IShibaHost datacontext)
         {
             var attribute = AbstractShiba.Instance.ViewMapping.Renderers.LastOrDefault(it => it.ViewName == view.ViewName);
             if (attribute == null)

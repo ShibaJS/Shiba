@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>Shiba</id>
+    <version>1.0.0-alpha</version>
+    <title></title>
+    <authors>Tlaster</authors>
+    <owners>Tlaster</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/Tlaster/Shiba/blob/master/LICENSE.md</licenseUrl>
+    <projectUrl>https://github.com/Tlaster/Shiba</projectUrl>
+    <description>Shiba</description>
+    <dependencies>
+      <group targetFramework="UAP10.0.16299">
+        <dependency id="Jint" version="3.0.0-beta-1158" />
+        <dependency id="Antlr4.Runtime.Standard" version="4.7.1.1" />
+      </group>
+      <group targetFramework=".NETFramework4.6.1">
+        <dependency id="Jint" version="3.0.0-beta-1158" />
+        <dependency id="Antlr4.Runtime.Standard" version="4.7.1.1" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="Shiba.WPF\bin\Release\Shiba.dll" target="lib\net461\Shiba.dll" />
+    <file src="Shiba.WPF\bin\Release\Shiba.pdb" target="lib\net461\Shiba.pdb" />
+    <file src="Shiba.WPF\bin\Release\Shiba.WPF.dll" target="lib\net461\Shiba.WPF.dll" />
+    <file src="Shiba.WPF\bin\Release\Shiba.WPF.pdb" target="lib\net461\Shiba.WPF.pdb" />
+
+    <file src="Shiba.UWP\bin\Release\Shiba.dll" target="lib\uap10.0.16299\Shiba.dll" />
+    <file src="Shiba.UWP\bin\Release\Shiba.pdb" target="lib\uap10.0.16299\Shiba.pdb" />
+    <file src="Shiba.UWP\bin\Release\Shiba.UWP.dll" target="lib\uap10.0.16299\Shiba.UWP.dll" />
+    <file src="Shiba.UWP\bin\Release\Shiba.UWP.pdb" target="lib\uap10.0.16299\Shiba.UWP.pdb" />
+    <file src="Shiba.UWP\bin\Release\Shiba.UWP.pri" target="lib\uap10.0.16299\Shiba.UWP.pri" />
+  </files>
+</package>

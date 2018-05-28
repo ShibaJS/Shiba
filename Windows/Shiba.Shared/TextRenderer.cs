@@ -42,19 +42,20 @@ namespace Shiba.Renderers
 {
     public sealed class PropertyMap
     {
-        public PropertyMap(string name, DependencyProperty dependencyProperty, Type type, Func<object, object> converter = null)
+        public PropertyMap(string name, DependencyProperty dependencyProperty, Type type, Func<object, object> converter = null, bool isTwoWay = false)
         {
             Name = name;
             DependencyProperty = dependencyProperty;
             Type = type;
             Converter = converter;
+            IsTwoWay = isTwoWay;
         }
 
         public string Name { get; }
         public DependencyProperty DependencyProperty { get; }
         public Type Type { get; }
         public Func<object, object> Converter { get; }
-        public bool IsTwoWay { get; set; }
+        public bool IsTwoWay { get; }
 
     }
     
@@ -94,7 +95,7 @@ namespace Shiba.Renderers
         }
 
 
-        public object Render(View view, object dataContext)
+        public object Render(View view, IShibaHost rootHost)
         {
             var target = new TNativeView();
             if (_propertyCache == null)
@@ -106,14 +107,14 @@ namespace Shiba.Renderers
                 var property = _propertyCache.FirstOrDefault(it => it.Name == item.Key);
                 if (property != null)
                 {
-                    SetValue(property, view, target, dataContext);
+                    SetValue(property, view, target, rootHost);
                 }
             }
             Render(view, ref target);
             return target;
         }
 
-        protected void SetValue(PropertyMap propertyMap, View view, TNativeView target, object dataContext)
+        protected void SetValue(PropertyMap propertyMap, View view, TNativeView target, IShibaHost rootHost)
         {
             if (!view.TryGet(propertyMap.Name, out var token) || token is NullToken)
             {
@@ -162,14 +163,14 @@ namespace Shiba.Renderers
                 {
                     if (target is FrameworkElement frameworkElement)
                     {
-                        frameworkElement.SetBinding(propertyMap.DependencyProperty, GetBinding(dataContext, value, propertyMap.IsTwoWay));
+                        frameworkElement.SetBinding(propertyMap.DependencyProperty, GetBinding(rootHost, value, propertyMap.IsTwoWay));
                     }
                 }
                     break;
             }            
         }
 
-        protected BindingBase GetBinding(object dataContext, object value, bool isTwoWay)
+        protected BindingBase GetBinding(IShibaHost rootHost, object value, bool isTwoWay)
         {
             switch (value)
             {
@@ -177,8 +178,8 @@ namespace Shiba.Renderers
                 {
                     return new NativeBinding
                     {
-                        Path = new PropertyPath(binding.Value.GetTokenValue()),
-                        Source = dataContext,
+                        Path = new PropertyPath("DataContext." + binding.Value.GetTokenValue()),
+                        Source = rootHost,
                         Converter = Singleton<BindingConverter>.Instance,
                         Mode = isTwoWay ? BindingMode.TwoWay : BindingMode.OneWay,
                         UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
@@ -188,7 +189,8 @@ namespace Shiba.Renderers
                 {
                     return new NativeBinding
                     {
-                        Source = dataContext,
+                        Path = new PropertyPath("DataContext"),
+                        Source = rootHost,
                         ConverterParameter = json.Value.GetTokenValue(),
                         Converter = Singleton<JsonConverter>.Instance
                     };
@@ -200,8 +202,8 @@ namespace Shiba.Renderers
                     {
                         return new NativeBinding
                         {
-                            Path = new PropertyPath(binding.Value.GetTokenValue()),
-                            Source = dataContext,
+                            Path = new PropertyPath("DataContext." + binding.Value.GetTokenValue()),
+                            Source = rootHost,
                             Converter = Singleton<SingleBindingFunctionConverter>.Instance,
                             ConverterParameter = function
                         };
@@ -209,7 +211,8 @@ namespace Shiba.Renderers
 
                     return new NativeBinding
                     {
-                        Source = dataContext,
+                        Path = new PropertyPath("DataContext"),
+                        Source = rootHost,
                         Converter = Singleton<FunctionConverter>.Instance,
                         ConverterParameter = function
                     };
@@ -270,10 +273,7 @@ namespace Shiba.Renderers
             {
                 yield return propertyMap;
             }
-            yield return new PropertyMap("text", TextBox.TextProperty, typeof(string))
-            {
-                IsTwoWay = true
-            };
+            yield return new PropertyMap("text", TextBox.TextProperty, typeof(string), isTwoWay: true);
             yield return new PropertyMap("textSize", TextBox.FontSizeProperty, typeof(double));
             yield return new PropertyMap("textColor", TextBox.ForegroundProperty, typeof(string), ColorConverter);
 
@@ -374,10 +374,10 @@ namespace Shiba.Renderers
         private IEnumerable<PropertyMap> GetPropertys()
         {
 #if WINDOWS_UWP
-            yield return new PropertyMap("isOn", ToggleSwitch.IsOnProperty, typeof(bool));
+            yield return new PropertyMap("isOn", ToggleSwitch.IsOnProperty, typeof(bool), isTwoWay: true);
             yield return new PropertyMap("text", ToggleSwitch.HeaderProperty, typeof(string));
 #elif WPF
-            yield return new PropertyMap("isOn", ToggleButton.IsCheckedProperty, typeof(bool));
+            yield return new PropertyMap("isOn", ToggleButton.IsCheckedProperty, typeof(bool), isTwoWay: true);
             yield return new PropertyMap("text", ContentControl.ContentProperty, typeof(string));
 #endif
         }
@@ -393,7 +393,7 @@ namespace Shiba.Renderers
 
         private IEnumerable<PropertyMap> GetPropertys()
         {
-            yield return new PropertyMap("checked", ToggleButton.IsCheckedProperty, typeof(bool));
+            yield return new PropertyMap("checked", ToggleButton.IsCheckedProperty, typeof(bool), isTwoWay: true);
             yield return new PropertyMap("text", ContentControl.ContentProperty, typeof(string));
         }
     }

@@ -8,17 +8,27 @@ using System.Windows.Controls;
 
 namespace Shiba.WPF.Sample
 {
-
-    class Model : INotifyPropertyChanged
+    public class Model : INotifyPropertyChanged
     {
-        private string _text = "WPF!";
+        private string _uwpText = "UWP!";
+        private bool _isChecked;
 
-        public string Text
+        public string UWPText
         {
-            get => _text;
+            get => _uwpText;
             set
             {
-                _text = value;
+                _uwpText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsChecked
+        {
+            get => _isChecked;
+            set
+            {
+                _isChecked = value;
                 OnPropertyChanged();
             }
         }
@@ -30,15 +40,16 @@ namespace Shiba.WPF.Sample
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-
     /// <summary>
     ///     MainWindow.xaml 的交互逻辑
     /// </summary>
     public partial class MainWindow : Window
     {
+        public Model ViewModel { get; set; } = new Model();
         public MainWindow()
         {
             InitializeComponent();
+            this.DataContext = ViewModel;
         }
 
         public string Layout { get; set; } =

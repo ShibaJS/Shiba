@@ -62,18 +62,18 @@ namespace Shiba
             _engine.Execute(converter);
         }
 
+        public void Register(string name, Delegate @delegate)
+        {
+        }
+
         public object Execute(string functionName, params object[] paramters)
         {
             var jsConverter = _engine.GetValue(functionName);
             if (jsConverter != null && jsConverter.Is<FunctionInstance>())
             {
-                var res = jsConverter.Invoke(paramters.Select(it =>
-                {
-                    var a = JsValue.FromObject(_engine, it);
-                    return a;
-                }).ToArray()).ToObject();
-                return res;
+                return jsConverter.Invoke(paramters.Select(it => JsValue.FromObject(_engine, it)).ToArray()).ToObject();
             }
+            
 
             throw new EntryPointNotFoundException();
         }

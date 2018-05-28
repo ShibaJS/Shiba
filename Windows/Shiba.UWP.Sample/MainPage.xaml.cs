@@ -7,9 +7,10 @@ using Windows.UI.Xaml.Controls;
 
 namespace Shiba.UWP.Sample
 {
-    class Model : INotifyPropertyChanged
+    public class Model : INotifyPropertyChanged
     {
         private string _uwpText = "UWP!";
+        private bool _isChecked;
 
         public string UWPText
         {
@@ -17,6 +18,16 @@ namespace Shiba.UWP.Sample
             set
             {
                 _uwpText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsChecked
+        {
+            get => _isChecked;
+            set
+            {
+                _isChecked = value;
                 OnPropertyChanged();
             }
         }
@@ -33,6 +44,8 @@ namespace Shiba.UWP.Sample
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        public Model ViewModel { get; set; } = new Model();
+
         public MainPage()
         {
             InitializeComponent();

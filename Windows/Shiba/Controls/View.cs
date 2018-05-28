@@ -207,7 +207,7 @@ namespace Shiba.Controls
         //}
     }
 
-    public struct Binding : IBindingValue
+    public class Binding : IBindingValue
     {
         public Binding(IToken value)
         {
@@ -217,7 +217,7 @@ namespace Shiba.Controls
         public IToken Value { get; }
     }
 
-    public struct JsonPath : IBindingValue
+    public class JsonPath : IBindingValue
     {
         public JsonPath(IToken value)
         {
@@ -227,7 +227,7 @@ namespace Shiba.Controls
         public IToken Value { get; }
     }
 
-    public struct NativeResource : IBindingValue
+    public class NativeResource : IBindingValue
     {
         public NativeResource(IToken value)
         {

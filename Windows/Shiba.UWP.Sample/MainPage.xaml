@@ -9,19 +9,11 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
-        <shiba:ShibaHost>
+        <shiba:ShibaHost DataContext="{x:Bind ViewModel}">
             <shiba:ShibaHost.Layout>
                 stack {
-                text {
-                text = "Hello world!"
-                }
-                input 
-                img {
-                maxWidth = 200
-                src = "http://wx3.sinaimg.cn/large/68333650gy1frhli58shij20m80gojzk.jpg"
-                }
-                check { text = "Sample CheckBox" }
-                switch { text = "Sample Switch!" }
+                    check { text = "Sample CheckBox" checked=$bind IsChecked }
+                    switch { text = "Sample Switch!" isOn=$bind IsChecked }
                 }
             </shiba:ShibaHost.Layout>
         </shiba:ShibaHost>

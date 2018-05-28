@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Shiba.Controls;
 #if WINDOWS_UWP
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -15,7 +16,7 @@ using NativeParent = Xamarin.Forms.ContentView;
 
 namespace Shiba
 {
-    public class ShibaHost : NativeParent
+    public class ShibaHost : NativeParent, IShibaHost
     {
 #if FORMS
         public static readonly BindableProperty LayoutProperty = BindableProperty.Create(
@@ -28,6 +29,7 @@ namespace Shiba
 #else
         public static readonly DependencyProperty LayoutProperty = DependencyProperty.Register(
             nameof(Layout), typeof(string), typeof(ShibaHost), new PropertyMetadata(default(string), OnLayoutChanged));
+
 
         private static void OnLayoutChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -48,9 +50,9 @@ namespace Shiba
                 return;
             }
 #if FORMS
-            Content = NativeRenderer.Render(value, BindingContext);
+            Content = NativeRenderer.Render(value, this);
 #else
-            Content = NativeRenderer.Render(value, DataContext);
+            Content = NativeRenderer.Render(value, this);
 #endif
         }
 
