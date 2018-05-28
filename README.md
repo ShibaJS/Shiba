@@ -1,4 +1,6 @@
-# Status
+# Status  
+[![Build status](https://ci.appveyor.com/api/projects/status/2qp96xf35naduen7?svg=true)](https://ci.appveyor.com/project/Tlaster/shiba)
+[![NuGet version](https://badge.fury.io/nu/Shiba.svg)](https://badge.fury.io/nu/Shiba)  
 Shiba is still in development, you can check the progress at the bottom of page
 
 # Getting Start
