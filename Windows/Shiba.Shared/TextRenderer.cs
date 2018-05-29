@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.Media.Core;
 using NativeBinding = Windows.UI.Xaml.Data.Binding;
 using NativeThickness = Windows.UI.Xaml.Thickness;
 using Windows.UI.Xaml.Media.Imaging;
@@ -37,6 +38,7 @@ using System.Windows.Controls.Primitives;
 [assembly: ExportRenderer("img", typeof(ImageRenderer))]
 [assembly: ExportRenderer("switch", typeof(SwitchRenderer))]
 [assembly: ExportRenderer("check", typeof(CheckRenderer))]
+[assembly: ExportRenderer("grid", typeof(GridRenderer))]
 
 namespace Shiba.Renderers
 {
@@ -60,7 +62,7 @@ namespace Shiba.Renderers
     }
     
     public class ViewRenderer<TNativeView> : IViewRenderer
-        where TNativeView : UIElement, new()
+        where TNativeView : FrameworkElement, new()
     {
         private List<PropertyMap> _propertyCache;
 
@@ -109,9 +111,61 @@ namespace Shiba.Renderers
                 {
                     SetValue(property, view, target, rootHost);
                 }
+                else if (item.Key.Contains("."))
+                {
+                    AttachedPropertyHandler(item.Key, item.Value, view, target, rootHost);
+                }
+                else
+                {
+                    UnknownPropertyHandler(item, view, target, rootHost);
+                }
             }
             Render(view, ref target);
             return target;
+        }
+
+        protected virtual void UnknownPropertyHandler(KeyValuePair<string, IToken> item, View view, TNativeView target, IShibaHost rootHost)
+        {
+            
+        }
+
+        private void AttachedPropertyHandler(string name, IToken token, View view, TNativeView target, IShibaHost rootHost)
+        {
+            var tokens = name.Split('.');
+            if (tokens.Length < 2)
+            {
+                return;
+            }
+
+            switch (tokens.FirstOrDefault())
+            {
+                case "grid":
+                {
+                    
+                    if (!(token is NumberToken value))
+                    {
+                        return;
+                    }
+
+                    var gridValue = Convert.ToInt32(value.Value);
+                    switch (tokens.Skip(1).FirstOrDefault())
+                    {
+                        case "row":
+                            Grid.SetRow(target, gridValue);
+                            break;
+                        case "rowSpan":
+                            Grid.SetRowSpan(target, gridValue);
+                            break;
+                        case "colunm":
+                            Grid.SetColumn(target, gridValue);
+                            break;
+                        case "colunmSpan":
+                            Grid.SetColumnSpan(target, gridValue);
+                            break;
+                    }
+                    break;   
+                }
+            }
         }
 
         protected virtual TNativeView CreateNativeView()
@@ -285,6 +339,61 @@ namespace Shiba.Renderers
         }
     }
 
+    public class GridRenderer : ViewRenderer<Grid>
+    {
+        public override IEnumerable<PropertyMap> PropertyMaps()
+        {
+            return base.PropertyMaps().Concat(GetPropertyMaps());
+        }
+
+        private IEnumerable<PropertyMap> GetPropertyMaps()
+        {
+#if WINDOWS_UWP
+            yield return new PropertyMap("columnSpacing", Grid.ColumnSpacingProperty, typeof(double));
+            yield return new PropertyMap("rowSpacing", Grid.RowSpacingProperty, typeof(double));
+#elif WPF
+            yield return new PropertyMap("showGridLines", Grid.ShowGridLinesProperty, typeof(bool));
+#endif
+        }
+
+        protected override void UnknownPropertyHandler(KeyValuePair<string, IToken> item, View view, Grid target, IShibaHost rootHost)
+        {
+            switch (item.Key)
+            {
+                case "row":
+                {
+                    if (item.Value is NumberToken numberToken)
+                    {
+                        Enumerable.Range(0, Convert.ToInt32(numberToken.Value))
+                            .Select(it => new RowDefinition())
+                            .ToList()
+                            .ForEach(it => target.RowDefinitions.Add(it));
+                    }
+                    else
+                    {
+                        
+                    }
+                }
+                    break;
+                case "colunm":
+                {
+                    if (item.Value is NumberToken numberToken)
+                    {
+                        Enumerable.Range(0, Convert.ToInt32(numberToken.Value))
+                            .Select(it => new ColumnDefinition())
+                            .ToList()
+                            .ForEach(it => target.ColumnDefinitions.Add(it));
+                    }
+                    else
+                    {
+                        
+                    }
+                }
+                    break;
+            }
+        }
+    }
+    
     public class StackRenderer : ViewRenderer<StackPanel>
     {
         public override IEnumerable<PropertyMap> PropertyMaps()
