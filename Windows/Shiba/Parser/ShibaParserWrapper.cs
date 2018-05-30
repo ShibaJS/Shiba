@@ -32,15 +32,21 @@ namespace Shiba.Parser
                 case ShibaParser.RootContext root:
                     return BuildViewTree(root.obj());
                 case ShibaParser.ObjContext obj:
+                {
                     //var view = FindTypes(obj.Start.Text)?.FirstOrDefault()?.CreateInstance<View>(PairToDictionary(obj.pair()));
                     var view = new View(obj.Start.Text, PairToDictionary(obj.pair()));
                     //InitPair(ref view, obj.pair());
-                    if (obj.obj() != null && obj.obj().Any())
+                    if (obj.children != null && obj.children.Any())
                     {
-                        view.Children.AddRange(obj.obj().Select(BuildViewTree));
+                        view.Children.AddRange(obj.children.Where(it => it is ParserRuleContext).Select(BuildViewTree));
                     }
-
+                    
                     return view;
+                }
+                case ShibaParser.ShortobjContext shortObj:
+                {
+                    return new View(shortObj.Start.Text, GetValue(shortObj.value()));
+                }
                 default:
                     throw new ArgumentOutOfRangeException();
             }

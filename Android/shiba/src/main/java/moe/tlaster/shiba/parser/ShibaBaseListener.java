@@ -40,6 +40,18 @@ public class ShibaBaseListener implements ShibaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterShortobj(ShibaParser.ShortobjContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitShortobj(ShibaParser.ShortobjContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterPair(ShibaParser.PairContext ctx) { }
 	/**
 	 * {@inheritDoc}

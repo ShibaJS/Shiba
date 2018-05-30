@@ -14,6 +14,14 @@ namespace Shiba.Controls
 
     public class View
     {
+        public View(string viewName, IToken defaultValue)
+        {
+            ViewName = viewName;
+            DefaultValue = defaultValue;
+        }
+
+        public IToken DefaultValue { get; }
+
         public View(string viewName, Dictionary<string, IToken> attribute)
         {
             ViewName = viewName;
@@ -22,7 +30,7 @@ namespace Shiba.Controls
 
         public string ViewName { get; }
         public List<View> Children { get; } = new List<View>();
-        public Dictionary<string, IToken> Properties { get; }
+        public Dictionary<string, IToken> Properties { get; } = new Dictionary<string, IToken>();
 
         public bool TryGet(string key, out IToken value)
         {

@@ -52,6 +52,16 @@ public interface IShibaListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitObj([NotNull] ShibaParser.ObjContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="ShibaParser.shortobj"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterShortobj([NotNull] ShibaParser.ShortobjContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ShibaParser.shortobj"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitShortobj([NotNull] ShibaParser.ShortobjContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="ShibaParser.pair"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

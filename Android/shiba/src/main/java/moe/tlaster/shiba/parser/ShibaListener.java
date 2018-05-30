@@ -6,7 +6,7 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  * This interface defines a complete listener for a parse tree produced by
  * {@link ShibaParser}.
  */
-interface ShibaListener extends ParseTreeListener {
+public interface ShibaListener extends ParseTreeListener {
 	/**
 	 * Enter a parse tree produced by {@link ShibaParser#root}.
 	 * @param ctx the parse tree
@@ -27,6 +27,16 @@ interface ShibaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitObj(ShibaParser.ObjContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ShibaParser#shortobj}.
+	 * @param ctx the parse tree
+	 */
+	void enterShortobj(ShibaParser.ShortobjContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ShibaParser#shortobj}.
+	 * @param ctx the parse tree
+	 */
+	void exitShortobj(ShibaParser.ShortobjContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ShibaParser#pair}.
 	 * @param ctx the parse tree

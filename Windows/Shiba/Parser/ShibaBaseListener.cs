@@ -60,6 +60,18 @@ public partial class ShibaBaseListener : IShibaListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitObj([NotNull] ShibaParser.ObjContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="ShibaParser.shortobj"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterShortobj([NotNull] ShibaParser.ShortobjContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="ShibaParser.shortobj"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitShortobj([NotNull] ShibaParser.ShortobjContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="ShibaParser.pair"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

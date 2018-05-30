@@ -20,13 +20,7 @@ namespace Shiba.Forms
     {
         public object GetValue(object value)
         {
-#if WINDOWS_UWP
-            return Application.Current.Resources[value];
-#elif WPF
-            return Application.Current.Resources[value];
-#elif FORMS
             return Application.Current.Resources[value + ""];
-#endif
         }
     }
 

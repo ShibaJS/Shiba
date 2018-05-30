@@ -5,7 +5,11 @@ root
    ;
 
 obj
-   : TOKEN ('{' ((pair | obj) (','? (pair | obj))*)? '}')?
+   : TOKEN ('{' ((pair | obj | shortobj) (','? (pair | obj | shortobj))*)? '}')?
+   ;
+   
+shortobj
+   : TOKEN '->' value
    ;
 
 pair

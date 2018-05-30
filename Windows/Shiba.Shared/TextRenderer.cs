@@ -84,6 +84,11 @@ namespace Shiba.Renderers
             yield return new PropertyMap("alpha", UIElement.OpacityProperty, typeof(double));
             yield return new PropertyMap("name", FrameworkElement.NameProperty, typeof(string));
             yield return new PropertyMap("background", Control.BackgroundProperty, typeof(string), ColorConverter);
+            yield return new PropertyMap("style", FrameworkElement.StyleProperty, typeof(Style));
+            if (DefaultPropertyMap != null)
+            {
+                yield return DefaultPropertyMap;
+            }
         }
 
         protected object ColorConverter(object arg)
@@ -104,25 +109,43 @@ namespace Shiba.Renderers
             {
                 _propertyCache = PropertyMaps().ToList();
             }
-            foreach (var item in view.Properties)
+
+            if (view.DefaultValue != null && HasDefaultProperty)
             {
-                var property = _propertyCache.FirstOrDefault(it => it.Name == item.Key);
-                if (property != null)
+                if (DefaultPropertyMap != null)
                 {
-                    SetValue(property, view, target, rootHost);
+                    SetValue(DefaultPropertyMap, view.DefaultValue, target, rootHost);
                 }
-                else if (item.Key.Contains("."))
+            }
+            else
+            {
+                foreach (var item in view.Properties)
                 {
-                    AttachedPropertyHandler(item.Key, item.Value, view, target, rootHost);
-                }
-                else
-                {
-                    UnknownPropertyHandler(item, view, target, rootHost);
+                    var property = _propertyCache.FirstOrDefault(it => it.Name == item.Key);
+                    if (property != null)
+                    {
+                        if (view.TryGet(item.Key, out var token))
+                        {
+                            SetValue(property, token, target, rootHost);
+                        }
+                    }
+                    else if (item.Key.Contains("."))
+                    {
+                        AttachedPropertyHandler(item.Key, item.Value, view, target, rootHost);
+                    }
+                    else
+                    {
+                        UnknownPropertyHandler(item, view, target, rootHost);
+                    }
                 }
             }
             Render(view, ref target);
             return target;
         }
+
+        protected virtual bool HasDefaultProperty { get; } = false;
+
+        protected virtual PropertyMap DefaultPropertyMap { get; }
 
         protected virtual void UnknownPropertyHandler(KeyValuePair<string, IToken> item, View view, TNativeView target, IShibaHost rootHost)
         {
@@ -173,9 +196,9 @@ namespace Shiba.Renderers
             return new TNativeView();
         }
 
-        protected void SetValue(PropertyMap propertyMap, View view, TNativeView target, IShibaHost rootHost)
+        protected void SetValue(PropertyMap propertyMap, IToken token, TNativeView target, IShibaHost rootHost)
         {
-            if (!view.TryGet(propertyMap.Name, out var token) || token is NullToken)
+            if (token is NullToken)
             {
                 return;
             }
@@ -430,11 +453,14 @@ namespace Shiba.Renderers
             {
                 yield return propertyMap;
             }
-            yield return new PropertyMap("text", TextBlock.TextProperty, typeof(string));
             yield return new PropertyMap("textSize", TextBlock.FontSizeProperty, typeof(double));
             yield return new PropertyMap("textColor", TextBlock.ForegroundProperty, typeof(string), ColorConverter);
 
         }
+
+        protected override bool HasDefaultProperty { get; } = true;
+
+        protected override PropertyMap DefaultPropertyMap { get; } = new PropertyMap("text", TextBlock.TextProperty, typeof(string));
 
         protected override void Render(View view, ref TextBlock target)
         {
