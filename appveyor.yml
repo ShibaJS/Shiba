@@ -15,6 +15,10 @@ build_script:
 
     nuget pack "Windows\\Shiba.nuspec" -Version $env:appveyor_build_version
 
+    cd Android
+
     Android\gradlew.bat clean assembleRelease --parallel --stacktrace
+
+    cd ..
 artifacts:
 - path: '**\*.nupkg'
