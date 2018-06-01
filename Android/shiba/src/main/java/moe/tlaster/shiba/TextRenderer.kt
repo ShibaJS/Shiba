@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.ArrayMap
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +22,7 @@ class PropertyMap(val name: String, val setter: (View, Any?) -> Unit, val twoway
 
 class PropertyChangedSubscription(val name: String, val setter: (View, Any?) -> Unit, var twowayCallback: ((Any?) -> Unit)? = null) {
     internal var isChanging = false
+    internal var dataContext: Any? = null
 }
 
 internal data class PropertyMethod(val getter: Method?, val setter: Method?)
@@ -32,11 +34,11 @@ internal class SingleParamterFunctionConverter : FunctionConverter() {
 }
 
 internal open class FunctionConverter {
-    public fun executeFunction(function: Function, dataContext: Any?) : Any? {
+    public fun executeFunction(function: Function, dataContext: Any?): Any? {
         return Shiba.configuration.converterExecutor.execute(function.name, function.paramter.map { getParameterValue(it, dataContext) }.toTypedArray())
     }
 
-    private fun getParameterValue(paramter: IParamter, dataContext: Any?) : Any? {
+    private fun getParameterValue(paramter: IParamter, dataContext: Any?): Any? {
         return when (paramter) {
             is Function -> executeFunction(paramter, dataContext)
             is ValueParamter -> {
@@ -62,57 +64,35 @@ internal open class FunctionConverter {
 
 open class ViewRenderer<T> : IViewRenderer where T : View {
 
-    override fun renderer(view: moe.tlaster.shiba.View, dataContext: Any?, context: Context): View {
+    override fun renderer(view: moe.tlaster.shiba.View, context: Context, propertyChangedSubscription: ArrayMap<View, ArrayList<PropertyChangedSubscription>>): View {
         val target = createView(context).apply {
             layoutParams = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         }
 
-        val contextBindings = Shiba.typeCache.getOrPut(dataContext?.javaClass, {
-            dataContext
-                    ?.javaClass
-                    ?.declaredMethods
-                    ?.filter { it.isAnnotationPresent(Binding::class.java) }
-                    ?.groupBy { it.getAnnotation(Binding::class.java).name }
-                    ?.map { method -> method.key to generatePropertyMethod(method) }
-                    ?.toMap()
-        })
-        val propertyChangedSubscription = ArrayList<PropertyChangedSubscription>()
+//        val contextBindings = getPropertyMethods(dataContext)
+        val subscriptions = ArrayList<PropertyChangedSubscription>()
+        if (propertyCache == null) {
+            propertyCache = propertyMaps()
+        }
         view.properties.forEach { key, value ->
-            propertyCache.findLast { it.name == key }
+            propertyCache!!.findLast { it.name == key }
                     ?.let {
-                        val subscription = setValue(it, value, target, dataContext)
+                        val subscription = setValue(it, value, target)
                         if (subscription != null) {
-                            propertyChangedSubscription += subscription
+                            subscriptions += subscription
                         }
                     }
         }
-        if (contextBindings != null && dataContext is INotifyPropertyChanged) {
-            dataContext.propertyChanged += {sender: Any, name: String -> handlePropertyChanged(sender, name, target, propertyChangedSubscription) }
-        }
+        propertyChangedSubscription[target] = subscriptions
+//        if (contextBindings != null && dataContext is INotifyPropertyChanged) {
+//            dataContext.propertyChanged += { sender: Any, name: String -> handlePropertyChanged(sender, name, target, propertyChangedSubscription) }
+//        }
+
         return target
     }
 
-    private fun handlePropertyChanged(sender: Any, name: String, target: View, propertyChangedSubscription: List<PropertyChangedSubscription>) {
-        val subscriptions = propertyChangedSubscription.filter { item -> item.name == name }
-        val propertyMethod = Shiba.typeCache[sender.javaClass]?.get(name)
-        if (propertyMethod?.getter != null && subscriptions.any()) {
-            subscriptions.filter { !it.isChanging }.forEach {
-                it.isChanging = true
-                it.setter.invoke(target, propertyMethod.getter.invoke(sender))
-                it.isChanging = false
-            }
-        }
-    }
 
-    private fun generatePropertyMethod(method: Map.Entry<String, List<Method>>): PropertyMethod {
-        val getter = method.value.firstOrNull { !it.parameterTypes.any() }
-        val setter = method.value.firstOrNull {
-            it.parameterTypes.count { it == (getter?.returnType ?: it) } == 1
-        }
-        return PropertyMethod(getter, setter)
-    }
-
-    protected fun setValue(propertyMap: PropertyMap, token: IToken, target: View, dataContext: Any?): PropertyChangedSubscription? {
+    protected fun setValue(propertyMap: PropertyMap, token: IToken, target: View): PropertyChangedSubscription? {
         if (token is NullToken) {
             return null
         }
@@ -122,9 +102,9 @@ open class ViewRenderer<T> : IViewRenderer where T : View {
                 val bindings = getFunctionBindings(value)
                 if (bindings.count() == 1) {
                     val binding = bindings.first()
-                    val targetValue = Shiba.configuration.bindingValueResolver.getValue(dataContext, binding.getTokenValue())
-                    propertyMap.setter.invoke(target, Shiba.SingleParamterFunctionConverter.executeFunction(value, targetValue))
-                    return PropertyChangedSubscription(bindings.first().getTokenValue(), {view, notifyValue ->
+//                    val targetValue = Shiba.configuration.bindingValueResolver.getValue(dataContext, binding.getTokenValue())
+//                    propertyMap.setter.invoke(target, Shiba.SingleParamterFunctionConverter.executeFunction(value, targetValue))
+                    return PropertyChangedSubscription(binding.getTokenValue(), { view, notifyValue ->
                         propertyMap.setter.invoke(view, Shiba.SingleParamterFunctionConverter.executeFunction(value, notifyValue))
                     })
                 } else {
@@ -132,15 +112,15 @@ open class ViewRenderer<T> : IViewRenderer where T : View {
                 }
             }
             is IBindingValue -> {
-                return getBinding(dataContext, value, target, propertyMap)
+                return getBinding(value, target, propertyMap)
             }
             else -> propertyMap.setter.invoke(target, value)
         }
         return null
     }
 
-    private fun getFunctionBindings(paramter: IParamter) : List<IBindingValue> {
-        return when(paramter) {
+    private fun getFunctionBindings(paramter: IParamter): List<IBindingValue> {
+        return when (paramter) {
             is Function -> {
                 paramter.paramter.map { getFunctionBindings(it) }.flatten()
             }
@@ -155,18 +135,17 @@ open class ViewRenderer<T> : IViewRenderer where T : View {
         }
     }
 
-    private fun getBinding(dataContext: Any?, value: IBindingValue, target: View, propertyMap: PropertyMap): PropertyChangedSubscription? {
+    private fun getBinding(value: IBindingValue, target: View, propertyMap: PropertyMap): PropertyChangedSubscription? {
         when (value) {
             is moe.tlaster.shiba.parser.Binding -> {
-                val targetValue = Shiba.configuration.bindingValueResolver.getValue(dataContext, value.getTokenValue())
-                propertyMap.setter.invoke(target, targetValue)
-                if (propertyMap.twoway != null && dataContext != null) {
+//                val targetValue = Shiba.configuration.bindingValueResolver.getValue(dataContext, value.getTokenValue())
+//                propertyMap.setter.invoke(target, targetValue)
+                if (propertyMap.twoway != null) {
                     return PropertyChangedSubscription(value.getTokenValue(), propertyMap.setter).apply {
                         twowayCallback = {
-                            val propertyMethod = Shiba.typeCache[dataContext.javaClass]?.get(value.getTokenValue())
-                            if (propertyMethod?.setter != null && !isChanging) {
+                            if (!isChanging) {
                                 isChanging = true
-                                propertyMethod.setter.invoke(dataContext, it)
+                                Shiba.configuration.bindingValueResolver.setValue(dataContext, name, it)
                                 isChanging = false
                             }
                         }
@@ -176,7 +155,8 @@ open class ViewRenderer<T> : IViewRenderer where T : View {
                 return PropertyChangedSubscription(value.getTokenValue(), propertyMap.setter)
             }
             is JsonPath -> {
-                propertyMap.setter.invoke(target, Shiba.configuration.jsonValueResolver.getValue(dataContext, value.getTokenValue()))
+                TODO("Temporarily remove json path support")
+//                propertyMap.setter.invoke(target, Shiba.configuration.jsonValueResolver.getValue(dataContext, value.getTokenValue()))
             }
             is NativeResource -> {
                 propertyMap.setter.invoke(target, Shiba.configuration.resourceValueResolver.getValue(value.getTokenValue()))
@@ -185,7 +165,7 @@ open class ViewRenderer<T> : IViewRenderer where T : View {
         return null
     }
 
-    private var propertyCache: List<PropertyMap> = propertyMaps()
+    private var propertyCache: List<PropertyMap>? = null
 
     protected open fun propertyMaps(): ArrayList<PropertyMap> {
         return arrayListOf(
@@ -219,7 +199,8 @@ open class ViewRenderer<T> : IViewRenderer where T : View {
                     }
                 }),
                 PropertyMap("padding", { view, it -> if (it is Thickness) view.setPaddingRelative(it.left.toInt().dp, it.top.toInt().dp, it.right.toInt().dp, it.bottom.toInt().dp) }),
-                PropertyMap("alpha", { view, it -> if (it is Number) view.alpha = it.toFloat() else if (it is Percent) view.alpha = it.value.toFloat() })
+                PropertyMap("alpha", { view, it -> if (it is Number) view.alpha = it.toFloat() else if (it is Percent) view.alpha = it.value.toFloat() }),
+                PropertyMap("name", { view, it -> if (it is String) view.setTag(R.id.shiba_view_name_key, it) })
 //                PropertyMap("name", {view, it -> if (it is String) })
 //                PropertyMap("background", {view, it ->  })
         )
@@ -238,7 +219,7 @@ class InputRenderer : ViewRenderer<EditText>() {
 
     override fun propertyMaps(): ArrayList<PropertyMap> {
         return super.propertyMaps().apply {
-            add(PropertyMap("text", { view, it -> if (it is CharSequence && view is EditText) view.setText(it) }, {view, callback ->
+            add(PropertyMap("text", { view, it -> if (it is CharSequence && view is EditText) view.setText(it) }, { view, callback ->
                 if (view is EditText) {
                     view.addTextChangedListener(object : TextWatcher {
                         override fun afterTextChanged(s: Editable?) {

@@ -121,7 +121,7 @@ namespace Shiba.Renderers
             {
                 foreach (var item in view.Properties)
                 {
-                    var property = _propertyCache.FirstOrDefault(it => it.Name == item.Key);
+                    var property = _propertyCache.LastOrDefault(it => it.Name == item.Key);
                     if (property != null)
                     {
                         if (view.TryGet(item.Key, out var token))

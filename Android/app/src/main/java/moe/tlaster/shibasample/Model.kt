@@ -1,10 +1,14 @@
 package moe.tlaster.shibasample
 
-import moe.tlaster.shiba.BaseNotifyObjet
+import moe.tlaster.shiba.BaseNotifyObject
 import moe.tlaster.shiba.Binding
 
-class Model : BaseNotifyObjet() {
+class Model : BaseNotifyObject {
 
+
+    constructor(text: String) {
+        this.text = text
+    }
 
     @get:Binding(name = "androidText")
     @set:Binding(name = "androidText")

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Shiba</string>
+    <item name="shiba_view_name_key" type="id"/>
 </resources>

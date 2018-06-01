@@ -35,12 +35,14 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-class Adapter(val context: Context) : RecyclerView.Adapter<ViewHolder>() {
+class Adapter(private val context: Context) : RecyclerView.Adapter<ViewHolder>() {
 
-    val items = (1 until 1000).map { Model() }
+    private val items = (1 until 1000).map { Model("Text $it") }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_list, parent, false))
+        val view = LayoutInflater.from(context).inflate(R.layout.item_list, parent, false)
+        view.host.load("stack { width = [Android: match_parent] text { text = awesome(reverse(\$bind androidText)) padding = [8] } text { text=[UWP: \"UWP!\"] } input { text = \$bind androidText width=[Android:match_parent] } input { text = \$bind androidText} }", null)
+        return ViewHolder(view)
     }
 
     override fun getItemCount(): Int {
@@ -49,7 +51,7 @@ class Adapter(val context: Context) : RecyclerView.Adapter<ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemView.text.text = items[position].text
-        holder.itemView.host.load("stack { width = [Android: match_parent] text { text = awesome(reverse(\$bind androidText)) padding = [8] } text { text=[UWP: \"UWP!\"] } input { text = \$bind androidText width=[Android:match_parent] } input { text = \$bind androidText} }", items[position])
+        holder.itemView.host.dataContext = items[position]
     }
 
 }

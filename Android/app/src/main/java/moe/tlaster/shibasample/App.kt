@@ -7,6 +7,6 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         Shiba.configuration.addConverter("function awesome(value) { return value + \" is awesome!\" }")
-        Shiba.configuration.addConverter("function reverse(value) { return value.split(\"\").reverse().join(\"\"); }")
+        Shiba.configuration.addConverter("function reverse(value) { if(value == null) return \"\"; return value.split(\"\").reverse().join(\"\"); }")
     }
 }

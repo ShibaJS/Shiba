@@ -4,6 +4,7 @@ import android.util.ArrayMap
 import org.mozilla.javascript.Context
 import org.mozilla.javascript.Function
 import org.mozilla.javascript.ScriptableObject
+import java.lang.reflect.Method
 
 
 data class ViewMap(val name: String, val renderer: IViewRenderer)
@@ -27,6 +28,7 @@ interface IConverterExecutor {
 
 interface IBindingValueResolver {
     fun getValue(dataContext: Any?, name: String): Any?
+    fun setValue(dataContext: Any?, name: String, value: Any?)
 }
 
 interface IJsonValueResolver {
@@ -52,8 +54,7 @@ class DefaultConverterExecutor : IConverterExecutor {
     override fun execute(name: String, parameters: Array<Any?>): Any? {
         val obj = scope.get(name, scope)
         if (obj is Function) {
-            val jsResult = obj.call(context, scope, scope, parameters)
-            return jsResult
+            return obj.call(context, scope, scope, parameters)
         }
         return null
     }
@@ -66,17 +67,46 @@ class DefaultJsonValueResolver : IJsonValueResolver {
 }
 
 class DefaultBindingValueResolver : IBindingValueResolver {
+    private val typeCache = ArrayMap<Class<Any>, Map<String, PropertyMethod>>()
+    override fun setValue(dataContext: Any?, name: String, value: Any?) {
+        if (dataContext == null) {
+            return
+        }
+        getPropertyMethods(dataContext)?.get(name)?.setter?.invoke(dataContext, value)
+    }
+
     override fun getValue(dataContext: Any?, name: String): Any? {
         if (dataContext == null) {
             return null
         }
-        return Shiba.typeCache[dataContext.javaClass]?.get(name)?.getter?.invoke(dataContext)
+        return getPropertyMethods(dataContext)?.get(name)?.getter?.invoke(dataContext)
     }
+
+    private fun getPropertyMethods(dataContext: Any?): Map<String, PropertyMethod>? {
+        return typeCache.getOrPut(dataContext?.javaClass, {
+            dataContext
+                    ?.javaClass
+                    ?.declaredMethods
+                    ?.filter { it.isAnnotationPresent(Binding::class.java) }
+                    ?.groupBy { it.getAnnotation(Binding::class.java).name }
+                    ?.map { method -> method.key to generatePropertyMethod(method) }
+                    ?.toMap()
+        })
+    }
+
+    private fun generatePropertyMethod(method: Map.Entry<String, List<Method>>): PropertyMethod {
+        val getter = method.value.firstOrNull { !it.parameterTypes.any() }
+        val setter = method.value.firstOrNull {
+            it.parameterTypes.count { it == (getter?.returnType ?: it) } == 1
+        }
+        return PropertyMethod(getter, setter)
+    }
+
+
 }
 
 class DefaultResourceValueResolver : IValueResolver {
     override fun getValue(value: Any?): Any? {
-
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
@@ -84,7 +114,6 @@ class DefaultResourceValueResolver : IValueResolver {
 object Shiba {
     val viewMapping = ArrayList<ViewMap>()
     val configuration = ShibaConfiguration()
-    internal val typeCache = ArrayMap<Class<Any>, Map<String, PropertyMethod>>()
     internal val FunctionConverter = moe.tlaster.shiba.FunctionConverter()
     internal val SingleParamterFunctionConverter = moe.tlaster.shiba.SingleParamterFunctionConverter()
 
