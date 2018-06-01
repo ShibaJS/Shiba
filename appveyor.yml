@@ -17,7 +17,7 @@ build_script:
 
     cd Android
 
-    Android\gradlew.bat clean assembleRelease --parallel --stacktrace
+    .\gradlew.bat clean assembleRelease --parallel --stacktrace
 
     cd ..
 artifacts:
