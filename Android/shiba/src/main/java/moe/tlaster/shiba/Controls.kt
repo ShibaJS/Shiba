@@ -67,5 +67,20 @@ data class Percent(val percent: String?) {
 
 }
 
-open class View(val viewName: String, val properties: Map<String, IToken>, val children: ArrayList<View> = ArrayList()) {
+open class View {
+    val children: ArrayList<View> = ArrayList()
+    var properties: Map<String, IToken>? = null
+    var defaultValue: IToken? = null
+    var viewName: String
+
+    constructor(viewName: String, properties: Map<String, IToken>) {
+        this.viewName = viewName
+        this.properties = properties
+    }
+
+
+    constructor(viewName: String, defaultValue: IToken) {
+        this.viewName = viewName
+        this.defaultValue = defaultValue
+    }
 }

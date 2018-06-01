@@ -41,7 +41,7 @@ class Adapter(private val context: Context) : RecyclerView.Adapter<ViewHolder>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_list, parent, false)
-        view.host.load("stack { width = [Android: match_parent] text { text = awesome(reverse(\$bind androidText)) padding = [8] } text { text=[UWP: \"UWP!\"] } input { text = \$bind androidText width=[Android:match_parent] } input { text = \$bind androidText} }", null)
+        view.host.load("stack { width = [Android: match_parent] text -> awesome(reverse(\$bind androidText)) text { text=[UWP: \"UWP!\"] } input { text = \$bind androidText width=[Android:match_parent] } input { text = \$bind androidText} }", null)
         return ViewHolder(view)
     }
 

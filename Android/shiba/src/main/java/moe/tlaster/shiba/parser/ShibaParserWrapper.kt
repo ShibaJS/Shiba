@@ -6,6 +6,7 @@ import moe.tlaster.shiba.Thickness
 import moe.tlaster.shiba.View
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
+import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.tree.ParseTree
 
 interface IToken {
@@ -81,10 +82,13 @@ class ShibaParserWrapper {
             is ShibaParser.RootContext -> buildViewTree(tree.obj())
             is ShibaParser.ObjContext -> {
                 val view = View(viewName = tree.start.text, properties = pairToMap(tree.pair()))
-                if (tree.obj() != null && tree.obj().any()) {
-                    view.children.addAll(tree.obj().map { buildViewTree(it) })
+                if (tree.children != null && tree.children.any()) {
+                    view.children.addAll(tree.children.filter { it is ShibaParser.ObjContext || it is ShibaParser.ShortobjContext }.map { buildViewTree(it) })
                 }
                 return view
+            }
+            is ShibaParser.ShortobjContext -> {
+                return View(viewName = tree.start.text, defaultValue = getValue(tree.value()))
             }
             else -> throw IllegalArgumentException()
         }

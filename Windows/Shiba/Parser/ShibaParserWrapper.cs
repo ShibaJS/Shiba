@@ -38,7 +38,7 @@ namespace Shiba.Parser
                     //InitPair(ref view, obj.pair());
                     if (obj.children != null && obj.children.Any())
                     {
-                        view.Children.AddRange(obj.children.Where(it => it is ParserRuleContext).Select(BuildViewTree));
+                        view.Children.AddRange(obj.children.Where(it => it is ShibaParser.ObjContext || it is ShibaParser.ShortobjContext).Select(BuildViewTree));
                     }
                     
                     return view;

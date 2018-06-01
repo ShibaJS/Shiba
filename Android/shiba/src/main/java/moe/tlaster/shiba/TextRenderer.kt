@@ -70,18 +70,27 @@ open class ViewRenderer<T> : IViewRenderer where T : View {
         }
 
 //        val contextBindings = getPropertyMethods(dataContext)
-        val subscriptions = ArrayList<PropertyChangedSubscription>()
         if (propertyCache == null) {
             propertyCache = propertyMaps()
         }
-        view.properties.forEach { key, value ->
-            propertyCache!!.findLast { it.name == key }
-                    ?.let {
-                        val subscription = setValue(it, value, target)
-                        if (subscription != null) {
-                            subscriptions += subscription
+        val subscriptions = ArrayList<PropertyChangedSubscription>()
+        if (view.defaultValue != null && hasDefaultProperty) {
+            if (defaultPropertyMap != null) {
+                val subscription = setValue(defaultPropertyMap!!, view.defaultValue!!, target)
+                if (subscription != null) {
+                    subscriptions += subscription
+                }
+            }
+        } else {
+            view.properties?.forEach { key, value ->
+                propertyCache!!.findLast { it.name == key }
+                        ?.let {
+                            val subscription = setValue(it, value, target)
+                            if (subscription != null) {
+                                subscriptions += subscription
+                            }
                         }
-                    }
+            }
         }
         propertyChangedSubscription[target] = subscriptions
 //        if (contextBindings != null && dataContext is INotifyPropertyChanged) {
@@ -167,6 +176,10 @@ open class ViewRenderer<T> : IViewRenderer where T : View {
 
     private var propertyCache: List<PropertyMap>? = null
 
+    protected open var hasDefaultProperty = false
+
+    protected open var defaultPropertyMap: PropertyMap? = null
+
     protected open fun propertyMaps(): ArrayList<PropertyMap> {
         return arrayListOf(
                 PropertyMap("visible", { view, it ->
@@ -203,7 +216,10 @@ open class ViewRenderer<T> : IViewRenderer where T : View {
                 PropertyMap("name", { view, it -> if (it is String) view.setTag(R.id.shiba_view_name_key, it) })
 //                PropertyMap("name", {view, it -> if (it is String) })
 //                PropertyMap("background", {view, it ->  })
-        )
+        ).apply {
+            if (defaultPropertyMap != null)
+                add(defaultPropertyMap!!)
+        }
     }
 
     protected open fun createView(context: Context): View {
@@ -245,13 +261,11 @@ class StackRenderer : ViewRenderer<LinearLayout>() {
 }
 
 class TextRenderer : ViewRenderer<TextView>() {
+
+    override var hasDefaultProperty = true
+    override var defaultPropertyMap: PropertyMap? = PropertyMap("text", { view, it -> if (it is CharSequence && view is TextView) view.text = it })
+
     override fun createView(context: Context): View {
         return TextView(context)
-    }
-
-    override fun propertyMaps(): ArrayList<PropertyMap> {
-        return super.propertyMaps().apply {
-            add(PropertyMap("text", { view, it -> if (it is CharSequence && view is TextView) view.text = it }))
-        }
     }
 }

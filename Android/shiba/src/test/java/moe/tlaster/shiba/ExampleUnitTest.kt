@@ -15,8 +15,5 @@ class ExampleUnitTest {
     @Test
     @Throws(Exception::class)
     fun test() {
-        val parserWrapper = ShibaParserWrapper()
-        val tree = parserWrapper.parse("stackLayout {orientation: horizontal, padding: [8, 0], alpha: 50%, etgsa: \$bind aaa, input{content: fdsafds(dsafs(\$bind dasfd, dfsa), dfsafs)}}")
-        Assert.assertNotNull(tree)
     }
 }
