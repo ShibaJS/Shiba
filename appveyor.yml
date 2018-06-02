@@ -7,6 +7,7 @@ install:
   - appveyor DownloadFile https://dl.google.com/android/repository/sdk-tools-windows-3859397.zip
   - 7z x sdk-tools-windows-3859397.zip -oc:\android-sdk-windows
   - yes | C:\android-sdk-windows\tools\bin\sdkmanager.bat --licenses
+  - C:\android-sdk-windows\tools\bin\sdkmanager.bat "platform-tools" "platforms;android-27" "build-tools;27.0.3" "extras;android;m2repository" "extras;google;m2repository"
 build_script:
 - ps: >-
     nuget restore "Windows\\Shiba.sln"
