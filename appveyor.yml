@@ -23,3 +23,7 @@ build_script:
     cd ..
 artifacts:
 - path: '**\*.nupkg'
+  name: nuget
+- path: '**\*.aar'
+  name: aar
+
