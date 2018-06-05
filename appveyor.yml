@@ -18,7 +18,7 @@ build_script:
 
     cd Android
 
-    .\gradlew.bat clean publish -Pversion=$System.env.appveyor_build_version --parallel --stacktrace
+    .\gradlew.bat clean publish -Pversion="$env:appveyor_build_version" --parallel --stacktrace
 
     cd ..
 artifacts:
