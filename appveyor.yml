@@ -18,12 +18,12 @@ build_script:
 
     cd Android
 
-    .\gradlew.bat clean assembleRelease --parallel --stacktrace
+    .\gradlew.bat clean publish -Pversion=$env:appveyor_build_version --parallel --stacktrace
 
     cd ..
 artifacts:
 - path: '**\*.nupkg'
   name: nuget
-- path: '**\*.aar'
-  name: aar
+- path: 'Android\shiba\build\repo\moe\tlaster\Shiba'
+  name: bintray
 

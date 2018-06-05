@@ -199,7 +199,9 @@ open class ViewRenderer<T> : IViewRenderer where T : View {
                 }),
                 PropertyMap("height", { view, it ->
                     val param = view.layoutParams
-                    if (it is Number) param.height = it.toInt().dp
+                    if (it is Number) {
+                        param.height = it.toInt().dp
+                    }
                     else if (it is String) {
                         if (it.equals("wrap_content", true)) param.height = ViewGroup.LayoutParams.WRAP_CONTENT
                         else if (it.equals("match_parent", true)) param.height = ViewGroup.LayoutParams.MATCH_PARENT
@@ -217,8 +219,9 @@ open class ViewRenderer<T> : IViewRenderer where T : View {
 //                PropertyMap("name", {view, it -> if (it is String) })
 //                PropertyMap("background", {view, it ->  })
         ).apply {
-            if (defaultPropertyMap != null)
+            if (defaultPropertyMap != null) {
                 add(defaultPropertyMap!!)
+            }
         }
     }
 
