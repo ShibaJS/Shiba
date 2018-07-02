@@ -1,107 +1,63 @@
 grammar Shiba;
 
-root
-   : obj
-   ;
+view:
+	token (
+		LeftBrace (
+			(property | view | shortView) (
+				Comma? (property | view | shortView)
+			)*
+		)? RightBrace
+	)?;
 
-obj
-   : TOKEN ('{' ((pair | obj | shortobj) (','? (pair | obj | shortobj))*)? '}')?
-   ;
-   
-shortobj
-   : TOKEN '->' value
-   ;
+shortView: token Arrow (value | property);
 
-pair
-   : TOKEN (':' | '=') value
-   ;
+property: token Assign value;
 
-value
-   : staticvalue
-   | binding
-   | resource
-   | jsonpath
-   | func
-   | dic
-   ;
+value:
+	basicValue
+	| platformSpecific
+	| propertyGroup
+	| function
+	| shibaExtension;
 
-staticvalue
-   : STRING
-   | NUMBER
-   | BOOLEAN
-   | NULL
-   | TOKEN
-   | percent
-   | thickness
-   ;
+propertyGroup:
+	LeftBrace (property (Comma? property)*)? RightBrace;
 
-NULL
-   : 'null'
-   ;
+basicValue: String | Number | Boolean | Null | Token;
 
-STRING
-   : '"' (~'"')* '"'
-   ;
+function: Token LeftParen paramter (Comma paramter)* RightParen;
 
-BOOLEAN
-   : 'true'
-   | 'false'
-   ;
+paramter: value | function;
 
-TOKEN
-   : ([a-z] | [A-Z] | '_')+ ([a-z] | [A-Z] | [0-9] | '_' | '.')*
-   ;
+shibaExtension: '$' Token basicValue;
 
-NUMBER
-   : '-'? INT ('.' [0-9] +)? EXP?
-   ;
+platformSpecific:
+	LeftBracket property (Comma? property)* RightBracket;
 
-percent
-   : NUMBER '%'
-   ;
+token: (Token Colon)? Token;
 
-thickness
-   : '[' NUMBER ']'
-   | '[' NUMBER ',' NUMBER ']'
-   | '[' NUMBER ',' NUMBER ',' NUMBER ',' NUMBER ']'
-   ;
-   
-func
-   : TOKEN '(' paramter (',' paramter)* ')'
-   ;
+Null: 'null';
+String: '"' (~'"')* '"';
+Boolean: 'true' | 'false';
+Token: ([a-z] | [A-Z] | '_')+ ([a-z] | [A-Z] | [0-9] | '_' | '.')*;
+Number: '-'? INT ('.' [0-9]+)? EXP?;
+Arrow: '->';
+Comma: ',';
+Colon : ':';
+Assign: '=';
+LeftParen: '(';
+RightParen: ')';
+LeftBracket: '[';
+RightBracket: ']';
+LeftBrace: '{';
+RightBrace: '}';
 
-paramter
-   : value
-   | func
-   ;
-
-binding
-   : '$bind' staticvalue
-   ;
-
-resource
-   : '$res' staticvalue
-   ;
-
-jsonpath
-   : '$json' staticvalue
-   ;
-
-dic
-   : '[' pair (','? pair)* ']'
-   ;
-
-fragment INT
-   : '0' | [1-9] [0-9]*
-   ;
-
-fragment EXP
-   : [Ee] [+\-]? INT
-   ;
+fragment INT: '0' | [1-9] [0-9]*;
+fragment EXP: [Ee] [+\-]? INT;
 
 Hws: [ \t] -> skip;
 Vws: [\r\n\f] -> skip;
 DocComment: '/**' .*? ('*/' | EOF) -> skip;
-BlockComment: '/*'  .*? ('*/' | EOF) -> skip;
+BlockComment: '/*' .*? ('*/' | EOF) -> skip;
 LineComment: '//' ~[\r\n]* -> skip;
-LineCommentExt: '//' ~'\n'* ( '\n' Hws* '//' ~'\n'* )* -> skip;
+LineCommentExt: '//' ~'\n'* ( '\n' Hws* '//' ~'\n'*)* -> skip;
