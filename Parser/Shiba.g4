@@ -12,15 +12,13 @@ view:
 
 property: token Assign value;
 
-value: basicValue | array | object | function | shibaExtension;
+value: basicValue | array | object | function | shibaExtension | view;
 
 object: LeftBrace (property (Comma? property)*)? RightBrace;
 
 basicValue: String | Number | Boolean | Null | Token;
 
-function: Token LeftParen paramter (Comma paramter)* RightParen;
-
-paramter: value | function;
+function: Token LeftParen value (Comma value)* RightParen;
 
 shibaExtension: '$' Token basicValue;
 
