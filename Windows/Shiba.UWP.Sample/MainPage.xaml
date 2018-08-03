@@ -12,8 +12,13 @@
         <shiba:ShibaHost DataContext="{x:Bind ViewModel}">
             <shiba:ShibaHost.Layout>
                 stack {
-                    check { text = "Sample CheckBox" checked=$bind IsChecked }
-                    switch { text = "Sample Switch!" isOn=$bind IsChecked }
+                text -> awesome(reverse($bind UWPText))
+                text {
+                color = "#ffff00"
+                text = "fdsafdsaf"
+                size = 20
+                }
+                input -> $bind UWPText
                 }
             </shiba:ShibaHost.Layout>
         </shiba:ShibaHost>

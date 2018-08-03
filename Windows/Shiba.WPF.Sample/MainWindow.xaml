@@ -12,8 +12,7 @@
         <shiba:ShibaHost>
             <shiba:ShibaHost.Layout>
                 stack {
-                    check { text = "Sample CheckBox" checked=$bind IsChecked }
-                    switch { text = "Sample Switch!" isOn=$bind IsChecked }
+                    text -> "fdsafdsafdsa"
                 }
             </shiba:ShibaHost.Layout>
         </shiba:ShibaHost>

@@ -32,45 +32,25 @@ using IToken = Antlr4.Runtime.IToken;
 [System.CLSCompliant(false)]
 public interface IShibaListener : IParseTreeListener {
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ShibaParser.root"/>.
+	/// Enter a parse tree produced by <see cref="ShibaParser.view"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterRoot([NotNull] ShibaParser.RootContext context);
+	void EnterView([NotNull] ShibaParser.ViewContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="ShibaParser.root"/>.
+	/// Exit a parse tree produced by <see cref="ShibaParser.view"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitRoot([NotNull] ShibaParser.RootContext context);
+	void ExitView([NotNull] ShibaParser.ViewContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ShibaParser.obj"/>.
+	/// Enter a parse tree produced by <see cref="ShibaParser.property"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterObj([NotNull] ShibaParser.ObjContext context);
+	void EnterProperty([NotNull] ShibaParser.PropertyContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="ShibaParser.obj"/>.
+	/// Exit a parse tree produced by <see cref="ShibaParser.property"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitObj([NotNull] ShibaParser.ObjContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="ShibaParser.shortobj"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterShortobj([NotNull] ShibaParser.ShortobjContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ShibaParser.shortobj"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitShortobj([NotNull] ShibaParser.ShortobjContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="ShibaParser.pair"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterPair([NotNull] ShibaParser.PairContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ShibaParser.pair"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitPair([NotNull] ShibaParser.PairContext context);
+	void ExitProperty([NotNull] ShibaParser.PropertyContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="ShibaParser.value"/>.
 	/// </summary>
@@ -82,94 +62,64 @@ public interface IShibaListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitValue([NotNull] ShibaParser.ValueContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ShibaParser.staticvalue"/>.
+	/// Enter a parse tree produced by <see cref="ShibaParser.map"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterStaticvalue([NotNull] ShibaParser.StaticvalueContext context);
+	void EnterMap([NotNull] ShibaParser.MapContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="ShibaParser.staticvalue"/>.
+	/// Exit a parse tree produced by <see cref="ShibaParser.map"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitStaticvalue([NotNull] ShibaParser.StaticvalueContext context);
+	void ExitMap([NotNull] ShibaParser.MapContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ShibaParser.percent"/>.
+	/// Enter a parse tree produced by <see cref="ShibaParser.basicValue"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterPercent([NotNull] ShibaParser.PercentContext context);
+	void EnterBasicValue([NotNull] ShibaParser.BasicValueContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="ShibaParser.percent"/>.
+	/// Exit a parse tree produced by <see cref="ShibaParser.basicValue"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitPercent([NotNull] ShibaParser.PercentContext context);
+	void ExitBasicValue([NotNull] ShibaParser.BasicValueContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ShibaParser.thickness"/>.
+	/// Enter a parse tree produced by <see cref="ShibaParser.function"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterThickness([NotNull] ShibaParser.ThicknessContext context);
+	void EnterFunction([NotNull] ShibaParser.FunctionContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="ShibaParser.thickness"/>.
+	/// Exit a parse tree produced by <see cref="ShibaParser.function"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitThickness([NotNull] ShibaParser.ThicknessContext context);
+	void ExitFunction([NotNull] ShibaParser.FunctionContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ShibaParser.func"/>.
+	/// Enter a parse tree produced by <see cref="ShibaParser.shibaExtension"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterFunc([NotNull] ShibaParser.FuncContext context);
+	void EnterShibaExtension([NotNull] ShibaParser.ShibaExtensionContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="ShibaParser.func"/>.
+	/// Exit a parse tree produced by <see cref="ShibaParser.shibaExtension"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitFunc([NotNull] ShibaParser.FuncContext context);
+	void ExitShibaExtension([NotNull] ShibaParser.ShibaExtensionContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ShibaParser.paramter"/>.
+	/// Enter a parse tree produced by <see cref="ShibaParser.array"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterParamter([NotNull] ShibaParser.ParamterContext context);
+	void EnterArray([NotNull] ShibaParser.ArrayContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="ShibaParser.paramter"/>.
+	/// Exit a parse tree produced by <see cref="ShibaParser.array"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitParamter([NotNull] ShibaParser.ParamterContext context);
+	void ExitArray([NotNull] ShibaParser.ArrayContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ShibaParser.binding"/>.
+	/// Enter a parse tree produced by <see cref="ShibaParser.identifier"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterBinding([NotNull] ShibaParser.BindingContext context);
+	void EnterIdentifier([NotNull] ShibaParser.IdentifierContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="ShibaParser.binding"/>.
+	/// Exit a parse tree produced by <see cref="ShibaParser.identifier"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitBinding([NotNull] ShibaParser.BindingContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="ShibaParser.resource"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterResource([NotNull] ShibaParser.ResourceContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ShibaParser.resource"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitResource([NotNull] ShibaParser.ResourceContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="ShibaParser.jsonpath"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterJsonpath([NotNull] ShibaParser.JsonpathContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ShibaParser.jsonpath"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitJsonpath([NotNull] ShibaParser.JsonpathContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="ShibaParser.dic"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterDic([NotNull] ShibaParser.DicContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="ShibaParser.dic"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitDic([NotNull] ShibaParser.DicContext context);
+	void ExitIdentifier([NotNull] ShibaParser.IdentifierContext context);
 }
 } // namespace Shiba.Parser

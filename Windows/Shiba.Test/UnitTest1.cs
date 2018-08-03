@@ -8,15 +8,19 @@ using Xunit;
 
 namespace Shiba.Test
 {
-    class Shiba : AbstractShiba
+    class ShibaApp : AbstractShiba
     {
 
-        static Shiba()
+
+        public static void Init(Action<ShibaConfiguration> action = null)
         {
-            Instance = new Shiba();
+            Instance = new ShibaApp(c =>
+            {
+                action?.Invoke(c);
+            });
         }
 
-        public Shiba(Action<ShibaConfiguration> action = null) : base(action)
+        private ShibaApp(Action<ShibaConfiguration> action = null) : base(action)
         {
         }
     }
@@ -26,15 +30,20 @@ namespace Shiba.Test
         [Fact]
         public void Test1()
         {
-            //Shiba.Init();
+            ShibaApp.Init();
+            var wrapper = new ShibaParserWrapper();
+            
 //            const string input =
-////                "stackLayout {orientation: horizontal, padding: [8, 0], alpha: 50%, etgsa: $bind aaa, input{content: fdsafds(dsafs($bind dasfd, dfsa), dfsafs)}}";
-//            const string input =
-//                "stackLayout {orientation: dsads(dsafs($bind aaa, $bind bbb), dsafs)}";
-//            var tree = new ShibaParserWrapper().Parse(input);
-////            var view = ShibaParserWrapper.BuildViewTree(tree);
+//                "stackLayout {orientation: horizontal, padding: [8, 0], alpha: 50%, etgsa: $bind aaa, input{content: fdsafds(dsafs($bind dasfd, dfsa), dfsafs)}}";
+            const string input =
+                "stackLayout {orientation= dsads(dsafs($bind aaa, $bind bbb), dsafs) fdsafd = [ fdsaf = 1121 fdsafd = false ] aaa -> 123 ccc -> fjsoi = cdsa jiodsa { aa = dasf }}";
+            var tree = wrapper.Parse(input);
+//            var view = ShibaParserWrapper.BuildViewTree(tree);
 
-//            Assert.NotNull(tree);
+            Assert.NotNull(tree);
+            var str = tree.ToString();
+            var tree2 = wrapper.Parse(str);
+            Assert.Equal(tree, tree2);
         }
 
     }

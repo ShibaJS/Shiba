@@ -8,6 +8,7 @@ using Jint.Native;
 using Jint.Native.Function;
 using Newtonsoft.Json.Linq;
 using Shiba.Controls;
+using Shiba.Parser;
 
 namespace Shiba
 {

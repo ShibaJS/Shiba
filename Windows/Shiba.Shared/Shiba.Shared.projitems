@@ -12,10 +12,17 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NativeRenderer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Renderers\ConvertExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TextRenderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ConvertExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ShibaBinding.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ShibaApp.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ShibaHost.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Singleton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewMappers\InputMapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewMappers\StackMapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewMappers\TextMapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Visitors\ValueVisitor.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ViewMappers\ViewMapper.cs" />
   </ItemGroup>
 </Project>

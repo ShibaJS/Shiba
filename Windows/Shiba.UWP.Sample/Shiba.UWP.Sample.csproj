@@ -127,6 +127,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.1.7" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Shiba.UWP\Shiba.UWP.csproj">
       <Project>{0ece2838-de51-461f-8386-75d7de285d53}</Project>
       <Name>Shiba.UWP</Name>
@@ -135,9 +138,6 @@
       <Project>{d0b763d5-a804-4822-be17-4cf9d0b62488}</Project>
       <Name>Shiba</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.1.4" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

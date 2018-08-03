@@ -1,13 +1,199 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Shiba.Controls;
-using IToken = Shiba.Controls.IToken;
 
 namespace Shiba.Parser
 {
+    internal interface IShibaVisitor
+    {
+        Type HandleType { get; }
+        object Visit(IParseTree tree);
+    }
+
+    internal abstract class ShibaVisitor : IShibaVisitor
+    {
+        private static readonly List<IShibaVisitor> Visitors;
+
+        static ShibaVisitor()
+        {
+            Visitors = typeof(IShibaVisitor)
+                .Assembly
+                .DefinedTypes
+                .Where(it =>
+                    it.IsClass && !it.IsAbstract &&
+                    typeof(IShibaVisitor).GetTypeInfo().IsAssignableFrom(it.GetTypeInfo()))
+                .Select(it => Activator.CreateInstance(it) as IShibaVisitor)
+                .ToList();
+        }
+
+        public abstract Type HandleType { get; }
+        public abstract object Visit(IParseTree tree);
+
+        protected static T GetValue<T>(IParseTree tree)
+        {
+            var value = GetValue(tree);
+            if (value is T result) return result;
+
+            return default;
+        }
+
+        protected internal static object GetValue(IParseTree tree)
+        {
+            return tree == null ? null : Visitors.FirstOrDefault(it => it.HandleType == tree.GetType())?.Visit(tree);
+        }
+    }
+
+
+    internal abstract class GenericVisitor<T, K> : ShibaVisitor
+        where T : class, IParseTree
+    {
+        public override Type HandleType { get; } = typeof(T);
+
+        public override object Visit(IParseTree tree)
+        {
+            return Parse(tree as T);
+        }
+
+        protected abstract K Parse(T tree);
+    }
+
+    internal sealed class ViewVisitor : GenericVisitor<ShibaParser.ViewContext, View>
+    {
+        protected override View Parse(ShibaParser.ViewContext tree)
+        {
+            var viewName = GetValue<ShibaToken>(tree.identifier());
+            var view = new View(viewName, GetValue(tree.value()));
+            
+            if (tree.property() != null) view.Properties.AddRange(tree.property().Select(GetValue<Property>));
+
+            if (tree.view() != null) view.Children.AddRange(tree.view().Select(GetValue<View>));
+
+            return view;
+        }
+    }
+
+    internal sealed class PropertyVisitor : GenericVisitor<ShibaParser.PropertyContext, Property>
+    {
+        protected override Property Parse(ShibaParser.PropertyContext tree)
+        {
+            var tokenName = GetValue<ShibaToken>(tree.identifier());
+            var value = GetValue(tree.value());
+            return new Property(tokenName, value);
+        }
+    }
+
+    internal sealed class ValueVisitor : GenericVisitor<ShibaParser.ValueContext, object>
+    {
+        protected override object Parse(ShibaParser.ValueContext tree)
+        {
+            return GetValue(tree.GetChild(0));
+        }
+    }
+
+    internal sealed class ShibaTokenVisitor : GenericVisitor<ShibaParser.IdentifierContext, ShibaToken>
+    {
+        protected override ShibaToken Parse(ShibaParser.IdentifierContext tree)
+        {
+            switch (tree.Identifier()?.Length)
+            {
+                case 1:
+                    return new ShibaToken(tree.Identifier().FirstOrDefault()?.GetText());
+                case 2:
+                    return new ShibaToken(tree.Identifier().FirstOrDefault()?.GetText(),
+                        tree.Identifier().Skip(1).FirstOrDefault()?.GetText());
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+    }
+
+    internal sealed class ShibaMapVisitor : GenericVisitor<ShibaParser.MapContext, ShibaMap>
+    {
+        protected override ShibaMap Parse(ShibaParser.MapContext tree)
+        {
+            var obj = new ShibaMap();
+            if (tree.property() != null) obj.Properties.AddRange(tree.property().Select(GetValue<Property>));
+
+            return obj;
+        }
+    }
+
+    internal sealed class BasicValueVisitor : GenericVisitor<ShibaParser.BasicValueContext, BasicValue>
+    {
+        protected override BasicValue Parse(ShibaParser.BasicValueContext tree)
+        {
+            ShibaValueType type;
+            object targetValue;
+            var token = tree.children.FirstOrDefault() as ITerminalNode;
+            switch (token?.Symbol.Type)
+            {
+                case ShibaParser.String:
+                    type = ShibaValueType.String;
+                    targetValue = token.GetText().Trim('"');
+                    break;
+                case ShibaParser.Number:
+                    type = ShibaValueType.Number;
+                    targetValue = Convert.ToDecimal(token.GetText());
+                    break;
+                case ShibaParser.Boolean:
+                    type = ShibaValueType.Boolean;
+                    targetValue = Convert.ToBoolean(token.GetText());
+                    break;
+                case ShibaParser.Null:
+                    type = ShibaValueType.Null;
+                    targetValue = null;
+                    break;
+                case ShibaParser.Identifier:
+                    type = ShibaValueType.Token;
+                    targetValue = token.GetText();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            var value = new BasicValue(type, targetValue);
+            return value;
+        }
+    }
+
+    internal sealed class FunctionVisitor : GenericVisitor<ShibaParser.FunctionContext, ShibaFunction>
+    {
+        protected override ShibaFunction Parse(ShibaParser.FunctionContext tree)
+        {
+            var name = tree.Identifier().GetText();
+            var function = new ShibaFunction(name);
+            if (tree.value() != null) function.Paramters.AddRange(tree.value().Select(GetValue));
+
+            return function;
+        }
+    }
+
+    internal sealed class ShibaExtensionVisitor : GenericVisitor<ShibaParser.ShibaExtensionContext, ShibaExtension>
+    {
+        protected override ShibaExtension Parse(ShibaParser.ShibaExtensionContext tree)
+        {
+            var name = tree.Identifier().GetText();
+            var value = GetValue<BasicValue>(tree.basicValue());
+            var extension = new ShibaExtension(name, value);
+            return extension;
+        }
+    }
+
+    internal sealed class ArrayVisitor : GenericVisitor<ShibaParser.ArrayContext, ShibaArray>
+    {
+        protected override ShibaArray Parse(ShibaParser.ArrayContext tree)
+        {
+            var value = new ShibaArray();
+            if (tree.value() != null) value.Items.AddRange(tree.value().Select(GetValue));
+
+            return value;
+        }
+    }
+
     public class ShibaParserWrapper
     {
         private IParseTree ParseGrammarTree(string input)
@@ -16,159 +202,14 @@ namespace Shiba.Parser
             var lexer = new ShibaLexer(stream);
             var tokens = new CommonTokenStream(lexer);
             var parser = new ShibaParser(tokens) {BuildParseTree = true};
-            return parser.root();
+
+            return parser.view();
         }
 
-        public View Parse(string input)
+        public object Parse(string input)
         {
             var tree = ParseGrammarTree(input);
-            return BuildViewTree(tree);
-        }
-
-        private View BuildViewTree(IParseTree tree)
-        {
-            switch (tree)
-            {
-                case ShibaParser.RootContext root:
-                    return BuildViewTree(root.obj());
-                case ShibaParser.ObjContext obj:
-                {
-                    //var view = FindTypes(obj.Start.Text)?.FirstOrDefault()?.CreateInstance<View>(PairToDictionary(obj.pair()));
-                    var view = new View(obj.Start.Text, PairToDictionary(obj.pair()));
-                    //InitPair(ref view, obj.pair());
-                    if (obj.children != null && obj.children.Any())
-                    {
-                        view.Children.AddRange(obj.children.Where(it => it is ShibaParser.ObjContext || it is ShibaParser.ShortobjContext).Select(BuildViewTree));
-                    }
-                    
-                    return view;
-                }
-                case ShibaParser.ShortobjContext shortObj:
-                {
-                    return new View(shortObj.Start.Text, GetValue(shortObj.value()));
-                }
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        private Dictionary<string, IToken> PairToDictionary(IEnumerable<ShibaParser.PairContext> pair)
-        {
-            return pair?.ToDictionary(x => x.Start.Text, x => GetValue(x.value())) ??
-                   new Dictionary<string, IToken>();
-        }
-
-        private IToken GetStaticValue(ShibaParser.StaticvalueContext context)
-        {
-            if (context == null)
-            {
-                return null;
-            }
-
-            if (context.NULL() != null)
-            {
-                return new NullToken(context.NULL().Symbol.Column, context.NULL().Symbol.Line);
-            }
-
-            if (context.BOOLEAN() != null)
-            {
-                return new BoolToken(bool.Parse(context.BOOLEAN().GetText()), context.BOOLEAN().Symbol.Column,
-                    context.BOOLEAN().Symbol.Line);
-            }
-
-            if (context.NUMBER() != null)
-            {
-                return new NumberToken(decimal.Parse(context.NUMBER().GetText()), context.NUMBER().Symbol.Column,
-                    context.NUMBER().Symbol.Line);
-            }
-
-            if (context.percent() != null)
-            {
-                return new PercentToken(new Percent(float.Parse(context.percent().Start.Text)),
-                    context.percent().Start.Column, context.percent().Start.Line);
-            }
-
-            if (context.thickness() != null)
-            {
-                return new ThicknessToken(new Thickness(context.thickness().GetText()),
-                    context.thickness().Start.Column, context.thickness().Start.Line);
-            }
-
-            if (context.STRING() != null)
-            {
-                return new StringToken(context.STRING().GetText().Trim('"'), context.STRING().Symbol.Column,
-                    context.STRING().Symbol.Line);
-            }
-
-            if (context.TOKEN() != null)
-            {
-                return new Token(context.TOKEN().GetText(), context.TOKEN().Symbol.Column, context.TOKEN().Symbol.Line);
-            }
-
-            throw new NotSupportedException(
-                $"Not support context at line {context.Start.Line}, column {context.Start.Column}");
-        }
-
-
-        private IToken GetValue(ShibaParser.ValueContext context)
-        {
-            if (context == null)
-            {
-                return null;
-            }
-
-            var staticValue = GetStaticValue(context.staticvalue());
-            if (staticValue != null)
-            {
-                return staticValue;
-            }
-
-            if (context.binding() != null)
-            {
-                return new BindingToken(new Binding(GetStaticValue(context.binding().staticvalue())),
-                    context.binding().Start.Column, context.binding().Start.Line);
-            }
-
-            if (context.resource() != null)
-            {
-                return new NativeResourceToken(new NativeResource(GetStaticValue(context.resource().staticvalue())),
-                    context.resource().Start.Column, context.resource().Start.Line);
-            }
-
-            if (context.jsonpath() != null)
-            {
-                return new JsonPathToken(new JsonPath(GetStaticValue(context.resource().staticvalue())),
-                    context.resource().Start.Column, context.resource().Start.Line);
-            }
-
-            if (context.dic() != null)
-            {
-                var pair = context.dic().pair().FirstOrDefault(it => it.TOKEN().Symbol.Text == AbstractShiba.Instance.Configuration.PlatformType);
-                return GetValue(pair?.value());
-            }
-
-            if (context.func() != null)
-            {
-                return new FunctionToken(GetFunc(context.func()), context.func().Start.Column,
-                    context.func().Start.Line);
-            }
-
-            throw new NotSupportedException(
-                $"Not support context at line {context.Start.Line}, column {context.Start.Column}");
-        }
-
-        private Function GetFunc(ShibaParser.FuncContext func)
-        {
-            return new Function(func.TOKEN().Symbol.Text,
-                func.paramter().Select(item =>
-                    item.func() != null
-                        ? GetFunc(item.func()) as IParamter
-                        : GetValueParamter(item.value()) as IParamter).ToArray());
-        }
-
-        private ValueParamter GetValueParamter(ShibaParser.ValueContext value)
-        {
-            return new ValueParamter(GetValue(value));
+            return ShibaVisitor.GetValue(tree);
         }
     }
 }

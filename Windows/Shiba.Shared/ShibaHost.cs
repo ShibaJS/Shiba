@@ -19,6 +19,7 @@ namespace Shiba
     public class ShibaHost : NativeParent, IShibaHost
     {
 #if FORMS
+        public object DataContext => BindingContext;
         public static readonly BindableProperty LayoutProperty = BindableProperty.Create(
             nameof(Layout), typeof(string), typeof(ShibaHost), propertyChanged: OnLayoutChanged);
 
@@ -37,6 +38,16 @@ namespace Shiba
         }
 #endif
 
+        public ShibaHost()
+        {
+            Context = new ShibaContext
+            {
+                ShibaHost = this
+            };
+        }
+
+        public IShibaContext Context { get; }
+
         public string Layout
         {
             get => (string) GetValue(LayoutProperty);
@@ -49,11 +60,7 @@ namespace Shiba
             {
                 return;
             }
-#if FORMS
-            Content = NativeRenderer.Render(value, this);
-#else
-            Content = NativeRenderer.Render(value, this);
-#endif
+            Content = NativeRenderer.Render(value, Context);
         }
 
         public void ReLayout()

@@ -16,15 +16,15 @@ namespace Shiba.Controls
     //}
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-    public class ExportRendererAttribute : Attribute
+    public class ExportMapperAttribute : Attribute
     {
-        public ExportRendererAttribute(string viewName, Type rendererType)
+        public ExportMapperAttribute(string viewName, Type mapperType)
         {
-            RendererType = rendererType;
+            MapperType = mapperType;
             ViewName = viewName;
         }
 
         public string ViewName { get; }
-        public Type RendererType { get; }
+        public Type MapperType { get; }
     }
 }

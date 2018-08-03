@@ -1,99 +1,90 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using Shiba.Controls;
-using Shiba.Renderers;
-using Binding = Shiba.Controls.Binding;
+using Shiba.Internal;
 #if WINDOWS_UWP
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 #elif WPF
 using System.Windows;
 using System.Windows.Data;
-using System.Globalization;
 #elif FORMS
 using Xamarin.Forms;
 #endif
 
 namespace Shiba
 {
-    internal class SingleBindingFunctionConverter : FunctionConverter
+    internal class ShibaFunctionExecutor
     {
-        protected override object GetValueFromDataContext(object dataContext, IBindingValue value)
+        public object Execute(ShibaFunction function, object dataContext)
+        {
+            return AbstractShiba.Instance.Configuration.ConverterExecutor.Execute(function.Name,
+                function.Paramters.Select(it => GetParamterValue(it, dataContext)).ToArray());
+        }
+        
+        private object GetParamterValue(object it, object dataContext)
+        {
+            switch (it)
+            {
+                case ShibaFunction function:
+                    return Execute(function, dataContext);
+                case ShibaBinding binding:
+                    return GetValueFromDataContext(binding, dataContext);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        protected virtual object GetValueFromDataContext(ShibaBinding binding, object dataContext)
+        {
+            return AbstractShiba.Instance.Configuration.BindingValueResolver.GetValue(dataContext,
+                binding.Path);
+        }
+    }
+
+    internal class SingleBindingShibaFunctionExecutor : ShibaFunctionExecutor
+    {
+        protected override object GetValueFromDataContext(ShibaBinding binding, object dataContext)
         {
             return dataContext;
         }
     }
+    
+    internal class SingleBindingFunctionConverter : FunctionConverter
+    {
+        protected override ShibaFunctionExecutor Executor => Singleton<SingleBindingShibaFunctionExecutor>.Instance;
+    }
 
     internal class FunctionConverter : ShibaConverter
-    {
+    {    
         protected override object Convert(object value, Type targetType, object parameter)
         {
-            if (!(parameter is Function function))
+            if (!(parameter is ShibaFunction function))
             {
                 throw new ArgumentException();
             }
 
-            return Execute(function, value).CheckIfIsBoolean(targetType);
+            return Executor.Execute(function, value);
         }
 
-        private object Execute(Function function, object bindingValue)
-        {
-            return AbstractShiba.Instance.Configuration.ConverterExecutor.Execute(function.Name,
-                function.Paramters.Select(it => GetParamterValue(it, bindingValue)).ToArray());
-        }
-
-        private object GetParamterValue(IParamter it, object bindingValue)
-        {
-            switch (it)
-            {
-                case Function function:
-                    return Execute(function, bindingValue);
-                case ValueParamter valueParamter:
-                    switch (valueParamter.Value.GetValue())
-                    {
-                        case IBindingValue value:
-                            return GetValueFromDataContext(bindingValue, value);
-                        case Function function:
-                            return Execute(function, bindingValue);
-                        default:
-                            return valueParamter.Value.GetValue();
-                    }
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        protected virtual object GetValueFromDataContext(object dataContext, IBindingValue value)
-        {
-            switch (value)
-            {
-                case Binding binding:
-                    return AbstractShiba.Instance.Configuration.BindingValueResolver.GetValue(dataContext,
-                        binding.Value.GetTokenValue());
-                case JsonPath jsonPath:
-                    return AbstractShiba.Instance.Configuration.JsonValueResolver.GetValue(dataContext,
-                        jsonPath.Value.GetTokenValue());
-                case NativeResource resource:
-                    return AbstractShiba.Instance.Configuration.ResourceValueResolver.GetValue(
-                        resource.Value.GetTokenValue());
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
+        protected virtual ShibaFunctionExecutor Executor => Singleton<ShibaFunctionExecutor>.Instance;
+        
 
         protected override object ConvertBack(object value, Type targetType, object parameter)
         {
             throw new NotImplementedException();
         }
     }
-
-    internal class JsonConverter : ShibaConverter
+    
+    
+    internal sealed class RawDataConverter : ShibaConverter
     {
         protected override object Convert(object value, Type targetType, object parameter)
         {
-            return AbstractShiba.Instance.Configuration.JsonValueResolver.GetValue(value, parameter + "")
-                .CheckIfIsBoolean(targetType);
+            Debug.WriteLine("Binding a raw data is not recommended");
+            return parameter;
         }
 
         protected override object ConvertBack(object value, Type targetType, object parameter)
@@ -102,9 +93,6 @@ namespace Shiba
         }
     }
 
-#if !FORMS
-    
-#endif
 
     internal static class ConverterExtensions
     {
@@ -133,30 +121,17 @@ namespace Shiba
         }
     }
 
-    internal class BindingConverter : ShibaConverter
-    {
-        protected override object Convert(object value, Type targetType, object parameter)
-        {
-            return value.CheckIfIsBoolean(targetType);
-        }
-
-        protected override object ConvertBack(object value, Type targetType, object parameter)
-        {
-            return value.CheckIfIsVisibility(targetType);
-        }
-    }
-
     internal abstract class ShibaConverter : IValueConverter
     {
 #if WINDOWS_UWP
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            return Convert(value, targetType, parameter);
+            return Convert(value, targetType, parameter).CheckIfIsBoolean(targetType);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
-            return ConvertBack(value, targetType, parameter);
+            return ConvertBack(value, targetType, parameter).CheckIfIsVisibility(targetType);
         }
 
 #elif WPF || FORMS

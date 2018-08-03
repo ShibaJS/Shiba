@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Shiba.Controls;
 #if WINDOWS_UWP
 using Windows.UI;
 using NativeThickness = Windows.UI.Xaml.Thickness;
@@ -18,6 +21,38 @@ namespace Shiba
 {
     internal static class ConvertExtensions
     {
+
+        public static bool TryChangeType(this object value, Type type, out object result)
+        {
+            if (value == null)
+            {
+                result = null;
+                return false;
+            }
+
+            if (type == null)
+            {
+                result = value;
+                return false;
+            }
+
+            if (value.GetType() == type)
+            {
+                result = value;
+                return true;
+            }
+            
+            if (value.CanChangeType(type))
+            {
+                result = Convert.ChangeType(value, type);
+                return true;
+            }
+
+            result = value;
+            return false;
+
+        }
+
         public static bool CanChangeType(this object value, Type conversionType)
         {
             if (conversionType == null)
@@ -32,12 +67,7 @@ namespace Shiba
 
             return value is IConvertible;
         }
-
-        public static NativeThickness ToNative(this Controls.Thickness value)
-        {
-            return new NativeThickness(value.Left, value.Top, value.Right, value.Bottom);
-        }
-
+        
         public static Color ToNativeColor(this string colorString)
         {
             if (string.IsNullOrEmpty(colorString))
