@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Shiba;
+using Shiba.Common;
 using Shiba.Controls;
 using Shiba.Internal;
 using Shiba.Visitors;
@@ -61,6 +62,9 @@ namespace Shiba.ViewMappers
         public Type ValueType { get; }
         public virtual void SetValue(NativeView view, object value)
         {
+
+            value.TryChangeType(ValueType, out value);
+
             Action?.Invoke(view, value);
         }
 
@@ -166,7 +170,29 @@ namespace Shiba.ViewMappers
             {
                 if (value is ShibaMap map)
                 {
-                    
+                    var row = map.GetValue<BasicValue>("row").To<int>();
+                    var colunm = map.GetValue<BasicValue>("colunm").To<int>();
+                    var rowSpan = map.GetValue<BasicValue>("rowSpan").To<int>();
+                    var colunmSpan = map.GetValue<BasicValue>("colunmSpan").To<int>();
+                    if (row != default)
+                    {
+                        Grid.SetRow(element, row);
+                    }
+
+                    if (colunm != default)
+                    {
+                        Grid.SetColumn(element, colunm);
+                    }
+
+                    if (rowSpan != default)
+                    {
+                        Grid.SetRowSpan(element, rowSpan);
+                    }
+
+                    if (colunmSpan != default)
+                    {
+                        Grid.SetColumnSpan(element, colunmSpan);
+                    }
                 }
             });
             

@@ -8,7 +8,4 @@
     <PackageReference Include="Jint" Version="3.0.0-beta-1210" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Common" />
-  </ItemGroup>
 </Project>

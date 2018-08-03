@@ -188,7 +188,7 @@ namespace Shiba.Parser
         protected override ShibaArray Parse(ShibaParser.ArrayContext tree)
         {
             var value = new ShibaArray();
-            if (tree.value() != null) value.Items.AddRange(tree.value().Select(GetValue));
+            if (tree.value() != null) value.AddRange(tree.value().Select(GetValue));
 
             return value;
         }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Shiba;
+using Shiba.Common;
 using Shiba.Controls;
 using ShibaView = Shiba.Controls.View;
 #if WINDOWS_UWP
@@ -35,13 +36,6 @@ namespace Shiba
 {
     public static class ShibaMapExtension
     {
-        public static Dictionary<string, object> ToDictionary(this ShibaMap shibaObject)
-        {
-            return shibaObject.Properties.Where(it => string.IsNullOrEmpty(it.Name.Prefix) ||
-                                                      !string.IsNullOrEmpty(it.Name.Prefix) && it.Name.Prefix ==
-                                                      AbstractShiba.Instance.Configuration.PlatformType)
-                .ToDictionary(it => it.Name.Value, it => it.Value);
-        }
         
         public static NativeThickness ToNativeThickness(this ShibaMap shibaObject)
         {
@@ -60,28 +54,8 @@ namespace Shiba
 
             return new NativeThickness(left: left, top: top, right: right, bottom: bottom);
         }
-
-        public static T GetValue<T>(this ShibaMap shibaObject, string name) where T : class 
-        {
-            return shibaObject.Properties.FirstOrDefault(it =>
-                it.Name.Value == name && (string.IsNullOrEmpty(it.Name.Prefix) ||
-                                          !string.IsNullOrEmpty(it.Name.Prefix) && it.Name.Prefix ==
-                                          AbstractShiba.Instance.Configuration.PlatformType))?.GetValue<T>();
-        }
     }
 
-    public static class PropertyExtension
-    {
-        public static T GetValue<T>(this Property property) where T : class 
-        {
-            if (!string.IsNullOrEmpty(property.Name.Prefix) && property.Name.Prefix != AbstractShiba.Instance.Configuration.PlatformType)
-            {
-                return null;
-            }
-
-            return property.Value as T;
-        }
-    }
 
     public static class BasicValueExtension
     {

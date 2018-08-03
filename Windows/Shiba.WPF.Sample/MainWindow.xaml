@@ -11,8 +11,17 @@
     <Grid>
         <shiba:ShibaHost>
             <shiba:ShibaHost.Layout>
-                stack {
+                grid {
+                    row = 4
+                    colunm = 4
                     text -> "fdsafdsafdsa"
+                    text {
+                        grid = [
+                            row = 1
+                            colunm = 1
+                        ]
+                        text = "dfasfsa"
+                    }
                 }
             </shiba:ShibaHost.Layout>
         </shiba:ShibaHost>

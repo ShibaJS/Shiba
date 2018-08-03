@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
+using Shiba.Common;
 
 namespace Shiba.Controls
 {
@@ -129,17 +130,16 @@ namespace Shiba.Controls
         }
     }
 
-    public sealed class ShibaArray
+    public sealed class ShibaArray : List<object>
     {
-        public List<object> Items { get; } = new List<object>();
         public override string ToString()
         {
-            return $"[{string.Join(",", Items.Select(it => it.ToString()))}]";
+            return $"[{string.Join(",", this.Select(it => it.ToString()))}]";
         }
 
         private bool Equals(ShibaArray other)
         {
-            return Items.SequenceEqual(other.Items);
+            return this.SequenceEqual(other);
         }
 
         public override bool Equals(object obj)
@@ -147,11 +147,6 @@ namespace Shiba.Controls
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             return obj is ShibaArray array && Equals(array);
-        }
-
-        public override int GetHashCode()
-        {
-            return (Items != null ? Items.GetHashCode() : 0);
         }
     }
 
@@ -237,6 +232,12 @@ namespace Shiba.Controls
         {
             return (Properties != null ? Properties.GetHashCode() : 0);
         }
+
+        public object this[string name]
+        {
+            get => this.GetValue<object>(name);
+        }
+        
     }
     
     public sealed class ShibaToken

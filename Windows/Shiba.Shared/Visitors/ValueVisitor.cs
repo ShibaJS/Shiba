@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Shiba;
+using Shiba.Common;
 using Shiba.Controls;
 using Shiba.Internal;
 using ShibaView = Shiba.Controls.View;
@@ -67,7 +68,7 @@ namespace Shiba.Visitors
 
         protected internal static object GetValue(object item, IShibaContext context)
         {
-            return item == null ? null : Visitors.FirstOrDefault(it => it.HandleType == item.GetType())?.Visit(item, context);
+            return item == null ? null : Visitors.FirstOrDefault(it => it.HandleType == item.GetType())?.Visit(item, context) ?? item;
         }
     }
 
@@ -230,19 +231,19 @@ namespace Shiba.Visitors
         }
     }
 
-    internal sealed class ShibaMapVisitor : GenericVisitor<ShibaMap, Dictionary<string, object>>
-    {
-        protected override Dictionary<string, object> Parse(ShibaMap item, IShibaContext context)
-        {
-            return item.ToDictionary().ToDictionary(it => it.Key, it => GetValue(it.Value, context));
-        }
-    }
+    //internal sealed class ShibaMapVisitor : GenericVisitor<ShibaMap, Dictionary<string, object>>
+    //{
+    //    protected override Dictionary<string, object> Parse(ShibaMap item, IShibaContext context)
+    //    {
+    //        return item.ToDictionary().ToDictionary(it => it.Key, it => GetValue(it.Value, context));
+    //    }
+    //}
 
     internal sealed class ShibaArrayVisitor : GenericVisitor<ShibaArray, List<object>>
     {
         protected override List<object> Parse(ShibaArray item, IShibaContext context)
         {
-            return item.Items.Select(it => GetValue(it, context)).ToList();
+            return item.Select(it => GetValue(it, context)).ToList();
         }
     }
 
