@@ -1,35 +1,31 @@
 grammar Shiba;
 
 view:
-	token (
-		(
-			LeftBrace (
-				(property | view) (Comma? (property | view))*
-			)? RightBrace
-		)
+	identifier (
+		LeftBrace ((property | view) Comma?)* RightBrace
 		| Arrow (value | property)
 	)?;
 
-property: token Assign value;
+property: identifier Assign value;
 
-value: basicValue | array | object | function | shibaExtension | view;
+value: basicValue | array | map | function | shibaExtension | view;
 
-object: LeftBrace (property (Comma? property)*)? RightBrace;
+map: LeftBracket (property Comma?)* RightBracket;
 
-basicValue: String | Number | Boolean | Null | Token;
+basicValue: String | Number | Boolean | Null | Identifier;
 
-function: Token LeftParen value (Comma value)* RightParen;
+function: Identifier LeftParen (value Comma?)* RightParen;
 
-shibaExtension: '$' Token basicValue;
+shibaExtension: '$' Identifier basicValue;
 
-array: LeftBracket value (Comma? value)* RightBracket;
+array: LeftBracket (value Comma?)* RightBracket;
 
-token: (Token Colon)? Token;
+identifier: (Identifier Colon)? Identifier;
 
 Null: 'null';
 String: '"' (~'"')* '"';
 Boolean: 'true' | 'false';
-Token: ([a-z] | [A-Z] | '_')+ ([a-z] | [A-Z] | [0-9] | '_' | '.')*;
+Identifier: ([a-z] | [A-Z] | '_')+ ([a-z] | [A-Z] | [0-9] | '_' | '.')*;
 Number: '-'? INT ('.' [0-9]+)? EXP?;
 Arrow: '->';
 Comma: ',';
