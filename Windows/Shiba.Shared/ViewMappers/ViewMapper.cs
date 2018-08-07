@@ -105,13 +105,28 @@ namespace Shiba.ViewMappers
             {
                 view.SetValue(DependencyProperty, value);
             }
-            else if (value is NativeBinding binding)
+            else switch (value)
             {
-                if (IsTwoWay)
-                {
-                    binding.Mode = BindingMode.TwoWay;
-                }
-                view.SetBinding(DependencyProperty, binding);
+//                case ShibaMap shibaMap:
+//                    value = shibaMap.GetValue<object>(AbstractShiba.Instance.Configuration.PlatformType);
+//                    if (value == null)
+//                    {
+//                        break;
+//                    }
+//                    if (value.GetType() == PropertyType)
+//                    {
+//                        view.SetValue(DependencyProperty, value);
+//                    }
+//
+//                    if (value is BasicValue basicValue)
+//                    {
+//                        view.SetValue(DependencyProperty, basicValue.Value);
+//                    }
+//                    break;
+                case NativeBinding binding:
+                    binding.Mode = IsTwoWay ? BindingMode.TwoWay : BindingMode.OneWay;
+                    view.SetBinding(DependencyProperty, binding);
+                    break;
             }
         }
 
@@ -305,10 +320,4 @@ namespace Shiba.ViewMappers
             return new TNativeView();
         }
     }
-    
-    
-    
-    
-    
-    
 }

@@ -14,6 +14,7 @@
                 stack {
                 text -> awesome(reverse($bind UWPText))
                 text {
+                
                 color = "#ffff00"
                 text = "fdsafdsaf"
                 size = 20

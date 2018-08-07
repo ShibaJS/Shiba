@@ -9,19 +9,36 @@
         d:DataContext="{d:DesignInstance local:MainWindow}"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <shiba:ShibaHost>
+        <shiba:ShibaHost x:Name="host">
             <shiba:ShibaHost.Layout>
                 grid {
                     row = 4
                     colunm = 4
-                    text -> "fdsafdsafdsa"
+                    text -> awesome(reverse($bind UWPText), "sdafs")
                     text {
+                        padding = [
+                            left = 10
+                        ]
+                        margin = [
+                            top = 10
+                left = 10
+                        
+                        ] 
                         grid = [
                             row = 1
                             colunm = 1
                         ]
                         text = "dfasfsa"
                     }
+                text {
+                grid = [
+                row = 1
+                colunm = 1
+                ]
+                WPF:text = "WPF Text!"
+                Android:text = "Android Text!"
+                color = "#ff0000"
+                }
                 }
             </shiba:ShibaHost.Layout>
         </shiba:ShibaHost>

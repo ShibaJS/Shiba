@@ -46,6 +46,7 @@ namespace Shiba
             };
         }
 
+
         public IShibaContext Context { get; }
 
         public string Layout
@@ -62,7 +63,7 @@ namespace Shiba
             }
             Content = NativeRenderer.Render(value, Context);
         }
-
+        
         public void ReLayout()
         {
             OnLayoutChanged(Layout);

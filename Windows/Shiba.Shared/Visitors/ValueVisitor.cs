@@ -92,7 +92,7 @@ namespace Shiba.Visitors
             new ConcurrentDictionary<string, IViewMapper>();
         protected override NativeView Parse(View view, IShibaContext context)
         {
-            var attribute = AbstractShiba.Instance.ViewMapping.Renderers.LastOrDefault(it => it.ViewName == view.ViewName);
+            var attribute = AbstractShiba.Instance.ViewMapping.Mappers.LastOrDefault(it => view.ViewName.IsCurrentPlatform(it.ViewName));
             if (attribute == null)
             {
                 return null;
@@ -151,7 +151,7 @@ namespace Shiba.Visitors
     {
         protected override ShibaBinding Parse(ShibaFunction item, IShibaContext context)
         {
-            var function = ParseFunction(item);
+            var function = ParseFunction(item, context);
             var bindings = GetBindings(function)?.ToList();
 
             if (bindings == null || !bindings.Any())
@@ -206,18 +206,18 @@ namespace Shiba.Visitors
             }
         }
 
-        private ShibaFunction ParseFunction(ShibaFunction item)
+        private ShibaFunction ParseFunction(ShibaFunction item, IShibaContext context)
         {
             for (var i = 0; i < item.Paramters.Count; i++)
             {
                 var paramter = item.Paramters[i];
                 if (paramter is ShibaFunction function)
                 {
-                    item.Paramters[i] = ParseFunction(function);
+                    item.Paramters[i] = ParseFunction(function, context);
                 }
                 else
                 {
-                    var result = GetValue(paramter, null);// currently not support view item in function
+                    var result = GetValue(paramter, context);
                     if (result is ShibaBinding shibaBinding && shibaBinding.Converter is RawDataConverter)
                     {
                         result = shibaBinding.Parameter;
@@ -239,13 +239,13 @@ namespace Shiba.Visitors
     //    }
     //}
 
-    internal sealed class ShibaArrayVisitor : GenericVisitor<ShibaArray, List<object>>
-    {
-        protected override List<object> Parse(ShibaArray item, IShibaContext context)
-        {
-            return item.Select(it => GetValue(it, context)).ToList();
-        }
-    }
+//    internal sealed class ShibaArrayVisitor : GenericVisitor<ShibaArray, List<object>>
+//    {
+//        protected override List<object> Parse(ShibaArray item, IShibaContext context)
+//        {
+//            return item.Select(it => GetValue(it, context)).ToList();
+//        }
+//    }
 
     internal sealed class BacisValueVisitor : GenericVisitor<BasicValue, object>
     {

@@ -242,17 +242,22 @@ namespace Shiba.Controls
     
     public sealed class ShibaToken
     {
-        public static bool operator ==(string value, ShibaToken token)
+        public bool IsCurrentPlatform(string value)
         {
             if (ReferenceEquals(value, null)) return false;
-            if (ReferenceEquals(token, null)) return false;
-            return (token.Prefix == AbstractShiba.Instance.Configuration.PlatformType || string.IsNullOrEmpty(token.Prefix)) && string.Equals(value, token.Value);
+            return (Prefix == AbstractShiba.Instance.Configuration.PlatformType || string.IsNullOrEmpty(Prefix)) && string.Equals(value, Value);
         }
-
-        public static bool operator !=(string name, ShibaToken token)
-        {
-            return !(name == token);
-        }
+//        public static bool operator ==(string value, ShibaToken token)
+//        {
+//            if (ReferenceEquals(value, null)) return false;
+//            if (ReferenceEquals(token, null)) return false;
+//            return (token.Prefix == AbstractShiba.Instance.Configuration.PlatformType || string.IsNullOrEmpty(token.Prefix)) && string.Equals(value, token.Value);
+//        }
+//
+//        public static bool operator !=(string name, ShibaToken token)
+//        {
+//            return !(name == token);
+//        }
 
         public static bool operator ==(ShibaToken x, ShibaToken y)
         {

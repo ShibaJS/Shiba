@@ -7,12 +7,12 @@ namespace Shiba.Controls
 {
     public class ViewMapping
     {
-        public ReadOnlyCollection<ExportMapperAttribute> Renderers { get; private set; }
+        public ReadOnlyCollection<ExportMapperAttribute> Mappers { get; private set; }
 
         public void Init()
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
-            Renderers = assemblies
+            Mappers = assemblies
                 .Where(item => item.GetCustomAttributes<ExportMapperAttribute>()?.Any() == true)
                 .SelectMany(item => item.GetCustomAttributes<ExportMapperAttribute>()).ToList().AsReadOnly();
         }

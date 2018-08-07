@@ -10,7 +10,7 @@ namespace Shiba.WPF.Sample
         public App()
         {
             ShibaApp.Init();
-            AbstractShiba.Instance.AddConverter("function awesome(value) { return value + \" is awesome!\" }");
+            AbstractShiba.Instance.AddConverter("function awesome(value, pref) { return pref + value + \" is awesome!\" }");
             AbstractShiba.Instance.AddConverter("function reverse(value) { return value.split(\"\").reverse().join(\"\"); }");
         }
     }

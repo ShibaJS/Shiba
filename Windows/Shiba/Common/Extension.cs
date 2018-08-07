@@ -24,7 +24,7 @@ namespace Shiba.Common
 
         public static T GetValue<T>(this ShibaMap shibaObject, string name)
         {
-            return shibaObject.Properties.FirstOrDefault(it => name == it.Name).GetValue<T>();
+            return shibaObject.Properties.FirstOrDefault(it => it.Name.IsCurrentPlatform(name)).GetValue<T>();
         }
 
         public static T GetValue<T>(this Property property)

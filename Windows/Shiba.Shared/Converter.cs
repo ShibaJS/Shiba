@@ -33,7 +33,7 @@ namespace Shiba
                 case ShibaBinding binding:
                     return GetValueFromDataContext(binding, dataContext);
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    return it;
             }
         }
 

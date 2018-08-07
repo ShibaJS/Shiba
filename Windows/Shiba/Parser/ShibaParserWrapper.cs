@@ -90,7 +90,7 @@ namespace Shiba.Parser
     {
         protected override object Parse(ShibaParser.ValueContext tree)
         {
-            return GetValue(tree.GetChild(0));
+            return GetValue(tree.children.FirstOrDefault(it => it is ParserRuleContext));
         }
     }
 
