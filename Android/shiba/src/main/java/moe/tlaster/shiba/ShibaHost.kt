@@ -1,30 +1,54 @@
 package moe.tlaster.shiba
 
 import android.content.Context
+import android.util.ArrayMap
 import android.util.AttributeSet
 import android.widget.FrameLayout
-import android.content.res.TypedArray
-import android.util.ArrayMap
-import android.util.Log
 import android.view.View
-import java.lang.reflect.Method
+import android.view.ViewGroup
+import moe.tlaster.shiba.mapper.ISubscription
 
+fun <T : View> View.findName(name: String) : T? {
+    return findView { it ->
+        it.getTag(R.id.shiba_view_name_key) == name
+    }
+}
 
-class ShibaHost : FrameLayout {
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+fun <T : View> View.findView(predicate: (View) -> Boolean): T? {
+    if (predicate.invoke(this)) {
+        return this as T
+    }
+
+    if (this is ViewGroup) {
+        (0 until childCount).forEach {
+            val child = getChildAt(it).findView<T>(predicate)
+            if (child != null) {
+                return child
+            }
+        }
+    }
+
+    return null
+
+}
+
+class ShibaHost : FrameLayout, IShibaContext {
+
+    override val propertyChangedSubscription: ArrayMap<NativeView, ArrayList<ISubscription>> = ArrayMap()
+
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         init(context, attrs)
     }
 
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         init(context, attrs)
     }
 
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
         init(context, attrs)
     }
 
-    private val propertyChangedSubscription = ArrayMap<View, ArrayList<PropertyChangedSubscription>>()
 
     var layout: String? = null
 
@@ -39,7 +63,7 @@ class ShibaHost : FrameLayout {
         if (layout != this.layout) {
             removeAllViews()
             this.layout = layout
-            addView(NativeRenderer.render(layout, context, propertyChangedSubscription))
+            addView(NativeRenderer.render(layout, this))
         }
         this.dataContext = dataContext
     }
@@ -52,39 +76,52 @@ class ShibaHost : FrameLayout {
 
     private fun handleDataContextChanged(oldValue: Any?, newValue: Any?) {
         if (oldValue is INotifyPropertyChanged) {
-            propertyChangedSubscription.forEach{ _, list ->
-                list.forEach { sub ->
-                    sub.dataContext = null
-                }
-            }
             oldValue.propertyChanged.clear()
         }
+
         if (newValue is INotifyPropertyChanged) {
             newValue.propertyChanged += { sender, name ->
-                propertyChangedSubscription.forEach { view, list ->
-                    handlePropertyChanged(sender, name, view, list)
-            }}
-            propertyChangedSubscription.forEach { view, list ->
-                list.forEach { sub ->
-                    sub.dataContext = newValue
-                }
-                list.filter { !it.isChanging }.forEach { sub ->
-                    sub.isChanging = true
-                    sub.setter.invoke(view, Shiba.configuration.bindingValueResolver.getValue(sub.dataContext, sub.name))
-                    sub.isChanging = false
+                handlePropertyChanged(sender, name)
+            }
+            propertyChangedSubscription.forEach { view, sub ->
+                sub.forEach {
+                    it.isChanging = true
+                    setValueToView(newValue, it, view)
+                    it.isChanging = false
                 }
             }
         }
     }
 
-    private fun handlePropertyChanged(sender: Any, name: String, target: View, subscription: List<PropertyChangedSubscription>) {
-        val subscriptions = subscription.filter { item -> item.name == name }
-        if (subscriptions.any()) {
-            subscriptions.filter { !it.isChanging }.forEach {
-                it.isChanging = true
-                it.setter.invoke(target, Shiba.configuration.bindingValueResolver.getValue(sender, name))
-                it.isChanging = false
+    private fun setValueToView(dataContext: Any?, sub: ISubscription, view: NativeView) {
+        val value = Shiba.configuration.bindingValueResolver.getValue(dataContext, sub.binding.path)
+        if (sub.binding.converter != null) {
+            sub.setter.invoke(view, sub.binding.converter?.convert(value, sub.binding.parameter))
+        } else {
+            sub.setter.invoke(view, value)
+        }
+    }
+
+    private fun handlePropertyChanged(sender: Any, name: String) {
+        propertyChangedSubscription.forEach { view, subs ->
+            subs.forEach {
+                if (it.binding.path == name) {
+                    setValueToView(sender, it, view)
+                }
             }
+        }
+    }
+
+    override fun twowayToDataContext(path: String, it: Any?) {
+        if (dataContext != null) {
+            Shiba.configuration.bindingValueResolver.setValue(dataContext, path, it)
+        }
+    }
+
+
+    fun <T : View> findViewByName(name: String) : T? {
+        return findView { it ->
+            it.getTag(R.id.shiba_view_name_key) == name
         }
     }
 

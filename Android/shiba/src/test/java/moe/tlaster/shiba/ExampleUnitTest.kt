@@ -1,6 +1,8 @@
 package moe.tlaster.shiba
 
+import moe.tlaster.shiba.parser.ShibaParser
 import moe.tlaster.shiba.parser.ShibaParserWrapper
+import org.antlr.v4.runtime.tree.ParseTree
 import org.junit.Assert
 import org.junit.Test
 
@@ -15,5 +17,14 @@ class ExampleUnitTest {
     @Test
     @Throws(Exception::class)
     fun test() {
+
     }
+
+    fun check(tree: ParseTree) : Boolean {
+        return tree.javaClass == type
+    }
+
+    val type: Class<*> = ShibaParser.ViewContext::class.java
 }
+
+

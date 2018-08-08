@@ -16,49 +16,25 @@ public class ShibaBaseListener implements ShibaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterRoot(ShibaParser.RootContext ctx) { }
+	@Override public void enterView(ShibaParser.ViewContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitRoot(ShibaParser.RootContext ctx) { }
+	@Override public void exitView(ShibaParser.ViewContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterObj(ShibaParser.ObjContext ctx) { }
+	@Override public void enterProperty(ShibaParser.PropertyContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitObj(ShibaParser.ObjContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterShortobj(ShibaParser.ShortobjContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitShortobj(ShibaParser.ShortobjContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterPair(ShibaParser.PairContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitPair(ShibaParser.PairContext ctx) { }
+	@Override public void exitProperty(ShibaParser.PropertyContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -76,109 +52,73 @@ public class ShibaBaseListener implements ShibaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterStaticvalue(ShibaParser.StaticvalueContext ctx) { }
+	@Override public void enterMap(ShibaParser.MapContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitStaticvalue(ShibaParser.StaticvalueContext ctx) { }
+	@Override public void exitMap(ShibaParser.MapContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterPercent(ShibaParser.PercentContext ctx) { }
+	@Override public void enterBasicValue(ShibaParser.BasicValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitPercent(ShibaParser.PercentContext ctx) { }
+	@Override public void exitBasicValue(ShibaParser.BasicValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterThickness(ShibaParser.ThicknessContext ctx) { }
+	@Override public void enterFunction(ShibaParser.FunctionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitThickness(ShibaParser.ThicknessContext ctx) { }
+	@Override public void exitFunction(ShibaParser.FunctionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFunc(ShibaParser.FuncContext ctx) { }
+	@Override public void enterShibaExtension(ShibaParser.ShibaExtensionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFunc(ShibaParser.FuncContext ctx) { }
+	@Override public void exitShibaExtension(ShibaParser.ShibaExtensionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParamter(ShibaParser.ParamterContext ctx) { }
+	@Override public void enterArray(ShibaParser.ArrayContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParamter(ShibaParser.ParamterContext ctx) { }
+	@Override public void exitArray(ShibaParser.ArrayContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBinding(ShibaParser.BindingContext ctx) { }
+	@Override public void enterIdentifier(ShibaParser.IdentifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitBinding(ShibaParser.BindingContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterResource(ShibaParser.ResourceContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitResource(ShibaParser.ResourceContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterJsonpath(ShibaParser.JsonpathContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitJsonpath(ShibaParser.JsonpathContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterDic(ShibaParser.DicContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitDic(ShibaParser.DicContext ctx) { }
+	@Override public void exitIdentifier(ShibaParser.IdentifierContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

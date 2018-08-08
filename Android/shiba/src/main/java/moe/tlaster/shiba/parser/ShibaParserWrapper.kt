@@ -1,65 +1,160 @@
 package moe.tlaster.shiba.parser
 
-import moe.tlaster.shiba.Percent
-import moe.tlaster.shiba.Shiba
-import moe.tlaster.shiba.Thickness
-import moe.tlaster.shiba.View
+import moe.tlaster.shiba.*
+import moe.tlaster.shiba.ShibaFunction
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
-import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.tree.ParseTree
+import org.antlr.v4.runtime.tree.TerminalNode
 
-interface IToken {
-    val line: Int
-    val column: Int
-    val value: Any?
+interface IShibaVisitor {
+    val type: Class<*>
+    fun visit(tree: ParseTree): Any
 }
 
-
-fun IBindingValue.getTokenValue(): String {
-    return value.value.toString()
+private val visitors = ArrayList<IShibaVisitor>().apply {
+    add(ViewVisitor())
+    add(PropertyVisitor())
+    add(ValueVisitor())
+    add(ShibaTokenVisitor())
+    add(ShibaMapVisitor())
+    add(BasicValueVisitor())
+    add(FunctionVisitor())
+    add(ArrayVisitor())
+    add(ShibaExtensionVisitor())
 }
 
-interface IBindingValue {
-    val value: IToken
+private fun <T> ParseTree.visit(): T? {
+    return visitors.find { it.type == this.javaClass }?.visit(this) as T?
 }
 
-abstract class TokenBase<T>(override val line: Int, override val column: Int, override val value: T) : IToken
+private abstract class AbsVisitor<T : ParseTree, K : Any> : IShibaVisitor {
+    override fun visit(tree: ParseTree): Any {
+        return parse(tree as T)
+    }
 
-class BindingToken(line: Int, column: Int, value: Binding) : TokenBase<Binding>(line, column, value)
+    abstract fun parse(tree: T): K
+}
 
-class NativeResourceToken(line: Int, column: Int, value: NativeResource) : TokenBase<NativeResource>(line, column, value)
+private final class ViewVisitor(override val type: Class<*> = ShibaParser.ViewContext::class.java) : AbsVisitor<ShibaParser.ViewContext, View>() {
+    override fun parse(tree: ShibaParser.ViewContext): View {
+        val viewName = tree.identifier().visit<ShibaToken>()
+                ?: throw IllegalArgumentException("view name can not be null at line:${tree.start.line} column:${tree.start.startIndex}")
+        val view = View(viewName)
+        val defaultValue = tree.value()?.visit<Any>()
+        if (defaultValue != null) {
+            view.defaultValue = defaultValue
+        }
+        if (tree.property() != null) {
+            view.properties += tree.property().map { it.visit<Property>() }.filter { it != null }.map { it!! }
+        }
+        if (tree.view() != null) {
+            view.children += tree.view().map { it.visit<View>() }.filter { it != null }.map { it!! }
+        }
+        return view
+    }
+}
 
-class JsonPathToken(line: Int, column: Int, value: JsonPath) : TokenBase<JsonPath>(line, column, value)
+private final class PropertyVisitor(override val type: Class<*> = ShibaParser.PropertyContext::class.java) : AbsVisitor<ShibaParser.PropertyContext, Property>() {
+    override fun parse(tree: ShibaParser.PropertyContext): Property {
+        val tokenName = tree.identifier().visit<ShibaToken>()
+        val value = tree.value().visit<Any>()
+        if (tokenName != null && value != null) {
+            return Property(tokenName, value)
+        }
+        throw IllegalArgumentException("property can not contain null at line:${tree.start.line} column: ${tree.start.startIndex}")
+    }
+}
 
-class FunctionToken(line: Int, column: Int, value: Function) : TokenBase<Function>(line, column, value)
+private final class ValueVisitor(override val type: Class<*> = ShibaParser.ValueContext::class.java) : AbsVisitor<ShibaParser.ValueContext, Any>() {
+    override fun parse(tree: ShibaParser.ValueContext): Any {
+        val result = tree.children.first().visit<Any>()
+        if (result == null){
+            throw NotImplementedError()
+        } else {
+            return result
+        }
+    }
+}
 
-class ThicknessToken(line: Int, column: Int, value: Thickness) : TokenBase<Thickness>(line, column, value)
+private final class ShibaExtensionVisitor(override val type: Class<*> = ShibaParser.ShibaExtensionContext::class.java) : AbsVisitor<ShibaParser.ShibaExtensionContext, ShibaExtension>() {
+    override fun parse(tree: ShibaParser.ShibaExtensionContext): ShibaExtension {
+        val name = tree.Identifier().text
+        val value = tree.basicValue().visit<BasicValue>() ?: throw IllegalArgumentException("ShibaExtension must have value")
+        return ShibaExtension(name, value)
+    }
 
-class PercentToken(line: Int, column: Int, value: Percent) : TokenBase<Percent>(line, column, value)
+}
 
-class NullToken(override val line: Int, override val column: Int, override val value: Any? = null) : IToken
+private final class ShibaTokenVisitor(override val type: Class<*> = ShibaParser.IdentifierContext::class.java) : AbsVisitor<ShibaParser.IdentifierContext, ShibaToken>() {
+    override fun parse(tree: ShibaParser.IdentifierContext): ShibaToken {
+        when(tree.Identifier().size) {
+            1 -> return ShibaToken("", tree.Identifier().first().text)
+            2 -> return ShibaToken(tree.Identifier().first().text, tree.Identifier().last().text)
+        }
+        throw IllegalArgumentException("ShibaToken can not be null at line ${tree.start.line} column: ${tree.start.startIndex}")
+    }
+}
 
-class StringToken(line: Int, column: Int, value: String) : TokenBase<String>(line, column, value)
+private final class ShibaMapVisitor(override val type: Class<*> = ShibaParser.MapContext::class.java) : AbsVisitor<ShibaParser.MapContext, ShibaMap>() {
+    override fun parse(tree: ShibaParser.MapContext): ShibaMap {
+        return ShibaMap(tree.property().map { it.visit<Property>() }.filter { it != null }.map { it!! })
+    }
+}
 
-class NumberToken(line: Int, column: Int, value: Number) : TokenBase<Number>(line, column, value)
+private final class BasicValueVisitor(override val type: Class<*> = ShibaParser.BasicValueContext::class.java) : AbsVisitor<ShibaParser.BasicValueContext, BasicValue>() {
+    override fun parse(tree: ShibaParser.BasicValueContext): BasicValue {
+        var type = ShibaValueType.Token
+        var targetValue: Any? = null
+        val token = tree.getChild(0) as TerminalNode;
+        when (token.symbol.type) {
+            ShibaParser.String -> {
+                type = ShibaValueType.String
+                targetValue = token.text.trim('"')
+            }
+            ShibaParser.Number -> {
+                type = ShibaValueType.Number
+                targetValue = token.text.toBigDecimal()
+            }
+            ShibaParser.Boolean -> {
+                type = ShibaValueType.Boolean
+                targetValue = token.text?.toBoolean()
+            }
+            ShibaParser.Null -> {
+                type = ShibaValueType.Null
+                targetValue = null
+            }
+            ShibaParser.Identifier -> {
+                type = ShibaValueType.Token
+                targetValue = token.text
+            }
+        }
+        if (targetValue == null && type != ShibaValueType.Null) {
+            throw IllegalArgumentException("basic value can not be null at line ${tree.start.line} column: ${tree.start.startIndex}")
+        }
+        return BasicValue(type, targetValue)
+    }
+}
 
-class BoolToken(line: Int, column: Int, value: Boolean) : TokenBase<Boolean>(line, column, value)
+private final class FunctionVisitor(override val type: Class<*> = ShibaParser.FunctionContext::class.java) : AbsVisitor<ShibaParser.FunctionContext, ShibaFunction>() {
+    override fun parse(tree: ShibaParser.FunctionContext): ShibaFunction {
+        val name = tree.Identifier().text
+        if (tree.value() != null && tree.value().any()) {
+            return ShibaFunction(name).apply {
+                paramter = tree.value().map { it.visit<Any>() }.filter { it != null }.map { it!! }
+            }
+        }
+        return ShibaFunction(name)
+    }
+}
 
-class SimpleToken(line: Int, column: Int, value: String) : TokenBase<String>(line, column, value)
-
-class Function(val name: String, val paramter: List<IParamter>) : IParamter
-
-interface IParamter
-
-class ValueParamter(val value: IToken) : IParamter
-
-class Binding(override val value: IToken) : IBindingValue
-
-class JsonPath(override val value: IToken) : IBindingValue
-
-class NativeResource(override val value: IToken) : IBindingValue
-
+private final class ArrayVisitor(override val type: Class<*> = ShibaParser.ArrayContext::class.java) : AbsVisitor<ShibaParser.ArrayContext, ShibaArray>() {
+    override fun parse(tree: ShibaParser.ArrayContext): ShibaArray {
+        return ShibaArray().apply {
+            addAll(tree.value().map { it.visit<Any>() }.filter { it != null }.map { it!! })
+        }
+    }
+}
 
 class ShibaParserWrapper {
     private fun parseGrammarTree(input: String): ParseTree {
@@ -69,115 +164,10 @@ class ShibaParserWrapper {
         val parser = ShibaParser(tokens).apply {
             buildParseTree = true
         }
-        return parser.root()
+        return parser.view()
     }
-
-    fun parse(input: String): View {
+    fun parse(input: String): View? {
         val tree = parseGrammarTree(input)
-        return buildViewTree(tree)
+        return tree.visit<View>()
     }
-
-    private fun buildViewTree(tree: ParseTree): View {
-        return when (tree) {
-            is ShibaParser.RootContext -> buildViewTree(tree.obj())
-            is ShibaParser.ObjContext -> {
-                val view = View(viewName = tree.start.text, properties = pairToMap(tree.pair()))
-                if (tree.children != null && tree.children.any()) {
-                    view.children.addAll(tree.children.filter { it is ShibaParser.ObjContext || it is ShibaParser.ShortobjContext }.map { buildViewTree(it) })
-                }
-                return view
-            }
-            is ShibaParser.ShortobjContext -> {
-                return View(viewName = tree.start.text, defaultValue = getValue(tree.value()))
-            }
-            else -> throw IllegalArgumentException()
-        }
-    }
-
-    private fun pairToMap(pair: List<ShibaParser.PairContext>): Map<String, IToken> {
-        return pair.map { it.start.text to getValue(it.value()) }.toMap()
-    }
-
-    private fun getStaticValue(value: ShibaParser.StaticvalueContext?): IToken? {
-        if (value == null) {
-            return null
-        }
-
-        if (value.NULL() != null) {
-            return NullToken(value.NULL().symbol.line, value.NULL().symbol.charPositionInLine)
-        }
-
-        if (value.BOOLEAN() != null) {
-            return BoolToken(value.BOOLEAN().symbol.line, value.BOOLEAN().symbol.charPositionInLine, value.BOOLEAN().text!!.toBoolean())
-        }
-
-        if (value.NUMBER() != null) {
-            return NumberToken(value.NUMBER().symbol.line, value.NUMBER().symbol.charPositionInLine, value.NUMBER().text.toBigDecimal())
-        }
-
-        if (value.percent() != null) {
-            return PercentToken(value.percent().start.line, value.percent().start.charPositionInLine, Percent(value.percent().start.text))
-        }
-
-        if (value.thickness() != null) {
-            return ThicknessToken(value.thickness().start.line, value.thickness().start.charPositionInLine, Thickness(value.thickness().text))
-        }
-
-        if (value.STRING() != null) {
-            return StringToken(value.STRING().symbol.line, value.STRING().symbol.charPositionInLine, value.STRING().text.trim('"'))
-        }
-
-        if (value.TOKEN() != null) {
-            return SimpleToken(value.TOKEN().symbol.line, value.TOKEN().symbol.charPositionInLine, value.TOKEN().text)
-        }
-
-        return null
-    }
-
-    private fun getValue(value: ShibaParser.ValueContext?): IToken {
-        if (value == null) {
-            return NullToken(0, 0)
-        }
-        val staticValue = getStaticValue(value.staticvalue())
-        if (staticValue != null) {
-            return staticValue
-        }
-
-        if (value.binding() != null) {
-            return BindingToken(value.binding().start.line, value.binding().start.charPositionInLine, Binding(getStaticValue(value.binding().staticvalue())
-                    ?: throw IllegalStateException()))
-        }
-
-        if (value.resource() != null) {
-            return NativeResourceToken(value.resource().start.line, value.resource().start.charPositionInLine, NativeResource(getStaticValue(value.resource().staticvalue())
-                    ?: throw IllegalStateException()))
-        }
-
-        if (value.jsonpath() != null) {
-            return JsonPathToken(value.jsonpath().start.line, value.jsonpath().start.charPositionInLine, JsonPath(getStaticValue(value.jsonpath().staticvalue())
-                    ?: throw IllegalStateException()))
-        }
-
-        if (value.dic() != null) {
-            val pair = value.dic().pair().firstOrNull { it.TOKEN().symbol.text == Shiba.configuration.platformType }
-            return getValue(pair?.value())
-        }
-
-        if (value.func() != null) {
-            return FunctionToken(value.func().start.line, value.func().start.charPositionInLine, getFunc(value.func()))
-        }
-
-
-        throw IllegalStateException()
-    }
-
-    private fun getFunc(func: ShibaParser.FuncContext): Function {
-        return Function(func.TOKEN().symbol.text, func.paramter().map { if (it.func() == null) getValueParameter(it.value()) else getFunc(it.func()) }.toList())
-    }
-
-    private fun getValueParameter(value: ShibaParser.ValueContext): ValueParamter {
-        return ValueParamter(getValue(value))
-    }
-
 }
-

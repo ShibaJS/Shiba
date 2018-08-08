@@ -1,86 +1,109 @@
 package moe.tlaster.shiba
 
-import moe.tlaster.shiba.parser.IToken
 
 /**
  * Created by SE on 3/5.
  */
-enum class Orientation {
-    Vertical,
-    Horizontal
+
+data class Property(val name: ShibaToken, val value: Any) {
+    override fun toString(): String {
+        return "$name = $value"
+    }
+
 }
 
-data class Thickness(val value: String?) {
-    val top: Float
-    val left: Float
-    val right: Float
-    val bottom: Float
+data class ShibaToken(val prefix: String, val value: String) {
+    override fun toString(): String {
+        return if (prefix.isEmpty()) value else "$prefix:$value"
+    }
 
-    init {
-        if (value == null) {
-            top = 0F
-            left = 0F
-            right = 0F
-            bottom = 0F
-        } else {
-            val values = value.trim('[', ']').split(',').map { it.trim() }
-            when (values.count()) {
-                1 -> {
-                    val result = values[0].toFloat()
-                    top = result
-                    left = result
-                    right = result
-                    bottom = result
-                }
-                2 -> {
-                    val vertical = values[1].toFloat()
-                    val horizon = values[0].toFloat()
-                    left = horizon
-                    right = horizon
-                    top = vertical
-                    bottom = vertical
-                }
-                4 -> {
-                    left = values[0].toFloat()
-                    top = values[1].toFloat()
-                    right = values[2].toFloat()
-                    bottom = values[3].toFloat()
-                }
-                else -> {
-                    top = 0F
-                    left = 0F
-                    right = 0F
-                    bottom = 0F
-                }
-            }
+    fun isCurrentPlatform(value: String): Boolean {
+        return isCurrentPlatform() && value == this.value
+    }
+
+    fun isCurrentPlatform(): Boolean {
+        return (prefix == Shiba.configuration.platformType || prefix.isEmpty())
+    }
+}
+
+data class ShibaFunction(val name: String) {
+    var paramter: List<Any> = ArrayList()
+        internal set
+
+    override fun toString(): String {
+        return "$name(${paramter.joinToString(separator = ",") { it.toString() }})"
+    }
+}
+
+class ShibaArray : ArrayList<Any>() {
+    override fun toString(): String {
+        return "[${this.joinToString(separator = ",") { it.toString() }}]"
+    }
+}
+
+enum class ShibaValueType {
+    String,
+    Token,
+    Number,
+    Null,
+    Boolean,
+}
+
+data class BasicValue(val typeCode: ShibaValueType, val value: Any?) {
+    override fun toString(): String {
+        return when (typeCode) {
+            ShibaValueType.String -> "\"$value\""
+            ShibaValueType.Token -> "$value"
+            ShibaValueType.Number -> "$value"
+            ShibaValueType.Null -> "null"
+            ShibaValueType.Boolean -> value.toString().toLowerCase()
         }
     }
 }
 
-data class Percent(val percent: String?) {
-    val value: Number = if (percent == null) {
-        0F
-    }
-    else {
-        percent.trimEnd('%').toDouble() / 100F
+data class ShibaMap(val properties: List<Property>) : Map<String, Any> {
+    override val entries: Set<Map.Entry<String, Any>>
+        get() = properties.map { it.name.toString() to it.value }.toMap().entries
+    override val keys: Set<String>
+        get() = properties.map { it.name.toString() }.toSet()
+    override val size: Int
+        get() = properties.size
+    override val values: Collection<Any>
+        get() = properties.map { it.value }
+
+    override fun containsKey(key: String): Boolean {
+        return properties.any { it.name.isCurrentPlatform(key) }
     }
 
+    override fun containsValue(value: Any): Boolean {
+        return properties.any { it.value == value }
+    }
+
+    override fun get(key: String): Any? {
+        return properties.firstOrNull { it.name.isCurrentPlatform(key) }
+    }
+
+    fun <T> getValue(key: String): T? {
+        return properties.firstOrNull { it.name.isCurrentPlatform(key) }?.value as T?
+    }
+
+    override fun isEmpty(): Boolean {
+        return !properties.any()
+    }
+
+    override fun toString(): String {
+        return "[ ${properties.joinToString(separator = " ") { it.toString() }} ]"
+    }
 }
 
-open class View {
+data class ShibaExtension(val type: String, val value: BasicValue) {
+    override fun toString(): String {
+        return "\$$type $value"
+    }
+}
+
+final class View(var viewName: ShibaToken) {
     val children: ArrayList<View> = ArrayList()
-    var properties: Map<String, IToken>? = null
-    var defaultValue: IToken? = null
-    var viewName: String
-
-    constructor(viewName: String, properties: Map<String, IToken>) {
-        this.viewName = viewName
-        this.properties = properties
-    }
-
-
-    constructor(viewName: String, defaultValue: IToken) {
-        this.viewName = viewName
-        this.defaultValue = defaultValue
-    }
+    val properties: ArrayList<Property> = ArrayList()
+    var defaultValue: Any? = null
 }

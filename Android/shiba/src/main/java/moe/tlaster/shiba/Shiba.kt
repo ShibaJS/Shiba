@@ -1,13 +1,17 @@
 package moe.tlaster.shiba
 
 import android.util.ArrayMap
+import moe.tlaster.shiba.mapper.IViewMapper
+import moe.tlaster.shiba.mapper.InputMapper
+import moe.tlaster.shiba.mapper.StackMapper
+import moe.tlaster.shiba.mapper.TextMapper
 import org.mozilla.javascript.Context
 import org.mozilla.javascript.Function
 import org.mozilla.javascript.ScriptableObject
 import java.lang.reflect.Method
 
-
-data class ViewMap(val name: String, val renderer: IViewRenderer)
+typealias NativeView = android.view.View
+typealias ShibaView = moe.tlaster.shiba.View
 
 class ShibaConfiguration {
     var jsonValueResolver: IJsonValueResolver = DefaultJsonValueResolver()
@@ -42,6 +46,7 @@ interface IValueResolver {
 class DefaultConverterExecutor : IConverterExecutor {
     private val context = Context.enter().apply {
         optimizationLevel = -1
+        languageVersion = Context.VERSION_ES6
     }
     private val scope: ScriptableObject by lazy {
         context.initStandardObjects()
@@ -66,8 +71,10 @@ class DefaultJsonValueResolver : IJsonValueResolver {
     }
 }
 
+private data class PropertyMethod(val getter: Method?, val setter: Method?)
+
 class DefaultBindingValueResolver : IBindingValueResolver {
-    private val typeCache = ArrayMap<Class<Any>, Map<String, PropertyMethod>>()
+    private val typeCache = ArrayMap<Class<*>, Map<String, PropertyMethod>>()
     override fun setValue(dataContext: Any?, name: String, value: Any?) {
         if (dataContext == null) {
             return
@@ -83,7 +90,7 @@ class DefaultBindingValueResolver : IBindingValueResolver {
     }
 
     private fun getPropertyMethods(dataContext: Any?): Map<String, PropertyMethod>? {
-        return typeCache.getOrPut(dataContext?.javaClass, {
+        return typeCache.getOrPut(dataContext?.javaClass) {
             dataContext
                     ?.javaClass
                     ?.declaredMethods
@@ -91,7 +98,7 @@ class DefaultBindingValueResolver : IBindingValueResolver {
                     ?.groupBy { it.getAnnotation(Binding::class.java).name }
                     ?.map { method -> method.key to generatePropertyMethod(method) }
                     ?.toMap()
-        })
+        }
     }
 
     private fun generatePropertyMethod(method: Map.Entry<String, List<Method>>): PropertyMethod {
@@ -112,18 +119,16 @@ class DefaultResourceValueResolver : IValueResolver {
 }
 
 object Shiba {
-    val viewMapping = ArrayList<ViewMap>()
+    val viewMapping = ArrayMap<String, IViewMapper<*>>()
     val configuration = ShibaConfiguration()
-    internal val FunctionConverter = moe.tlaster.shiba.FunctionConverter()
-    internal val SingleParamterFunctionConverter = moe.tlaster.shiba.SingleParamterFunctionConverter()
 
     init {
-        addRenderer("stack", StackRenderer())
-        addRenderer("text", TextRenderer())
-        addRenderer("input", InputRenderer())
+        addRenderer("stack", StackMapper())
+        addRenderer("text", TextMapper())
+        addRenderer("input", InputMapper())
     }
 
-    public fun addRenderer(name: String, renderer: IViewRenderer) {
-        viewMapping.add(ViewMap(name, renderer))
+    public fun addRenderer(name: String, mapper: IViewMapper<*>) {
+        viewMapping[name] = mapper
     }
 }
