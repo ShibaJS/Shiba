@@ -43,7 +43,8 @@ You can provide platform specific value like this
 ```
 stack {
   input {
-    text = [UWP: reverse($bind UwpText), Android: reverse($bind AndroidText)]
+    UWP:text = reverse($bind UwpText)
+    Android:text = reverse($bind AndroidText)
   }
 }
 ```
