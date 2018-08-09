@@ -385,3 +385,4 @@ ASALocalRun/
 *.binlog
 
 .vscode
+\.DS_Store
