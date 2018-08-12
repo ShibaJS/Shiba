@@ -80,13 +80,13 @@ open class ShibaBaseListener: ShibaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	open func enterFunction(_ ctx: ShibaParser.FunctionContext) { }
+	open func enterFunctionCall(_ ctx: ShibaParser.FunctionCallContext) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	open func exitFunction(_ ctx: ShibaParser.FunctionContext) { }
+	open func exitFunctionCall(_ ctx: ShibaParser.FunctionCallContext) { }
 
 	/**
 	 * {@inheritDoc}

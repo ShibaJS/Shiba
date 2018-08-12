@@ -23,9 +23,9 @@ public class ShibaParser extends Parser {
 		BlockComment=20, LineComment=21, LineCommentExt=22;
 	public static final int
 		RULE_view = 0, RULE_property = 1, RULE_value = 2, RULE_map = 3, RULE_basicValue = 4, 
-		RULE_function = 5, RULE_shibaExtension = 6, RULE_array = 7, RULE_identifier = 8;
+		RULE_functionCall = 5, RULE_shibaExtension = 6, RULE_array = 7, RULE_identifier = 8;
 	public static final String[] ruleNames = {
-		"view", "property", "value", "map", "basicValue", "function", "shibaExtension", 
+		"view", "property", "value", "map", "basicValue", "functionCall", "shibaExtension", 
 		"array", "identifier"
 	};
 
@@ -293,8 +293,8 @@ public class ShibaParser extends Parser {
 		public MapContext map() {
 			return getRuleContext(MapContext.class,0);
 		}
-		public FunctionContext function() {
-			return getRuleContext(FunctionContext.class,0);
+		public FunctionCallContext functionCall() {
+			return getRuleContext(FunctionCallContext.class,0);
 		}
 		public ShibaExtensionContext shibaExtension() {
 			return getRuleContext(ShibaExtensionContext.class,0);
@@ -348,7 +348,7 @@ public class ShibaParser extends Parser {
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(47);
-				function();
+				functionCall();
 				}
 				break;
 			case 5:
@@ -503,7 +503,7 @@ public class ShibaParser extends Parser {
 		return _localctx;
 	}
 
-	public static class FunctionContext extends ParserRuleContext {
+	public static class FunctionCallContext extends ParserRuleContext {
 		public TerminalNode Identifier() { return getToken(ShibaParser.Identifier, 0); }
 		public TerminalNode LeftParen() { return getToken(ShibaParser.LeftParen, 0); }
 		public TerminalNode RightParen() { return getToken(ShibaParser.RightParen, 0); }
@@ -517,23 +517,23 @@ public class ShibaParser extends Parser {
 		public TerminalNode Comma(int i) {
 			return getToken(ShibaParser.Comma, i);
 		}
-		public FunctionContext(ParserRuleContext parent, int invokingState) {
+		public FunctionCallContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_function; }
+		@Override public int getRuleIndex() { return RULE_functionCall; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ShibaListener ) ((ShibaListener)listener).enterFunction(this);
+			if ( listener instanceof ShibaListener ) ((ShibaListener)listener).enterFunctionCall(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ShibaListener ) ((ShibaListener)listener).exitFunction(this);
+			if ( listener instanceof ShibaListener ) ((ShibaListener)listener).exitFunctionCall(this);
 		}
 	}
 
-	public final FunctionContext function() throws RecognitionException {
-		FunctionContext _localctx = new FunctionContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_function);
+	public final FunctionCallContext functionCall() throws RecognitionException {
+		FunctionCallContext _localctx = new FunctionCallContext(_ctx, getState());
+		enterRule(_localctx, 10, RULE_functionCall);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);

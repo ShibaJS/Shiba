@@ -8,13 +8,19 @@ view:
 
 property: identifier Assign value;
 
-value: basicValue | array | map | function | shibaExtension | view;
+value:
+	basicValue
+	| array
+	| map
+	| functionCall
+	| shibaExtension
+	| view;
 
 map: LeftBracket (property Comma?)* RightBracket;
 
 basicValue: String | Number | Boolean | Null | Identifier;
 
-function: Identifier LeftParen (value Comma?)* RightParen;
+functionCall: Identifier LeftParen (value Comma?)* RightParen;
 
 shibaExtension: '$' Identifier basicValue;
 
@@ -25,7 +31,13 @@ identifier: (Identifier Colon)? Identifier;
 Null: 'null';
 String: '"' (~'"')* '"';
 Boolean: 'true' | 'false';
-Identifier: ([a-z] | [A-Z] | '_')+ ([a-z] | [A-Z] | [0-9] | '_' | '.')*;
+Identifier: ([a-z] | [A-Z] | '_')+ (
+		[a-z]
+		| [A-Z]
+		| [0-9]
+		| '_'
+		| '.'
+	)*;
 Number: '-'? INT ('.' [0-9]+)? EXP?;
 Arrow: '->';
 Comma: ',';

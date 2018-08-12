@@ -67,17 +67,17 @@ public protocol ShibaListener: ParseTreeListener {
 	 */
 	func exitBasicValue(_ ctx: ShibaParser.BasicValueContext)
 	/**
-	 * Enter a parse tree produced by {@link ShibaParser#function}.
+	 * Enter a parse tree produced by {@link ShibaParser#functionCall}.
 	 - Parameters:
 	   - ctx: the parse tree
 	 */
-	func enterFunction(_ ctx: ShibaParser.FunctionContext)
+	func enterFunctionCall(_ ctx: ShibaParser.FunctionCallContext)
 	/**
-	 * Exit a parse tree produced by {@link ShibaParser#function}.
+	 * Exit a parse tree produced by {@link ShibaParser#functionCall}.
 	 - Parameters:
 	   - ctx: the parse tree
 	 */
-	func exitFunction(_ ctx: ShibaParser.FunctionContext)
+	func exitFunctionCall(_ ctx: ShibaParser.FunctionCallContext)
 	/**
 	 * Enter a parse tree produced by {@link ShibaParser#shibaExtension}.
 	 - Parameters:

@@ -82,15 +82,15 @@ public interface IShibaListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitBasicValue([NotNull] ShibaParser.BasicValueContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="ShibaParser.function"/>.
+	/// Enter a parse tree produced by <see cref="ShibaParser.functionCall"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterFunction([NotNull] ShibaParser.FunctionContext context);
+	void EnterFunctionCall([NotNull] ShibaParser.FunctionCallContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="ShibaParser.function"/>.
+	/// Exit a parse tree produced by <see cref="ShibaParser.functionCall"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitFunction([NotNull] ShibaParser.FunctionContext context);
+	void ExitFunctionCall([NotNull] ShibaParser.FunctionCallContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="ShibaParser.shibaExtension"/>.
 	/// </summary>

@@ -76,13 +76,13 @@ public class ShibaBaseListener implements ShibaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFunction(ShibaParser.FunctionContext ctx) { }
+	@Override public void enterFunctionCall(ShibaParser.FunctionCallContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFunction(ShibaParser.FunctionContext ctx) { }
+	@Override public void exitFunctionCall(ShibaParser.FunctionCallContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

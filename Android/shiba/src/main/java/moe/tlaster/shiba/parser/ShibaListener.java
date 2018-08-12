@@ -58,15 +58,15 @@ public interface ShibaListener extends ParseTreeListener {
 	 */
 	void exitBasicValue(ShibaParser.BasicValueContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ShibaParser#function}.
+	 * Enter a parse tree produced by {@link ShibaParser#functionCall}.
 	 * @param ctx the parse tree
 	 */
-	void enterFunction(ShibaParser.FunctionContext ctx);
+	void enterFunctionCall(ShibaParser.FunctionCallContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ShibaParser#function}.
+	 * Exit a parse tree produced by {@link ShibaParser#functionCall}.
 	 * @param ctx the parse tree
 	 */
-	void exitFunction(ShibaParser.FunctionContext ctx);
+	void exitFunctionCall(ShibaParser.FunctionCallContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ShibaParser#shibaExtension}.
 	 * @param ctx the parse tree

@@ -160,9 +160,9 @@ namespace Shiba.Parser
         }
     }
 
-    internal sealed class FunctionVisitor : GenericVisitor<ShibaParser.FunctionContext, ShibaFunction>
+    internal sealed class FunctionVisitor : GenericVisitor<ShibaParser.FunctionCallContext, ShibaFunction>
     {
-        protected override ShibaFunction Parse(ShibaParser.FunctionContext tree)
+        protected override ShibaFunction Parse(ShibaParser.FunctionCallContext tree)
         {
             var name = tree.Identifier().GetText();
             var function = new ShibaFunction(name);

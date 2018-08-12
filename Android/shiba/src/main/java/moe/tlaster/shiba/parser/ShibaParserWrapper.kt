@@ -136,8 +136,8 @@ private final class BasicValueVisitor(override val type: Class<*> = ShibaParser.
     }
 }
 
-private final class FunctionVisitor(override val type: Class<*> = ShibaParser.FunctionContext::class.java) : AbsVisitor<ShibaParser.FunctionContext, ShibaFunction>() {
-    override fun parse(tree: ShibaParser.FunctionContext): ShibaFunction {
+private final class FunctionVisitor(override val type: Class<*> = ShibaParser.FunctionCallContext::class.java) : AbsVisitor<ShibaParser.FunctionCallContext, ShibaFunction>() {
+    override fun parse(tree: ShibaParser.FunctionCallContext): ShibaFunction {
         val name = tree.Identifier().text
         if (tree.value() != null && tree.value().any()) {
             return ShibaFunction(name).apply {

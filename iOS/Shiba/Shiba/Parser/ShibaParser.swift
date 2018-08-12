@@ -25,12 +25,12 @@ open class ShibaParser: Parser {
 
 	public
 	static let RULE_view = 0, RULE_property = 1, RULE_value = 2, RULE_map = 3, 
-            RULE_basicValue = 4, RULE_function = 5, RULE_shibaExtension = 6, 
+            RULE_basicValue = 4, RULE_functionCall = 5, RULE_shibaExtension = 6, 
             RULE_array = 7, RULE_identifier = 8
 
 	public
 	static let ruleNames: [String] = [
-		"view", "property", "value", "map", "basicValue", "function", "shibaExtension", 
+		"view", "property", "value", "map", "basicValue", "functionCall", "shibaExtension", 
 		"array", "identifier"
 	]
 
@@ -314,8 +314,8 @@ open class ShibaParser: Parser {
 				return getRuleContext(MapContext.self, 0)
 			}
 			open
-			func function() -> FunctionContext? {
-				return getRuleContext(FunctionContext.self, 0)
+			func functionCall() -> FunctionCallContext? {
+				return getRuleContext(FunctionCallContext.self, 0)
 			}
 			open
 			func shibaExtension() -> ShibaExtensionContext? {
@@ -374,7 +374,7 @@ open class ShibaParser: Parser {
 		 	case 4:
 		 		try enterOuterAlt(_localctx, 4)
 		 		setState(47)
-		 		try function()
+		 		try functionCall()
 
 		 		break
 		 	case 5:
@@ -572,7 +572,7 @@ open class ShibaParser: Parser {
 		return _localctx
 	}
 
-	public class FunctionContext: ParserRuleContext {
+	public class FunctionCallContext: ParserRuleContext {
 			open
 			func Identifier() -> TerminalNode? {
 				return getToken(ShibaParser.Tokens.Identifier.rawValue, 0)
@@ -603,25 +603,25 @@ open class ShibaParser: Parser {
 			}
 		override open
 		func getRuleIndex() -> Int {
-			return ShibaParser.RULE_function
+			return ShibaParser.RULE_functionCall
 		}
 		override open
 		func enterRule(_ listener: ParseTreeListener) {
 			if let listener = listener as? ShibaListener {
-				listener.enterFunction(self)
+				listener.enterFunctionCall(self)
 			}
 		}
 		override open
 		func exitRule(_ listener: ParseTreeListener) {
 			if let listener = listener as? ShibaListener {
-				listener.exitFunction(self)
+				listener.exitFunctionCall(self)
 			}
 		}
 	}
 	@discardableResult
-	 open func function() throws -> FunctionContext {
-		var _localctx: FunctionContext = FunctionContext(_ctx, getState())
-		try enterRule(_localctx, 10, ShibaParser.RULE_function)
+	 open func functionCall() throws -> FunctionCallContext {
+		var _localctx: FunctionCallContext = FunctionCallContext(_ctx, getState())
+		try enterRule(_localctx, 10, ShibaParser.RULE_functionCall)
 		var _la: Int = 0
 		defer {
 	    		try! exitRule()
