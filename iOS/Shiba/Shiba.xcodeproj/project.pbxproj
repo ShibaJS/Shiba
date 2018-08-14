@@ -7,7 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A1E81327625EA61493A3DB61 /* ShibaFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E81ED4D734EC4FDF89B5F8 /* ShibaFunction.swift */; };
+		A1E813E4C304770A4E313EB9 /* BasicValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E818B874ED9813B017D57C /* BasicValue.swift */; };
+		A1E814799982E13E881375C9 /* ShibaExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E81FCD5B477809A42D46D6 /* ShibaExtension.swift */; };
+		A1E8152F948278D4EF57D113 /* ShibaToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E818B0EEC644501F3FC0EB /* ShibaToken.swift */; };
+		A1E816F97793A94412E12EA1 /* Property.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E810A88459EEF2B698D41B /* Property.swift */; };
 		A1E81AD36C75CCCD46C43D19 /* ShibaParserWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E814E86D675CE18F872F4A /* ShibaParserWrapper.swift */; };
+		A1E81E77E4C2D6BA74E935D7 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E81E6535FF2B20F8F9C7AB /* View.swift */; };
 		D81A3AC3211C214F00106D67 /* Shiba.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D81A3AB9211C214F00106D67 /* Shiba.framework */; };
 		D81A3AC8211C214F00106D67 /* ShibaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81A3AC7211C214F00106D67 /* ShibaTests.swift */; };
 		D81A3B23211C3DDA00106D67 /* Antlr4.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D81A3B22211C3DDA00106D67 /* Antlr4.framework */; };
@@ -34,7 +40,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A1E810A88459EEF2B698D41B /* Property.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Property.swift; sourceTree = "<group>"; };
 		A1E814E86D675CE18F872F4A /* ShibaParserWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShibaParserWrapper.swift; sourceTree = "<group>"; };
+		A1E818B0EEC644501F3FC0EB /* ShibaToken.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShibaToken.swift; sourceTree = "<group>"; };
+		A1E818B874ED9813B017D57C /* BasicValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicValue.swift; sourceTree = "<group>"; };
+		A1E81E6535FF2B20F8F9C7AB /* View.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
+		A1E81ED4D734EC4FDF89B5F8 /* ShibaFunction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShibaFunction.swift; sourceTree = "<group>"; };
+		A1E81FCD5B477809A42D46D6 /* ShibaExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShibaExtension.swift; sourceTree = "<group>"; };
 		D81A3AB9211C214F00106D67 /* Shiba.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Shiba.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D81A3ABD211C214F00106D67 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D81A3AC2211C214F00106D67 /* ShibaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShibaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -73,6 +85,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A1E81510F81616AC01D28C7C /* Types */ = {
+			isa = PBXGroup;
+			children = (
+				A1E818B0EEC644501F3FC0EB /* ShibaToken.swift */,
+				A1E818B874ED9813B017D57C /* BasicValue.swift */,
+				A1E810A88459EEF2B698D41B /* Property.swift */,
+				A1E81FCD5B477809A42D46D6 /* ShibaExtension.swift */,
+				A1E81ED4D734EC4FDF89B5F8 /* ShibaFunction.swift */,
+				A1E81E6535FF2B20F8F9C7AB /* View.swift */,
+			);
+			path = Types;
+			sourceTree = "<group>";
+		};
 		D81A3AAF211C214F00106D67 = {
 			isa = PBXGroup;
 			children = (
@@ -97,6 +122,7 @@
 			children = (
 				D81A3B24211C3DF500106D67 /* Parser */,
 				D81A3ABD211C214F00106D67 /* Info.plist */,
+				A1E81510F81616AC01D28C7C /* Types */,
 			);
 			path = Shiba;
 			sourceTree = "<group>";
@@ -255,6 +281,12 @@
 				D81A3B32211C3EF600106D67 /* ShibaBaseListener.swift in Sources */,
 				D81A3B30211C3EF600106D67 /* ShibaLexer.swift in Sources */,
 				A1E81AD36C75CCCD46C43D19 /* ShibaParserWrapper.swift in Sources */,
+				A1E8152F948278D4EF57D113 /* ShibaToken.swift in Sources */,
+				A1E813E4C304770A4E313EB9 /* BasicValue.swift in Sources */,
+				A1E816F97793A94412E12EA1 /* Property.swift in Sources */,
+				A1E814799982E13E881375C9 /* ShibaExtension.swift in Sources */,
+				A1E81327625EA61493A3DB61 /* ShibaFunction.swift in Sources */,
+				A1E81E77E4C2D6BA74E935D7 /* View.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
