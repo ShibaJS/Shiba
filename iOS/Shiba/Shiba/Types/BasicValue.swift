@@ -15,9 +15,9 @@ public enum ShibaValueType {
 
 public class BasicValue {
     public let typeCode: ShibaValueType
-    public let value: Any
+    public let value: Any?
 
-    init(typeCode: ShibaValueType, value: Any) {
+    init(typeCode: ShibaValueType, value: Any?) {
         self.typeCode = typeCode;
         self.value = value;
     }

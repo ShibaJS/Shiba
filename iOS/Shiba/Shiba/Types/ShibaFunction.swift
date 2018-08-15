@@ -7,7 +7,7 @@ import Foundation
 
 public class ShibaFunction {
     public let name: String
-    public let paramter: [Any] = []
+    public var paramter: [Any] = []
 
     init(name: String) {
         self.name = name

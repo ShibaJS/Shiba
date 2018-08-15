@@ -27,6 +27,8 @@
 		D81A3B36211C3EF600106D67 /* ShibaParserATN.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81A3B2C211C3EF600106D67 /* ShibaParserATN.swift */; };
 		D81A3B37211C3EF600106D67 /* ShibaListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81A3B2D211C3EF600106D67 /* ShibaListener.swift */; };
 		D81A3B38211C3EF600106D67 /* ShibaLexer.tokens in Resources */ = {isa = PBXBuildFile; fileRef = D81A3B2E211C3EF600106D67 /* ShibaLexer.tokens */; };
+		D820263321240C3900448D77 /* Shiba.swift in Sources */ = {isa = PBXBuildFile; fileRef = D820263221240C3900448D77 /* Shiba.swift */; };
+		D82026352124111B00448D77 /* ShibaMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82026342124111B00448D77 /* ShibaMap.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +65,8 @@
 		D81A3B2C211C3EF600106D67 /* ShibaParserATN.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShibaParserATN.swift; sourceTree = "<group>"; };
 		D81A3B2D211C3EF600106D67 /* ShibaListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShibaListener.swift; sourceTree = "<group>"; };
 		D81A3B2E211C3EF600106D67 /* ShibaLexer.tokens */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ShibaLexer.tokens; sourceTree = "<group>"; };
+		D820263221240C3900448D77 /* Shiba.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shiba.swift; sourceTree = "<group>"; };
+		D82026342124111B00448D77 /* ShibaMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShibaMap.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +98,7 @@
 				A1E81FCD5B477809A42D46D6 /* ShibaExtension.swift */,
 				A1E81ED4D734EC4FDF89B5F8 /* ShibaFunction.swift */,
 				A1E81E6535FF2B20F8F9C7AB /* View.swift */,
+				D82026342124111B00448D77 /* ShibaMap.swift */,
 			);
 			path = Types;
 			sourceTree = "<group>";
@@ -123,6 +128,7 @@
 				D81A3B24211C3DF500106D67 /* Parser */,
 				D81A3ABD211C214F00106D67 /* Info.plist */,
 				A1E81510F81616AC01D28C7C /* Types */,
+				D820263221240C3900448D77 /* Shiba.swift */,
 			);
 			path = Shiba;
 			sourceTree = "<group>";
@@ -277,10 +283,12 @@
 				D81A3B35211C3EF600106D67 /* ShibaLexerATN.swift in Sources */,
 				D81A3B37211C3EF600106D67 /* ShibaListener.swift in Sources */,
 				D81A3B36211C3EF600106D67 /* ShibaParserATN.swift in Sources */,
+				D820263321240C3900448D77 /* Shiba.swift in Sources */,
 				D81A3B33211C3EF600106D67 /* ShibaParser.swift in Sources */,
 				D81A3B32211C3EF600106D67 /* ShibaBaseListener.swift in Sources */,
 				D81A3B30211C3EF600106D67 /* ShibaLexer.swift in Sources */,
 				A1E81AD36C75CCCD46C43D19 /* ShibaParserWrapper.swift in Sources */,
+				D82026352124111B00448D77 /* ShibaMap.swift in Sources */,
 				A1E8152F948278D4EF57D113 /* ShibaToken.swift in Sources */,
 				A1E813E4C304770A4E313EB9 /* BasicValue.swift in Sources */,
 				A1E816F97793A94412E12EA1 /* Property.swift in Sources */,

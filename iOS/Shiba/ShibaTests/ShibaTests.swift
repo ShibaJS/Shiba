@@ -22,6 +22,17 @@ class ShibaTests: XCTestCase {
     }
     
     func testExample() {
+        let wrapper = ShibaParserWrapper()
+        let tree = wrapper.parse(input: "stack { text -> awesome(reverse($bind UWPText)) text { color = \"#ffff00\" text = \"fdsafdsaf\" size = 20 } input -> $bind UWPText }")
+        assert(tree != nil)
+        assert(tree?.viewName.value == "stack")
+        assert(tree?.children.count == 3)
+        assert(tree?.children.first?.defaultValue != nil)
+        assert(tree?.children.first?.defaultValue is ShibaFunction)
+        assert((tree?.children.first?.defaultValue as! ShibaFunction).name == "awesome")
+        assert((tree?.children.first?.defaultValue as! ShibaFunction).paramter.first is ShibaFunction)
+        assert(((tree?.children.first?.defaultValue as! ShibaFunction).paramter.first as! ShibaFunction).name == "reverse")
+        assert(((tree?.children.first?.defaultValue as! ShibaFunction).paramter.first as! ShibaFunction).paramter.first is ShibaExtension)
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }

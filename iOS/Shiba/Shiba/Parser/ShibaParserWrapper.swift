@@ -29,9 +29,10 @@ internal class Visitors {
 extension ParseTree {
 
     func visit<T>() -> T {
-        return Visitors.visitors.first {
-            $0.type == type(of: self)
-        }?.visit(tree: self) as! T
+        let visitor = Visitors.visitors.first { it in
+            it.type == type(of: self)
+        };
+        return visitor?.visit(tree: self) as! T
     }
 }
 
@@ -45,21 +46,25 @@ internal class ShibaVisitor<T, K>: IShibaVisitor where T: ParseTree {
         return nil
     }
 
-    var type: Any.Type = T.Type.self
+    var type: Any.Type = T.self
 }
 
 
 internal class ViewVisitor: ShibaVisitor<ShibaParser.ViewContext, View> {
     override func parse(tree: ShibaParser.ViewContext) -> View {
-        let viewName: ShibaToken = (tree.identifier()?.visit())!
+        let viewName: ShibaToken = tree.identifier()!.visit()
         let view = View(viewName: viewName)
         let defaultValue: Any? = tree.value()?.visit()
         if defaultValue != nil {
             view.defaultValue = defaultValue
         }
         if tree.property() != nil {
-            
+            view.properties += tree.property().map { it in it.visit() }
         }
+        if tree.view() != nil {
+            view.children += tree.view().map { it in it.visit() }
+        }
+        
         return view
     }
 }
@@ -67,52 +72,106 @@ internal class ViewVisitor: ShibaVisitor<ShibaParser.ViewContext, View> {
 
 internal class PropertyVisitor: ShibaVisitor<ShibaParser.PropertyContext, Property> {
     override func parse(tree: ShibaParser.PropertyContext) -> Property {
-        return super.parse(tree: tree)!
+        let propertyName: ShibaToken = tree.identifier()!.visit()
+        let value: Any = tree.value()!.visit()
+        return Property(name: propertyName, value: value)
     }
 }
 
 internal class ValueVisitor: ShibaVisitor<ShibaParser.ValueContext, Any> {
     override func parse(tree: ShibaParser.ValueContext) -> Any {
-        return super.parse(tree: tree)!
+        return tree.children!.first!.visit()
     }
 }
 
 internal class ShibaTokenVisitor: ShibaVisitor<ShibaParser.IdentifierContext, ShibaToken> {
     override func parse(tree: ShibaParser.IdentifierContext) -> ShibaToken {
-        return super.parse(tree: tree)!
+        switch tree.Identifier().count {
+        case 1:
+            return ShibaToken(prefix: "", value: tree.Identifier().first!.getText())
+        case 2:
+            return ShibaToken(prefix: tree.Identifier().first!.getText(), value: tree.Identifier()[1].getText())
+        default:
+            return ShibaToken(prefix: "", value: "")
+        }
     }
 }
 
-internal class ShibaMapVisitor: ShibaVisitor<ShibaParser.MapContext, [String: Any]> {
-    override func parse(tree: ShibaParser.MapContext) -> [String: Any] {
-        return super.parse(tree: tree)!
+internal class ShibaMapVisitor: ShibaVisitor<ShibaParser.MapContext, ShibaMap> {
+    override func parse(tree: ShibaParser.MapContext) -> ShibaMap {
+        let properties: [Property] = tree.property().map { it in it.visit() }
+        return ShibaMap(items: properties)
     }
 }
 
 internal class BasicValueVisitor: ShibaVisitor<ShibaParser.BasicValueContext, BasicValue> {
     override func parse(tree: ShibaParser.BasicValueContext) -> BasicValue {
-        return super.parse(tree: tree)!
+        var type = ShibaValueType.Token
+        var targetValue: Any? = nil
+        let token = tree.getChild(0) as! TerminalNode
+        switch token.getSymbol()!.getType() {
+        case ShibaParser.Tokens.String.rawValue:
+            type = ShibaValueType.String
+            targetValue = token.getText().trimmingCharacters(in: CharacterSet(charactersIn: "\""))
+        case ShibaParser.Tokens.Number.rawValue:
+            type = ShibaValueType.Number
+            targetValue = Decimal(string: token.getText())
+        case ShibaParser.Tokens.Boolean.rawValue:
+            type = ShibaValueType.Boolean
+            targetValue = NSString(string: token.getText()).boolValue
+        case ShibaParser.Tokens.Null.rawValue:
+            type = ShibaValueType.Null
+            targetValue = nil
+        case ShibaParser.Tokens.Identifier.rawValue:
+            type = ShibaValueType.Token
+            targetValue = token.getText()
+        default:
+            break
+        }
+        
+        return BasicValue(typeCode: type, value: targetValue)
     }
 }
 
 internal class FunctionVisitor: ShibaVisitor<ShibaParser.FunctionCallContext, ShibaFunction> {
     override func parse(tree: ShibaParser.FunctionCallContext) -> ShibaFunction {
-        return super.parse(tree: tree)!
+        let name = tree.Identifier()!.getText()
+        let function = ShibaFunction(name: name)
+        if tree.value() != nil {
+            function.paramter += tree.value().map { it in it.visit() }
+        }
+        return function
     }
 }
 
 internal class ArrayVisitor: ShibaVisitor<ShibaParser.ArrayContext, [Any]> {
     override func parse(tree: ShibaParser.ArrayContext) -> [Any] {
-        return super.parse(tree: tree)!
+        return tree.value().map { it in it.visit() }
     }
 }
 
 internal class ShibaExtensionVisitor: ShibaVisitor<ShibaParser.ShibaExtensionContext, ShibaExtension> {
     override func parse(tree: ShibaParser.ShibaExtensionContext) -> ShibaExtension {
-        return super.parse(tree: tree)!
+        let name = tree.Identifier()!.getText()
+        let value: BasicValue = tree.basicValue()!.visit()
+        return ShibaExtension(type: name, value: value)
     }
 }
 
 public class ShibaParserWrapper {
-
+ 
+    
+    public func parse(input: String) -> View? {
+        do {
+            let input = ANTLRInputStream(input)
+            let lexer = ShibaLexer(input)
+            let tokens = CommonTokenStream(lexer)
+            let parser = try ShibaParser(tokens)
+            parser.setBuildParseTree(true)
+            let tree = try parser.view()
+            return tree.visit()
+        } catch  {
+            return nil
+        }
+    }
 }

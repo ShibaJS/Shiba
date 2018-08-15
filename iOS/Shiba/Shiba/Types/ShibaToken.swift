@@ -13,5 +13,13 @@ public class ShibaToken {
         self.prefix = prefix
         self.value = value
     }
+    
+    func isCurrentPlatform(value: String) -> Bool {
+        return isCurrentPlatform() && value == self.value;
+    }
+    
+    func isCurrentPlatform() -> Bool {
+        return prefix.isEmpty || prefix == Shiba.instance.configuration.platformType
+    }
 
 }

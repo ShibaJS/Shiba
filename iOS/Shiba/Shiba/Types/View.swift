@@ -6,10 +6,10 @@
 import Foundation
 
 public class View {
-    public let children: [View] = []
+    public var children: [View] = []
     public var defaultValue: Any? = nil
     public let viewName: ShibaToken
-    public let properties: [Property] = []
+    public var properties: [Property] = []
 
     init(viewName: ShibaToken) {
         self.viewName = viewName
