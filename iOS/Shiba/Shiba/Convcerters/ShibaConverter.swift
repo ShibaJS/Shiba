@@ -9,6 +9,9 @@ class ShibaConverter {
     func convert(value: Any?, parameter: Any?) -> Any? {
         fatalError("convert(value:parameters:) has not been implemented")
     }
+    static let Raw = RawConverter()
+    static let Function = FunctionConverter()
+    static let SingleBindingFunction = SingleBindingFunctionConverter()
 }
 
 class RawConverter: ShibaConverter {

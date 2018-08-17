@@ -63,6 +63,7 @@ class DefaultResourceValueResolver: IValueResolver {
 
 public final class Shiba {
     let configuration = ShibaConfiguration()
+    var viewMapper: [String: IViewMapper] = [:]
     
     private init() {
         

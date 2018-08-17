@@ -37,6 +37,8 @@
 		D8202674212560E500448D77 /* NativeRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8202673212560E500448D77 /* NativeRenderer.swift */; };
 		D8202676212561EB00448D77 /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8202675212561EB00448D77 /* Subscription.swift */; };
 		D820267C21258EA200448D77 /* ValueMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = D820267B21258EA200448D77 /* ValueMap.swift */; };
+		D820267E2126B53A00448D77 /* ViewMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D820267D2126B53A00448D77 /* ViewMapper.swift */; };
+		D82026822126B79600448D77 /* ValueVisitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82026812126B79600448D77 /* ValueVisitor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +85,8 @@
 		D8202673212560E500448D77 /* NativeRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeRenderer.swift; sourceTree = "<group>"; };
 		D8202675212561EB00448D77 /* Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
 		D820267B21258EA200448D77 /* ValueMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueMap.swift; sourceTree = "<group>"; };
+		D820267D2126B53A00448D77 /* ViewMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewMapper.swift; sourceTree = "<group>"; };
+		D82026812126B79600448D77 /* ValueVisitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueVisitor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +153,7 @@
 		D81A3ABB211C214F00106D67 /* Shiba */ = {
 			isa = PBXGroup;
 			children = (
+				D82026802126B78700448D77 /* Visitors */,
 				D820267221252CCE00448D77 /* ViewMappers */,
 				D81A3B24211C3DF500106D67 /* Parser */,
 				D81A3ABD211C214F00106D67 /* Info.plist */,
@@ -204,8 +209,17 @@
 		D820267221252CCE00448D77 /* ViewMappers */ = {
 			isa = PBXGroup;
 			children = (
+				D820267D2126B53A00448D77 /* ViewMapper.swift */,
 			);
 			path = ViewMappers;
+			sourceTree = "<group>";
+		};
+		D82026802126B78700448D77 /* Visitors */ = {
+			isa = PBXGroup;
+			children = (
+				D82026812126B79600448D77 /* ValueVisitor.swift */,
+			);
+			path = Visitors;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -331,6 +345,7 @@
 				A1E81AD36C75CCCD46C43D19 /* ShibaParserWrapper.swift in Sources */,
 				D82026352124111B00448D77 /* ShibaMap.swift in Sources */,
 				D8202674212560E500448D77 /* NativeRenderer.swift in Sources */,
+				D820267E2126B53A00448D77 /* ViewMapper.swift in Sources */,
 				A1E8152F948278D4EF57D113 /* ShibaToken.swift in Sources */,
 				A1E813E4C304770A4E313EB9 /* BasicValue.swift in Sources */,
 				A1E816F97793A94412E12EA1 /* Property.swift in Sources */,
@@ -338,6 +353,7 @@
 				A1E81327625EA61493A3DB61 /* ShibaFunction.swift in Sources */,
 				A1E81E77E4C2D6BA74E935D7 /* View.swift in Sources */,
 				A1E812931691AEE12236DCA3 /* ShibaHost.swift in Sources */,
+				D82026822126B79600448D77 /* ValueVisitor.swift in Sources */,
 				A1E81EE63CEACED41CC811DE /* INotifyPropertyChanged.swift in Sources */,
 				D820267C21258EA200448D77 /* ValueMap.swift in Sources */,
 				A1E81C6DB7791B163802EFEF /* ShibaBinding.swift in Sources */,
