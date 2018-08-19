@@ -7,9 +7,16 @@ import Foundation
 import UIKit
 
 public class ShibaHost : UIView, IShibaContext {
+    func addPropertyChangedSubscription(view: UIView, list: [ISubscription]) {
+        propertyChangedSubscription[view] = list
+    }
+    
+    
+    func twowayToDataContext(path: String, value: Any?) {
+        
+    }
+    
     var propertyChangedSubscription: [UIView : [ISubscription]] = [:]
-    
-    
     
     
 }

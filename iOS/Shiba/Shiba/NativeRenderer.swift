@@ -11,5 +11,7 @@ import UIKit
 
 protocol IShibaContext {
     var propertyChangedSubscription: [UIView: [ISubscription]] { get set }
+    func twowayToDataContext(path: String, value: Any?)
+    func addPropertyChangedSubscription(view: UIView, list: [ISubscription])
 }
 
