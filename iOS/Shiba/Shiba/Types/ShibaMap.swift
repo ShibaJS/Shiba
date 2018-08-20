@@ -10,12 +10,16 @@ import Foundation
 
 public class ShibaMap {
     private var _items: [Property] = []
-    
+
     init(items: [Property]) {
         self._items = items
     }
-    
+
     subscript(key: String) -> Any? {
-        return _items.first(where: { it in it.name.isCurrentPlatform(value: key) })
+        let value = _items.first(where: { it in it.name.isCurrentPlatform(value: key) })
+        if value == nil {
+            return nil
+        }
+        return ShibaValueVisitor.getValue(item: value!, context: nil)
     }
 }

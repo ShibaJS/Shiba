@@ -5,24 +5,25 @@
 
 import Foundation
 
-class ShibaConverter {
+public class ShibaConverter {
     func convert(value: Any?, parameter: Any?) -> Any? {
         fatalError("convert(value:parameters:) has not been implemented")
     }
+
     static let Raw = RawConverter()
     static let Function = FunctionConverter()
     static let SingleBindingFunction = SingleBindingFunctionConverter()
 }
 
-class RawConverter: ShibaConverter {
+public class RawConverter: ShibaConverter {
     override func convert(value: Any?, parameter: Any?) -> Any? {
         return value
     }
 }
 
-class FunctionConverter: ShibaConverter {
+public class FunctionConverter: ShibaConverter {
     private let executor = ShibaFunctionExecutor()
-    
+
     func getExecutor() -> ShibaFunctionExecutor {
         return executor
     }
@@ -35,8 +36,9 @@ class FunctionConverter: ShibaConverter {
     }
 }
 
-class SingleBindingFunctionConverter : FunctionConverter {
+public class SingleBindingFunctionConverter: FunctionConverter {
     private let executor = SingleBindingShibaFunctionExecutor()
+
     override func getExecutor() -> ShibaFunctionExecutor {
         return executor;
     }

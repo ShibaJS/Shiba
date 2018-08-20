@@ -5,18 +5,19 @@
 
 import Foundation
 
-class ShibaBinding {
+public class ShibaBinding {
     let path: String
     var converter: ShibaConverter? = nil
     var parameter: Any? = nil
-    
+
     init(path: String) {
         self.path = path
     }
 }
 
-class ShibaMultiBinding : ShibaBinding {
+public class ShibaMultiBinding: ShibaBinding {
     let paths: [String]
+
     init(paths: [String]) {
         self.paths = paths
         super.init(path: "")

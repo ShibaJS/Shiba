@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        
         list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         list.adapter = Adapter(this)
 //        host.load("stack { text { text = \$bind text } input { text = \$bind text} }", Model())

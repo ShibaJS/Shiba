@@ -8,7 +8,9 @@ import UIKit
 
 extension UIView {
     func isVisible(visible: Bool, dimension: CGFloat = 0.0, attribute: NSLayoutAttribute = .height) -> Void {
-        if let constraint = (self.constraints.filter{$0.firstAttribute == attribute}.first) {
+        if let constraint = (self.constraints.filter {
+            $0.firstAttribute == attribute
+        }.first) {
             constraint.constant = visible ? 0.0 : dimension
             self.isHidden = visible
             self.layoutIfNeeded()

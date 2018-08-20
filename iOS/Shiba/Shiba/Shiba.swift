@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import JavaScriptCore
 
 public class ShibaConfiguration {
     var jsonValueResolver: IJsonValueResolver = DefaultJsonValueResolver()
@@ -33,19 +34,26 @@ protocol IValueResolver {
     func getValue(value: Any?) -> Any?
 }
 
-class DefaultConverterExecutor : IConverterExecutor {
+class DefaultConverterExecutor: IConverterExecutor {
+    private let context = JSContext()
+
+    public func addConverter(value: String) {
+        context?.evaluateScript(value)
+    }
+
     func execute(name: String, parameters: [Any?]) -> Any? {
-        fatalError("execute(name:parameters:) has not been implemented")
+        let converter = context?.objectForKeyedSubscript(name)
+        return converter?.call(withArguments: parameters)
     }
 }
 
-class DefaultJsonValueResolver : IJsonValueResolver {
+class DefaultJsonValueResolver: IJsonValueResolver {
     func getValue(dataContext: Any?, name: String) -> Any? {
         fatalError("getValue(dataContext:name:) has not been implemented")
     }
 }
 
-class DefaultBindingValueResolver : IBindingValueResolver {
+class DefaultBindingValueResolver: IBindingValueResolver {
     func getValue(dataContext: Any?, name: String) -> Any? {
         fatalError("getValue(dataContext:name:) has not been implemented")
     }
@@ -64,10 +72,19 @@ class DefaultResourceValueResolver: IValueResolver {
 public final class Shiba {
     let configuration = ShibaConfiguration()
     var viewMapper: [String: IViewMapper] = [:]
-    
-    private init() {
-        
+
+    public func addMapper(name: String, mapper: IViewMapper) {
+        viewMapper[name] = mapper
     }
-    
-    static let instance = Shiba()
+
+    public func initial() {
+
+    }
+
+    private init() {
+        addMapper(name: "stack", mapper: StackMapper())
+        addMapper(name: "text", mapper: TextMapper())
+    }
+
+    public static let instance = Shiba()
 }

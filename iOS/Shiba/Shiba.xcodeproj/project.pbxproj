@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		A1E812931691AEE12236DCA3 /* ShibaHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E81B0076997BC6765FA075 /* ShibaHost.swift */; };
 		A1E81327625EA61493A3DB61 /* ShibaFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E81ED4D734EC4FDF89B5F8 /* ShibaFunction.swift */; };
+		A1E8134D3C17DFDCC0C455E8 /* TextMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E81B6395843E0FA73F2672 /* TextMapper.swift */; };
 		A1E8136A35392948E6B65EDA /* ShibaFunctionExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E81E54B3A53353464B5BC9 /* ShibaFunctionExecutor.swift */; };
 		A1E813E4C304770A4E313EB9 /* BasicValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E818B874ED9813B017D57C /* BasicValue.swift */; };
 		A1E814799982E13E881375C9 /* ShibaExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E81FCD5B477809A42D46D6 /* ShibaExtension.swift */; };
@@ -17,6 +18,7 @@
 		A1E817B4225E01F7E06CF445 /* ShibaConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E81E9F1C74A272DEDC32FB /* ShibaConverter.swift */; };
 		A1E81AD36C75CCCD46C43D19 /* ShibaParserWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E814E86D675CE18F872F4A /* ShibaParserWrapper.swift */; };
 		A1E81C6DB7791B163802EFEF /* ShibaBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E81FF921D5A6F46A5158CD /* ShibaBinding.swift */; };
+		A1E81C755DAE30E4ED34F5F9 /* StackMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E816B8AF98D53050EB4E83 /* StackMapper.swift */; };
 		A1E81E5661A2773FCDE62F21 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E812FDA5529CE1F03B68A8 /* Extensions.swift */; };
 		A1E81E77E4C2D6BA74E935D7 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E81E6535FF2B20F8F9C7AB /* View.swift */; };
 		A1E81EE63CEACED41CC811DE /* INotifyPropertyChanged.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E810215AE5F114C3BD0BFF /* INotifyPropertyChanged.swift */; };
@@ -57,9 +59,11 @@
 		A1E810A88459EEF2B698D41B /* Property.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Property.swift; sourceTree = "<group>"; };
 		A1E812FDA5529CE1F03B68A8 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		A1E814E86D675CE18F872F4A /* ShibaParserWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShibaParserWrapper.swift; sourceTree = "<group>"; };
+		A1E816B8AF98D53050EB4E83 /* StackMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StackMapper.swift; sourceTree = "<group>"; };
 		A1E818B0EEC644501F3FC0EB /* ShibaToken.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShibaToken.swift; sourceTree = "<group>"; };
 		A1E818B874ED9813B017D57C /* BasicValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicValue.swift; sourceTree = "<group>"; };
 		A1E81B0076997BC6765FA075 /* ShibaHost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShibaHost.swift; sourceTree = "<group>"; };
+		A1E81B6395843E0FA73F2672 /* TextMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextMapper.swift; sourceTree = "<group>"; };
 		A1E81E54B3A53353464B5BC9 /* ShibaFunctionExecutor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShibaFunctionExecutor.swift; sourceTree = "<group>"; };
 		A1E81E6535FF2B20F8F9C7AB /* View.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
 		A1E81E9F1C74A272DEDC32FB /* ShibaConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShibaConverter.swift; sourceTree = "<group>"; };
@@ -221,6 +225,8 @@
 			isa = PBXGroup;
 			children = (
 				D820267D2126B53A00448D77 /* ViewMapper.swift */,
+				A1E816B8AF98D53050EB4E83 /* StackMapper.swift */,
+				A1E81B6395843E0FA73F2672 /* TextMapper.swift */,
 			);
 			path = ViewMappers;
 			sourceTree = "<group>";
@@ -371,6 +377,8 @@
 				A1E817B4225E01F7E06CF445 /* ShibaConverter.swift in Sources */,
 				A1E8136A35392948E6B65EDA /* ShibaFunctionExecutor.swift in Sources */,
 				A1E81E5661A2773FCDE62F21 /* Extensions.swift in Sources */,
+				A1E81C755DAE30E4ED34F5F9 /* StackMapper.swift in Sources */,
+				A1E8134D3C17DFDCC0C455E8 /* TextMapper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
