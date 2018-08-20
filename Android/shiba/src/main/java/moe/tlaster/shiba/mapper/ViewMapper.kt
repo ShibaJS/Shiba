@@ -6,7 +6,6 @@ import android.util.TypedValue
 import android.view.ViewGroup
 import moe.tlaster.shiba.*
 import moe.tlaster.shiba.visitors.ShibaValueVisitor
-import org.mozilla.javascript.regexp.SubString
 
 internal val Number.dp: Int
     get() = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), Resources.getSystem().displayMetrics).toInt()
@@ -146,25 +145,19 @@ open class ViewMapper<TNativeView : NativeView> : IViewMapper<TNativeView> {
                 PropertyMap("margin") { view, it ->
                     if (it is ShibaMap && view.layoutParams is ViewGroup.MarginLayoutParams) {
                         (view.layoutParams as ViewGroup.MarginLayoutParams).setMargins(
-                                it.getValue<BasicValue>("left")?.value?.toString()?.toInt()?.dp
-                                        ?: 0,
-                                it.getValue<BasicValue>("top")?.value?.toString()?.toInt()?.dp ?: 0,
-                                it.getValue<BasicValue>("right")?.value?.toString()?.toInt()?.dp
-                                        ?: 0,
-                                it.getValue<BasicValue>("bottom")?.value?.toString()?.toInt()?.dp
-                                        ?: 0)
+                                it["left"]?.toString()?.toInt()?.dp ?: 0,
+                                it["top"]?.toString()?.toInt()?.dp ?: 0,
+                                it["right"]?.toString()?.toInt()?.dp ?: 0,
+                                it["bottom"]?.toString()?.toInt()?.dp ?: 0)
                     }
                 },
                 PropertyMap("padding") { view, it ->
                     if (it is ShibaMap) {
                         view.setPaddingRelative(
-                                it.getValue<BasicValue>("left")?.value?.toString()?.toInt()?.dp
-                                        ?: 0,
-                                it.getValue<BasicValue>("top")?.value?.toString()?.toInt()?.dp ?: 0,
-                                it.getValue<BasicValue>("right")?.value?.toString()?.toInt()?.dp
-                                        ?: 0,
-                                it.getValue<BasicValue>("bottom")?.value?.toString()?.toInt()?.dp
-                                        ?: 0)
+                                it["left"]?.toString()?.toInt()?.dp ?: 0,
+                                it["top"]?.toString()?.toInt()?.dp ?: 0,
+                                it["right"]?.toString()?.toInt()?.dp ?: 0,
+                                it["bottom"]?.toString()?.toInt()?.dp ?: 0)
                     }
                 },
                 PropertyMap("alpha") { view, it -> if (it is Number) view.alpha = it.toFloat() },

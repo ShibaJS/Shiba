@@ -1,5 +1,7 @@
 package moe.tlaster.shiba
 
+import moe.tlaster.shiba.visitors.ShibaValueVisitor
+
 
 /**
  * Created by SE on 3/5.
@@ -80,11 +82,13 @@ data class ShibaMap(val properties: List<Property>) : Map<String, Any> {
     }
 
     override fun get(key: String): Any? {
-        return properties.firstOrNull { it.name.isCurrentPlatform(key) }
+        val value = properties.firstOrNull { it.name.isCurrentPlatform(key) }?.value ?: return null
+        return ShibaValueVisitor.getValue(value, null)
     }
 
     fun <T> getValue(key: String): T? {
-        return properties.firstOrNull { it.name.isCurrentPlatform(key) }?.value as T?
+        return this[key] as T?
+
     }
 
     override fun isEmpty(): Boolean {

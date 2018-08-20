@@ -70,7 +70,7 @@ private final class ValueVisitor(override val type: Class<*> = ShibaParser.Value
     override fun parse(tree: ShibaParser.ValueContext): Any {
         val result = tree.children.first().visit<Any>()
         if (result == null){
-            throw NotImplementedError()
+            throw NotImplementedError("${tree.children.first().text} is not implement")
         } else {
             return result
         }
