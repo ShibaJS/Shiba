@@ -29,7 +29,8 @@ private val visitors = ArrayList<IValueVisitor>().apply {
 }
 
 private fun <T> Any.visit(context: IShibaContext?): T? {
-    return visitors.find { it.type == this.javaClass }?.visit(this, context) as T?
+    val visitor = visitors.find { it.type == this.javaClass } ?: return this as T?
+    return visitor.visit(this, context) as T?
 }
 
 private abstract class AbsValueVisitor<T, K> : IValueVisitor {
@@ -42,7 +43,7 @@ private abstract class AbsValueVisitor<T, K> : IValueVisitor {
 
 object ShibaValueVisitor {
     fun getValue(item: Any, context: IShibaContext?) : Any? {
-        return item.visit<Any>(context) ?: item
+        return item.visit<Any>(context)
     }
 }
 
