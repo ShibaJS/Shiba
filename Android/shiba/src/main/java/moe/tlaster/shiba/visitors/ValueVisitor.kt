@@ -42,7 +42,7 @@ private abstract class AbsValueVisitor<T, K> : IValueVisitor {
 
 object ShibaValueVisitor {
     fun getValue(item: Any, context: IShibaContext) : Any? {
-        return item.visit<Any>(context)
+        return item.visit<Any>(context) ?: item
     }
 }
 
