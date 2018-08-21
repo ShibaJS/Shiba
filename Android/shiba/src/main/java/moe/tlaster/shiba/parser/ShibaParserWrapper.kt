@@ -106,7 +106,7 @@ private final class BasicValueVisitor(override val type: Class<*> = ShibaParser.
     override fun parse(tree: ShibaParser.BasicValueContext): BasicValue {
         var type = ShibaValueType.Token
         var targetValue: Any? = null
-        val token = tree.getChild(0) as TerminalNode;
+        val token = tree.getChild(0) as TerminalNode
         when (token.symbol.type) {
             ShibaParser.String -> {
                 type = ShibaValueType.String

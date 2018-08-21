@@ -29,7 +29,7 @@ interface ISubscription {
 
 open class PropertyMap(override val name: String, override val setter: (NativeView, Any?) -> Unit) : IValueMap
 
-class TwoWayPropertyMap(name: String, setter: (NativeView, Any?) -> Unit, val twowatInitializer: ((NativeView, (Any?) -> Unit) -> Unit)) : PropertyMap(name, setter)
+class TwoWayPropertyMap(name: String, setter: (NativeView, Any?) -> Unit, val twowayInitializer: ((NativeView, (Any?) -> Unit) -> Unit)) : PropertyMap(name, setter)
 
 class SingleSubscription(override val setter: (NativeView, Any?) -> Unit, override val binding: ShibaBinding) : ISubscription {
     override var isChanging: Boolean = false
@@ -73,7 +73,7 @@ open class ViewMapper<TNativeView : NativeView> : IViewMapper<TNativeView> {
                     subscriptions += when (propertyMap) {
                         is TwoWayPropertyMap -> {
                             TwoWaySubscription(propertyMap.setter, targetValue).apply {
-                                propertyMap.twowatInitializer.invoke(target) {
+                                propertyMap.twowayInitializer.invoke(target) {
                                     if (!isChanging) {
                                         isChanging = true
                                         context.twowayToDataContext(binding.path, it)

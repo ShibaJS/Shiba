@@ -9,7 +9,7 @@ import moe.tlaster.shiba.converters.SingleBindingFunctionConverter
 
 //open class PropertyMap(val name: String, val setter: (NativeView, Any?) -> Unit)
 //
-//class TwoWayPropertyMap(name: String, setter: (NativeView, Any?) -> Unit, val twowatInitializer: ((NativeView, (Any?) -> Unit) -> Unit)) : PropertyMap(name, setter)
+//class TwoWayPropertyMap(name: String, setter: (NativeView, Any?) -> Unit, val twowayInitializer: ((NativeView, (Any?) -> Unit) -> Unit)) : PropertyMap(name, setter)
 //
 //internal class PropertyChangedSubscription(val target: NativeView, val map: PropertyMap, var twowayCallback: ((Any?) -> Unit)? = null) {
 //    internal var isChanging = false
