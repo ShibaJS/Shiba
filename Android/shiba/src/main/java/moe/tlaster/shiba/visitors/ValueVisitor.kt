@@ -18,7 +18,7 @@ import moe.tlaster.shiba.converters.SingleBindingFunctionConverter
 
 private interface IValueVisitor {
     val type: Class<*>
-    fun visit(item: Any, context: IShibaContext): Any
+    fun visit(item: Any, context: IShibaContext?): Any
 }
 
 private val visitors = ArrayList<IValueVisitor>().apply {
@@ -28,28 +28,32 @@ private val visitors = ArrayList<IValueVisitor>().apply {
     add(BasicValueVisitor())
 }
 
-private fun <T> Any.visit(context: IShibaContext): T? {
-    return visitors.find { it.type == this.javaClass }?.visit(this, context) as T?
+private fun <T> Any.visit(context: IShibaContext?): T? {
+    val visitor = visitors.find { it.type == this.javaClass } ?: return this as T?
+    return visitor.visit(this, context) as T?
 }
 
 private abstract class AbsValueVisitor<T, K> : IValueVisitor {
-    override fun visit(item: Any, context: IShibaContext): Any {
+    override fun visit(item: Any, context: IShibaContext?): Any {
         return parse(item as T, context) as Any
     }
 
-    abstract fun parse(tree: T, context: IShibaContext): K
+    abstract fun parse(tree: T, context: IShibaContext?): K
 }
 
 object ShibaValueVisitor {
-    fun getValue(item: Any, context: IShibaContext) : Any? {
+    fun getValue(item: Any, context: IShibaContext?) : Any? {
         return item.visit<Any>(context)
     }
 }
 
 private class ViewVisitor(override val type: Class<*> = View::class.java) : AbsValueVisitor<View, NativeView>() {
-    override fun parse(tree: View, context: IShibaContext): NativeView {
+    override fun parse(tree: View, context: IShibaContext?): NativeView {
         val mapper = Shiba.viewMapping.filter { tree.viewName.isCurrentPlatform(it.key) }.values.firstOrNull() ?:
-        throw IllegalStateException()
+        throw IllegalArgumentException()
+        if (context == null) {
+            throw IllegalArgumentException()
+        }
         val target = mapper.map(tree, context)
         if (tree.children.any() && target is ViewGroup) {
             tree.children.forEach { target.addView(parse(it, context)) }
@@ -59,14 +63,14 @@ private class ViewVisitor(override val type: Class<*> = View::class.java) : AbsV
 }
 
 private class ShibaExtensionVisitor(override val type: Class<*> = ShibaExtension::class.java) : AbsValueVisitor<ShibaExtension, ShibaBinding>() {
-    override fun parse(tree: ShibaExtension, context: IShibaContext): ShibaBinding {
+    override fun parse(tree: ShibaExtension, context: IShibaContext?): ShibaBinding {
         return when (tree.type) {
             "bind" -> bindHandler(tree.value, context)
             else -> throw NotImplementedError()
         }
     }
 
-    private fun bindHandler(value: BasicValue, context: IShibaContext): ShibaBinding {
+    private fun bindHandler(value: BasicValue, context: IShibaContext?): ShibaBinding {
         return when (value.typeCode) {
             ShibaValueType.Token -> ShibaBinding(value.value.toString())
             ShibaValueType.String, ShibaValueType.Number, ShibaValueType.Null, ShibaValueType.Boolean ->
@@ -77,7 +81,7 @@ private class ShibaExtensionVisitor(override val type: Class<*> = ShibaExtension
 }
 
 private class ShibaFunctionVisitor(override val type: Class<*> = ShibaFunction::class.java) : AbsValueVisitor<ShibaFunction, ShibaBinding>() {
-    override fun parse(tree: ShibaFunction, context: IShibaContext): ShibaBinding {
+    override fun parse(tree: ShibaFunction, context: IShibaContext?): ShibaBinding {
         val function = parseFunction(tree, context)
         val bindings = getBindings(function)
         if (!bindings.any()) {
@@ -105,7 +109,7 @@ private class ShibaFunctionVisitor(override val type: Class<*> = ShibaFunction::
         }.filter { it != null }.flatMap { it!! }
     }
 
-    private fun parseFunction(function: ShibaFunction, context: IShibaContext) : ShibaFunction {
+    private fun parseFunction(function: ShibaFunction, context: IShibaContext?) : ShibaFunction {
         return function.apply {
             paramter = paramter.map {
                         when (it) {
@@ -124,7 +128,7 @@ private class ShibaFunctionVisitor(override val type: Class<*> = ShibaFunction::
 }
 
 private class BasicValueVisitor(override val type: Class<*> = BasicValue::class.java) : AbsValueVisitor<BasicValue, Any?>() {
-    override fun parse(tree: BasicValue, context: IShibaContext): Any? {
+    override fun parse(tree: BasicValue, context: IShibaContext?): Any? {
         return tree.value
     }
 }

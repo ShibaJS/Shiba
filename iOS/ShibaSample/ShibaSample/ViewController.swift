@@ -7,12 +7,15 @@
 //
 
 import UIKit
+import Shiba
 
 class ViewController: UIViewController {
 
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-
+        let shibaHost = ShibaHost(frame: self.view.frame)
+        shibaHost.load(layout: "stack { text -> \"hello\" text -> \" world!\" }", dataContext: nil)
+        self.view.addSubview(shibaHost)
     }
 }

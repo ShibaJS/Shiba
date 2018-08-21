@@ -22,9 +22,9 @@ import Foundation
 //}
 
 public protocol INotifyPropertyChanged {
-    var propertyChanged: [(_ sender: Any, _ propertyName: String) -> Void] { get }
+    var propertyChanged: [(_ sender: Any, _ propertyName: String) -> Void] { get set }
 }
 
-public class NotifyObject : INotifyPropertyChanged {
-    public private(set) var propertyChanged: [(_ sender: Any, _ propertyName: String) -> Void] = []
+public class NotifyObject: INotifyPropertyChanged {
+    public var propertyChanged: [(_ sender: Any, _ propertyName: String) -> Void] = []
 }

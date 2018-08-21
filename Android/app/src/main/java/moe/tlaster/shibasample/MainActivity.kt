@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        
         list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         list.adapter = Adapter(this)
 //        host.load("stack { text { text = \$bind text } input { text = \$bind text} }", Model())
@@ -41,7 +42,7 @@ class Adapter(private val context: Context) : RecyclerView.Adapter<ViewHolder>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_list, parent, false)
-        view.host.load("stack { width = match_parent text -> awesome(reverse(\$bind androidText)) text { text=\"Android!\" } input { text = \$bind androidText width=match_parent } input { text = \$bind androidText} }", null)
+        view.host.load("stack { padding = [ top = 8 ] width = match_parent text -> awesome(reverse(\$bind androidText)) text { text=\"Android!\" } input { text = \$bind androidText width=match_parent } input { text = \$bind androidText} }", null)
         return ViewHolder(view)
     }
 

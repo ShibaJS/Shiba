@@ -9,16 +9,17 @@
 import Foundation
 import UIKit
 
-internal protocol ISubscription {
-    var isChanging: Bool { get }
+public protocol ISubscription {
+    var isChanging: Bool { get set }
     var binding: ShibaBinding { get }
     var setter: (UIView, Any?) -> Void { get }
 }
 
-public final class SingleSubscription : ISubscription {
-    var isChanging: Bool
-    var binding: ShibaBinding
-    var setter: (UIView, Any?) -> Void
+public final class SingleSubscription: ISubscription {
+    public var isChanging: Bool
+    public var binding: ShibaBinding
+    public var setter: (UIView, Any?) -> Void
+
     init(binding: ShibaBinding, setter: @escaping (UIView, Any?) -> Void) {
         self.binding = binding
         self.setter = setter
@@ -26,10 +27,11 @@ public final class SingleSubscription : ISubscription {
     }
 }
 
-public final class MultiSubscription : ISubscription {
-    var isChanging: Bool
-    var binding: ShibaBinding
-    var setter: (UIView, Any?) -> Void
+public final class MultiSubscription: ISubscription {
+    public var isChanging: Bool
+    public var binding: ShibaBinding
+    public var setter: (UIView, Any?) -> Void
+
     init(binding: ShibaBinding, setter: @escaping (UIView, Any?) -> Void) {
         self.binding = binding
         self.setter = setter
@@ -37,10 +39,11 @@ public final class MultiSubscription : ISubscription {
     }
 }
 
-public final class TwoWaySubscription : ISubscription {
-    var isChanging: Bool
-    var binding: ShibaBinding
-    var setter: (UIView, Any?) -> Void
+public final class TwoWaySubscription: ISubscription {
+    public var isChanging: Bool
+    public var binding: ShibaBinding
+    public var setter: (UIView, Any?) -> Void
+
     init(binding: ShibaBinding, setter: @escaping (UIView, Any?) -> Void) {
         self.binding = binding
         self.setter = setter

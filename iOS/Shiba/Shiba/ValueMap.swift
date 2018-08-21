@@ -15,10 +15,10 @@ protocol IValueMap {
 }
 
 
-public class PropertyMap : IValueMap {
+public class PropertyMap: IValueMap {
     var name: String
     var setter: (UIView, Any?) -> Void
-    
+
     init(name: String, setter: @escaping (UIView, Any?) -> Void) {
         self.name = name
         self.setter = setter
@@ -27,7 +27,7 @@ public class PropertyMap : IValueMap {
 
 class TwoWayPropertyMap: PropertyMap {
     var twowayInitializer: (UIView, (Any?) -> Void) -> Void
-    
+
     init(name: String, setter: @escaping (UIView, Any?) -> Void, twowayInitializer: @escaping (UIView, (Any?) -> Void) -> Void) {
         self.twowayInitializer = twowayInitializer
         super.init(name: name, setter: setter)

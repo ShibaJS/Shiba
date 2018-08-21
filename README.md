@@ -83,7 +83,7 @@ You can mix your native code with Shiba, you can also use Shiba to create a simp
 - [ ] Core rendering
   - [x] WPF && UWP   
   - [x] Android   
-  - [ ] iOS && macOS  
+  - [x] iOS && macOS  
   - [ ] Xamarin support
 - [ ] Basic layout renderer
   - [x] WPF && UWP   
