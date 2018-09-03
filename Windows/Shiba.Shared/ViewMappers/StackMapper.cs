@@ -22,10 +22,10 @@ namespace Shiba.ViewMappers
         
         public override IEnumerable<IValueMap> PropertyMaps()
         {
-            return base.PropertyMaps().Concat(GetPropertys());
+            return base.PropertyMaps().Concat(GetProperties());
         }
 
-        private IEnumerable<PropertyMap> GetPropertys()
+        private IEnumerable<PropertyMap> GetProperties()
         {
             yield return new PropertyMap("orientation", NativeView.OrientationProperty, typeof(string), OrientationConverter);
         }

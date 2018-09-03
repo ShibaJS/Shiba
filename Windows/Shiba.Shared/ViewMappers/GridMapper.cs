@@ -42,7 +42,7 @@ namespace Shiba.ViewMappers
                         .ForEach(it => target.RowDefinitions.Add(it));
                 }
             });
-            yield return new ManuallyValueMap("colunm", typeof(int), (element, o) =>
+            yield return new ManuallyValueMap("column", typeof(int), (element, o) =>
             {
                 if (o is int value && element is NativeView target)
                 {

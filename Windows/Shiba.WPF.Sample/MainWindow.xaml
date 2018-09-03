@@ -13,7 +13,7 @@
             <shiba:ShibaHost.Layout>
                 grid {
                     row = 4
-                    colunm = 4
+                    column = 4
                     text -> awesome(reverse($bind UWPText), "sdafs")
                     text {
                         padding = [
@@ -26,14 +26,14 @@
                         ] 
                         grid = [
                             row = 1
-                            colunm = 1
+                            column = 1
                         ]
                         text = "dfasfsa"
                     }
                 text {
                 grid = [
                 row = 1
-                colunm = 1
+                column = 1
                 ]
                 WPF:text = "WPF Text!"
                 Android:text = "Android Text!"

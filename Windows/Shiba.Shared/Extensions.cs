@@ -48,18 +48,7 @@ namespace Shiba
 
             return new NativeThickness(left: left, top: top, right: right, bottom: bottom);
         }
-
-        //public static object Get(this ShibaMap map, string name)
-        //{
-        //    var value = map.Properties.FirstOrDefault(it => it.Name.IsCurrentPlatform(name))?.Value;
-        //    if (value == null)
-        //    {
-        //        return null;
-        //    }
-
-        //    return ShibaValueVisitor.GetValue(value, null);
-        //}
-
+        
         public static T Get<T>(this ShibaMap map, string name)
         {
             var value = map.Properties.FirstOrDefault(it => it.Name.IsCurrentPlatform(name))?.Value;
@@ -82,31 +71,5 @@ namespace Shiba
             return default;
         }
     }
-
-
-    public static class BasicValueExtension
-    {
-        public static T Get<T>(this BasicValue basicValue) 
-        {
-            switch (basicValue.TypeCode)
-            {
-                case ShibaValueType.Boolean:
-                case ShibaValueType.Number:
-                case ShibaValueType.String:
-                case ShibaValueType.Token:
-                    if (typeof(IConvertible).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
-                    {
-                        return (T) Convert.ChangeType(basicValue.Value, typeof(T));
-                    }
-                    else
-                    {
-                        return default;
-                    }
-                case ShibaValueType.Null:
-                    return default;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-    }
+    
 }
