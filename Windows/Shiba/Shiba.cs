@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Esprima.Ast;
 using Jint;
 using Jint.Native;
 using Jint.Native.Function;
 using Newtonsoft.Json.Linq;
 using Shiba.Controls;
-using Shiba.Parser;
 
 namespace Shiba
 {
@@ -46,7 +43,7 @@ namespace Shiba
 
     public interface IConverterExecutor
     {
-        object Execute(string functionName, params object[] paramters);
+        object Execute(string functionName, params object[] parameters);
     }
     
     public class DefaultConverterExecutor : IConverterExecutor
@@ -67,12 +64,12 @@ namespace Shiba
         {
         }
 
-        public object Execute(string functionName, params object[] paramters)
+        public object Execute(string functionName, params object[] parameters)
         {
             var jsConverter = _engine.GetValue(functionName);
             if (jsConverter != null && jsConverter.Is<FunctionInstance>())
             {
-                return jsConverter.Invoke(paramters.Select(it => JsValue.FromObject(_engine, it)).ToArray()).ToObject();
+                return jsConverter.Invoke(parameters.Select(it => JsValue.FromObject(_engine, it)).ToArray()).ToObject();
             }
             
 

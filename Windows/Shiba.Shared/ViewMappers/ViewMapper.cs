@@ -1,16 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using Shiba;
-using Shiba.Common;
 using Shiba.Controls;
-using Shiba.Internal;
 using Shiba.Visitors;
 using ShibaView = Shiba.Controls.View;
-using View = Shiba.Controls.View;
 #if WINDOWS_UWP
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -185,18 +178,18 @@ namespace Shiba.ViewMappers
             {
                 if (value is ShibaMap map)
                 {
-                    var row = map.GetValue<BasicValue>("row").To<int>();
-                    var colunm = map.GetValue<BasicValue>("colunm").To<int>();
-                    var rowSpan = map.GetValue<BasicValue>("rowSpan").To<int>();
-                    var colunmSpan = map.GetValue<BasicValue>("colunmSpan").To<int>();
+                    var row = map.Get<int>("row");
+                    var column = map.Get<int>("column");
+                    var rowSpan = map.Get<int>("rowSpan");
+                    var columnSpan = map.Get<int>("columnSpan");
                     if (row != default)
                     {
                         Grid.SetRow(element, row);
                     }
 
-                    if (colunm != default)
+                    if (column != default)
                     {
-                        Grid.SetColumn(element, colunm);
+                        Grid.SetColumn(element, column);
                     }
 
                     if (rowSpan != default)
@@ -204,9 +197,9 @@ namespace Shiba.ViewMappers
                         Grid.SetRowSpan(element, rowSpan);
                     }
 
-                    if (colunmSpan != default)
+                    if (columnSpan != default)
                     {
-                        Grid.SetColumnSpan(element, colunmSpan);
+                        Grid.SetColumnSpan(element, columnSpan);
                     }
                 }
             });

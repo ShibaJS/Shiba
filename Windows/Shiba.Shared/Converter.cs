@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using Shiba.Controls;
 using Shiba.Internal;
@@ -10,8 +9,10 @@ using Windows.UI.Xaml.Data;
 #elif WPF
 using System.Windows;
 using System.Windows.Data;
+using System.Globalization;
 #elif FORMS
 using Xamarin.Forms;
+using System.Globalization;
 #endif
 
 namespace Shiba

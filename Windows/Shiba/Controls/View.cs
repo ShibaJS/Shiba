@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Dynamic;
 using System.Linq;
-using Shiba.Common;
 
 namespace Shiba.Controls
 {
@@ -230,13 +227,17 @@ namespace Shiba.Controls
 
         public override int GetHashCode()
         {
-            return (Properties != null ? Properties.GetHashCode() : 0);
+            return Properties != null ? Properties.GetHashCode() : 0;
         }
 
-        public object this[string name]
-        {
-            get => this.GetValue<object>(name);
-        }
+        //public object this[string name]
+        //{
+        //    get
+        //    {
+        //        var value = Properties.FirstOrDefault(it => it.Name.IsCurrentPlatform(name))?.Value;
+                
+        //    }
+        //}
         
     }
     

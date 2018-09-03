@@ -1,20 +1,13 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using Shiba;
-using Shiba.Common;
 using Shiba.Controls;
 using Shiba.Internal;
 using ShibaView = Shiba.Controls.View;
 using View = Shiba.Controls.View;
 #if WINDOWS_UWP
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
 using NativeView = Windows.UI.Xaml.FrameworkElement;
 using NativeBinding = Windows.UI.Xaml.Data.Binding;
 using NativeProperty = Windows.UI.Xaml.DependencyProperty;
@@ -98,6 +91,10 @@ namespace Shiba.Visitors
                 return null;
             }
             var renderer = Renderer.GetOrAdd(attribute.ViewName, type => CreateRenderer(attribute));
+            if (context == null)
+            {
+                throw new ArgumentNullException($"{nameof(context)} can not be null");
+            }
             var target = renderer.Map(view, context) as NativeView;
             if (view.Children.Any() && target is NativeViewGroup panel)
             {

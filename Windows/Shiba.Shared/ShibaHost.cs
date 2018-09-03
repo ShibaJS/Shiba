@@ -1,8 +1,6 @@
-﻿using System.Diagnostics;
-using Shiba.Controls;
+﻿using Shiba.Controls;
 #if WINDOWS_UWP
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 using NativeParent = Windows.UI.Xaml.Controls.ContentControl;
 #elif WPF
 using System.Windows;

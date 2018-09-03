@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Shiba.Controls;
 #if WINDOWS_UWP
 using Windows.UI;
 using NativeThickness = Windows.UI.Xaml.Thickness;
