@@ -43,7 +43,22 @@ namespace Shiba.Parser
 
         protected internal static object GetValue(IParseTree tree)
         {
-            return tree == null ? null : Visitors.FirstOrDefault(it => it.HandleType == tree.GetType())?.Visit(tree);
+            if (tree == null)
+            {
+                return null;
+            }
+            var visitor = Visitors.FirstOrDefault(it => it.HandleType == tree.GetType());
+            if (visitor == null)
+            {
+                if (tree is ParserRuleContext parserRuleContext)
+                {
+                    return GetValue(parserRuleContext.children.FirstOrDefault(it => it is ParserRuleContext));
+                }
+
+                return null;
+            }
+
+            return visitor.Visit(tree);
         }
     }
 
@@ -86,13 +101,13 @@ namespace Shiba.Parser
         }
     }
 
-    internal sealed class ValueVisitor : GenericVisitor<ShibaParser.ValueContext, object>
-    {
-        protected override object Parse(ShibaParser.ValueContext tree)
-        {
-            return GetValue(tree.children.FirstOrDefault(it => it is ParserRuleContext));
-        }
-    }
+    //internal sealed class ValueVisitor : GenericVisitor<ShibaParser.ValueContext, object>
+    //{
+    //    protected override object Parse(ShibaParser.ValueContext tree)
+    //    {
+    //        return GetValue(tree.children.FirstOrDefault(it => it is ParserRuleContext));
+    //    }
+    //}
 
     internal sealed class ShibaTokenVisitor : GenericVisitor<ShibaParser.IdentifierContext, ShibaToken>
     {
