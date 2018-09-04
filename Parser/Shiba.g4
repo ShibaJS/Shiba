@@ -22,7 +22,7 @@ basicValue: String | Number | Boolean | Null | Identifier;
 
 functionCall: Identifier LeftParen (value Comma?)* RightParen;
 
-shibaExtension: '$' Identifier basicValue;
+shibaExtension: '$' Identifier basicValue?;
 
 array: LeftBracket (value Comma?)* RightBracket;
 
