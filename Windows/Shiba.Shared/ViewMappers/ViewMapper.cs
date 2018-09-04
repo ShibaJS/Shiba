@@ -285,13 +285,23 @@ namespace Shiba.ViewMappers
                     }
                     break;
                 case ShibaBinding binding:
+                    var dataContextPath =
+#if FORMS
+                        "BindingContext";
+#elif WINDOWS_UWP || WPF
+                        "DataContext";
+#endif
+                    var path = string.IsNullOrEmpty(binding.Path)
+                        ? dataContextPath
+                        : $"{dataContextPath}.{binding.Path}";
+                    
                     targetValue = new NativeBinding
                     {
                         Source = context.ShibaHost,
 #if FORMS
-                        Path = "BindingContext." + binding.Path,
+                        Path = path,
 #elif WINDOWS_UWP || WPF
-                        Path = new PropertyPath("DataContext." + binding.Path),
+                        Path = new PropertyPath(path),
                         UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
 #endif
                         Converter = binding.Converter,
