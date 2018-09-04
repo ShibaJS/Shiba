@@ -17,14 +17,10 @@ class ExampleUnitTest {
     @Test
     @Throws(Exception::class)
     fun test() {
-
+        val tree = ShibaParserWrapper().parse("stack { text -> awesome(reverse(\$bind UWPText)) text { color = \"#ffff00\" text = \"fdsafdsaf\" size = 20 } input -> \$bind UWPText }")
+        assert(tree != null)
     }
 
-    fun check(tree: ParseTree) : Boolean {
-        return tree.javaClass == type
-    }
-
-    val type: Class<*> = ShibaParser.ViewContext::class.java
 }
 
 

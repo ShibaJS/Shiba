@@ -198,7 +198,7 @@ namespace Shiba.Parser
         }
     }
 
-    internal sealed class ArrayVisitor : GenericVisitor<ShibaParser.ArrayContext, ShibaArray>
+    internal sealed class ShibaArrayVisitor : GenericVisitor<ShibaParser.ArrayContext, ShibaArray>
     {
         protected override ShibaArray Parse(ShibaParser.ArrayContext tree)
         {
