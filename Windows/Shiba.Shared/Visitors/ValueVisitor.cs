@@ -214,14 +214,14 @@ namespace Shiba.Visitors
         {
             for (var i = 0; i < item.Paramters.Count; i++)
             {
-                var paramter = item.Paramters[i];
-                if (paramter is ShibaFunction function)
+                var parameter = item.Paramters[i];
+                if (parameter is ShibaFunction function)
                 {
                     item.Paramters[i] = ParseFunction(function, context);
                 }
                 else
                 {
-                    var result = GetValue(paramter, context);
+                    var result = GetValue(parameter, context);
                     if (result is ShibaBinding shibaBinding && shibaBinding.Converter is RawDataConverter)
                     {
                         result = shibaBinding.Parameter;
