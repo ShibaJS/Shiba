@@ -235,21 +235,23 @@ namespace Shiba.Visitors
         }
     }
 
-    //internal sealed class ShibaMapVisitor : GenericVisitor<ShibaMap, Dictionary<string, object>>
-    //{
-    //    protected override Dictionary<string, object> Parse(ShibaMap item, IShibaContext context)
-    //    {
-    //        return item.ToDictionary().ToDictionary(it => it.Key, it => GetValue(it.Value, context));
-    //    }
-    //}
-
-//    internal sealed class ShibaArrayVisitor : GenericVisitor<ShibaArray, List<object>>
+//    internal sealed class ShibaMapVisitor : GenericVisitor<ShibaMap, Dictionary<string, object>>
 //    {
-//        protected override List<object> Parse(ShibaArray item, IShibaContext context)
+//        protected override Dictionary<string, object> Parse(ShibaMap item, IShibaContext context)
 //        {
-//            return item.Select(it => GetValue(it, context)).ToList();
+//            return item..ToDictionary(it => it.Key, it => GetValue(it.Value, context));
 //        }
 //    }
+
+    internal sealed class ShibaArrayVisitor : GenericVisitor<ShibaArray, IEnumerable<object>>
+    {
+        protected override IEnumerable<object> Parse(ShibaArray item, IShibaContext context)
+        {
+            var shibaArray = new ShibaArray();
+            shibaArray.AddRange(item.Select(it => GetValue(it, context)));
+            return shibaArray;
+        }
+    }
 
     internal sealed class BacisValueVisitor : GenericVisitor<BasicValue, object>
     {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Shiba.Controls;
@@ -265,7 +265,7 @@ namespace Shiba.ViewMappers
 
         private void SetValue(IShibaContext context, object value, IValueMap valueMap, TNativeView target)
         {
-            var targetValue = ShibaValueVisitor.GetValue(value, context);
+            var targetValue = valueMap.ValueType == value?.GetType() ? value : ShibaValueVisitor.GetValue(value, context);
             switch (targetValue)
             {
                 case ShibaMultiBinding multiBinding:
