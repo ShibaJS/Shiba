@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,7 +61,19 @@ namespace Shiba.Visitors
 
         protected internal static object GetValue(object item, IShibaContext context)
         {
-            return item == null ? null : Visitors.FirstOrDefault(it => it.HandleType == item.GetType())?.Visit(item, context) ?? item;
+            if (item == null)
+            {
+                return null;
+            }
+
+            var visitor = Visitors.FirstOrDefault(it => it.HandleType == item.GetType());
+            
+            if (visitor == null)
+            {
+                return item;
+            }
+
+            return visitor.Visit(item, context);
         }
     }
 
