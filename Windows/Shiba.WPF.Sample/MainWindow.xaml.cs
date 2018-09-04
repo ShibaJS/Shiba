@@ -49,7 +49,6 @@ namespace Shiba.WPF.Sample
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = ViewModel;
         }
 
         public string Layout { get; set; } =

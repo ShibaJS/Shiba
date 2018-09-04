@@ -9,17 +9,14 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
-        <shiba:ShibaHost DataContext="{x:Bind ViewModel}">
+        <shiba:ShibaHost>
             <shiba:ShibaHost.Layout>
-                stack {
-                text -> awesome(reverse($bind UWPText))
-                text {
-                
-                color = "#ffff00"
-                text = "fdsafdsaf"
-                size = 20
+                list {
+                itemLayout = stack {
+                        
+                text -> awesome($bind)
                 }
-                input -> $bind UWPText
+                items = [ "text1", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2" ]
                 }
             </shiba:ShibaHost.Layout>
         </shiba:ShibaHost>

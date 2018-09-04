@@ -11,34 +11,12 @@
     <Grid>
         <shiba:ShibaHost x:Name="host">
             <shiba:ShibaHost.Layout>
-                grid {
-                    row = 4
-                    column = 4
-                    text -> awesome(reverse($bind UWPText), "sdafs")
-                    text {
-                        padding = [
-                            left = 10
-                        ]
-                        margin = [
-                            top = 10
-                left = 10
+                list {
+                    itemLayout = stack {
                         
-                        ] 
-                        grid = [
-                            row = 1
-                            column = 1
-                        ]
-                        text = "dfasfsa"
+                        text -> reverse($bind)
                     }
-                text {
-                grid = [
-                row = 1
-                column = 1
-                ]
-                WPF:text = "WPF Text!"
-                Android:text = "Android Text!"
-                color = "#ff0000"
-                }
+                    items = [ "text1", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2" ]
                 }
             </shiba:ShibaHost.Layout>
         </shiba:ShibaHost>
