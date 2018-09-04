@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -118,6 +118,13 @@ namespace Shiba.Visitors
             {
                 case "bind":
                 {
+                    if (item.Value == null)
+                    {
+                        return new ShibaBinding
+                        {
+                            Path = ""
+                        };
+                    }
                     switch (item.Value.TypeCode)
                     {
                         case ShibaValueType.Token:
