@@ -16,8 +16,12 @@ interface IShibaContext {
 internal object NativeRenderer {
     fun render(layout: String, shibaContext: IShibaContext): View {
         val viewTree = Singleton.get<ShibaParserWrapper>().parse(layout)
-        if (viewTree != null){
-            return ShibaValueVisitor.getValue(viewTree, shibaContext) as View
+        return render(viewTree, shibaContext)
+    }
+
+    fun render(view: moe.tlaster.shiba.View?, shibaContext: IShibaContext): NativeView {
+        if (view != null) {
+            return ShibaValueVisitor.getValue(view, shibaContext) as NativeView
         }
         throw IllegalArgumentException("layout is not a valid view tree")
     }

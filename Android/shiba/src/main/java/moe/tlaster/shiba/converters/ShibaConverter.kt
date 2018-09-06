@@ -16,16 +16,16 @@ class RawConverter : ShibaConverter() {
 }
 
 open class FunctionConverter : ShibaConverter() {
-    open val Executor = Singleton.get<ShibaFunctionExecutor>()
+    open val executor = Singleton.get<ShibaFunctionExecutor>()
 
     override fun convert(value: Any?, parameter: Any?): Any? {
         if (parameter !is ShibaFunction) {
             throw IllegalArgumentException()
         }
-        return Executor.execute(parameter, value)
+        return executor.execute(parameter, value)
     }
 }
 
 class SingleBindingFunctionConverter : FunctionConverter() {
-    override val Executor = Singleton.get<SingleBindingShibaFunctionExecutor>()
+    override val executor = Singleton.get<SingleBindingShibaFunctionExecutor>()
 }

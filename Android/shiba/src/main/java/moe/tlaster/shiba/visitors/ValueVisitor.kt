@@ -26,6 +26,7 @@ private val visitors = ArrayList<IValueVisitor>().apply {
     add(ShibaExtensionVisitor())
     add(ShibaFunctionVisitor())
     add(BasicValueVisitor())
+    add(ShibaArrayVisitor())
 }
 
 private fun <T> Any.visit(context: IShibaContext?): T? {
@@ -50,7 +51,7 @@ object ShibaValueVisitor {
 private class ViewVisitor(override val type: Class<*> = View::class.java) : AbsValueVisitor<View, NativeView>() {
     override fun parse(tree: View, context: IShibaContext?): NativeView {
         val mapper = Shiba.viewMapping.filter { tree.viewName.isCurrentPlatform(it.key) }.values.firstOrNull() ?:
-        throw IllegalArgumentException()
+        throw IllegalArgumentException("can not find mapper for ${tree.viewName}")
         if (context == null) {
             throw IllegalArgumentException()
         }
@@ -70,11 +71,12 @@ private class ShibaExtensionVisitor(override val type: Class<*> = ShibaExtension
         }
     }
 
-    private fun bindHandler(value: BasicValue, context: IShibaContext?): ShibaBinding {
-        return when (value.typeCode) {
+    private fun bindHandler(value: BasicValue?, context: IShibaContext?): ShibaBinding {
+        return when (value?.typeCode) {
             ShibaValueType.Token -> ShibaBinding(value.value.toString())
             ShibaValueType.String, ShibaValueType.Number, ShibaValueType.Null, ShibaValueType.Boolean ->
                 ShibaBinding("", Singleton.get<RawConverter>(), value.value)
+            null -> ShibaBinding("")
         }
     }
 
@@ -124,6 +126,12 @@ private class ShibaFunctionVisitor(override val type: Class<*> = ShibaFunction::
                         }
                     }.filter { it != null }.map { it!! }
         }
+    }
+}
+
+private class ShibaArrayVisitor(override val type: Class<*> = ShibaArray::class.java) : AbsValueVisitor<ShibaArray, List<Any?>>() {
+    override fun parse(tree: ShibaArray, context: IShibaContext?): List<Any?> {
+        return tree.map { it?.visit<Any>(context) }
     }
 }
 

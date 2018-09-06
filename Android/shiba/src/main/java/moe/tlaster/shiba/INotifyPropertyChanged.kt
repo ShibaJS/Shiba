@@ -1,28 +1,28 @@
 package moe.tlaster.shiba
 
 interface INotifyPropertyChanged {
-    var propertyChanged: PropertyChangedHandler
+    var propertyChanged: Event<String>
 }
 
 abstract class BaseNotifyObject : INotifyPropertyChanged {
-    override var propertyChanged: PropertyChangedHandler = PropertyChangedHandler()
+    override var propertyChanged: Event<String> = Event()
 
     fun notifyPropertyChanged(propertyName: String) {
         propertyChanged.invoke(this, propertyName)
     }
 }
 
-class PropertyChangedHandler {
-    private val listeners = ArrayList<(sender: Any, propertyName: String) -> Unit>()
-    fun invoke(sender: Any, propertyName: String) {
-        listeners.forEach { it.invoke(sender, propertyName) }
+class Event<T> {
+    private val listeners = ArrayList<(sender: Any, arg: T) -> Unit>()
+    fun invoke(sender: Any, arg: T) {
+        listeners.forEach { it.invoke(sender, arg) }
     }
 
-    operator fun plusAssign(propertyChanged: (Any, String) -> Unit) {
+    operator fun plusAssign(propertyChanged: (Any, T) -> Unit) {
         listeners.add(propertyChanged)
     }
 
-    operator fun minusAssign(propertyChanged: (Any, String) -> Unit) {
+    operator fun minusAssign(propertyChanged: (Any, T) -> Unit) {
         listeners.remove(propertyChanged)
     }
 

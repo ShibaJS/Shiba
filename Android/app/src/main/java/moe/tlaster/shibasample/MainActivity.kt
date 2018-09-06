@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.item_list.view.*
+import moe.tlaster.shiba.BaseNotifyObject
 import moe.tlaster.shiba.Binding
 import moe.tlaster.shiba.INotifyPropertyChanged
 
@@ -29,10 +30,50 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        host.load("list { items = \$bind androidList itemLayout = stack { text -> \"hello!\" text -> \$bind } }", WithListModel())
         
-        list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        list.adapter = Adapter(this)
+//        list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+//        list.adapter = Adapter(this)
 //        host.load("stack { text { text = \$bind text } input { text = \$bind text} }", Model())
+    }
+}
+
+class WithListModel : BaseNotifyObject() {
+
+    @get:Binding(name = "androidText")
+    @set:Binding(name = "androidText")
+    var text = "Android"
+        set(text) {
+            field = text
+            notifyPropertyChanged("androidText")
+        }
+
+
+    @get:Binding(name = "androidList")
+    @set:Binding(name = "androidList")
+    var list = ArrayList<String>().apply {
+        add("Haha1")
+        add("Haha2")
+        add("Haha3")
+        add("Haha4")
+        add("Haha5")
+        add("Haha6")
+        add("Haha7")
+        add("Haha8")
+        add("Haha9")
+        add("Haha10")
+        add("Haha11")
+        add("Haha12")
+        add("Haha13")
+        add("Haha14")
+        add("Haha15")
+        add("Haha16")
+        add("Haha17")
+        add("Haha18")
+        add("Haha19")
+        add("Haha20")
+        add("Haha21")
     }
 }
 

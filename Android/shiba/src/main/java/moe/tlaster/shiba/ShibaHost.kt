@@ -1,6 +1,7 @@
 package moe.tlaster.shiba
 
 import android.content.Context
+import android.support.constraint.ConstraintLayout
 import android.util.ArrayMap
 import android.util.AttributeSet
 import android.widget.FrameLayout
@@ -32,7 +33,7 @@ fun <T : View> View.findView(predicate: (View) -> Boolean): T? {
 
 }
 
-class ShibaHost : FrameLayout, IShibaContext {
+class ShibaHost : ConstraintLayout, IShibaContext {
 
     override val propertyChangedSubscription: ArrayMap<NativeView, ArrayList<ISubscription>> = ArrayMap()
 
@@ -45,12 +46,12 @@ class ShibaHost : FrameLayout, IShibaContext {
         init(context, attrs)
     }
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
-        init(context, attrs)
-    }
+//    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
+//        init(context, attrs)
+//    }
 
 
-    var layout: String? = null
+//    var layout: String? = null
 
     var dataContext: Any? = null
         set(value) {
@@ -59,12 +60,17 @@ class ShibaHost : FrameLayout, IShibaContext {
         }
 
 
-    public fun load(layout: String, dataContext: Any?) {
-        if (layout != this.layout) {
+    public fun load(view: moe.tlaster.shiba.View?, dataContext: Any?) {
+        if (view != null) {
             removeAllViews()
-            this.layout = layout
-            addView(NativeRenderer.render(layout, this))
+            addView(NativeRenderer.render(view, this))
         }
+        this.dataContext = dataContext
+    }
+
+    public fun load(layout: String, dataContext: Any?) {
+        removeAllViews()
+        addView(NativeRenderer.render(layout, this))
         this.dataContext = dataContext
     }
 
@@ -83,12 +89,12 @@ class ShibaHost : FrameLayout, IShibaContext {
             newValue.propertyChanged += { sender, name ->
                 handlePropertyChanged(sender, name)
             }
-            propertyChangedSubscription.forEach { view, sub ->
-                sub.forEach {
-                    it.isChanging = true
-                    setValueToView(newValue, it, view)
-                    it.isChanging = false
-                }
+        }
+        propertyChangedSubscription.forEach { view, sub ->
+            sub.forEach {
+                it.isChanging = true
+                setValueToView(newValue, it, view)
+                it.isChanging = false
             }
         }
     }

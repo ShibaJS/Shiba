@@ -17,6 +17,7 @@ interface IViewMapper<T : NativeView> {
 
 interface IValueMap {
     val name: String
+    val valueType: Class<*>?
     val setter: (NativeView, Any?) -> Unit
 }
 
@@ -26,7 +27,7 @@ interface ISubscription {
     val setter: (NativeView, Any?) -> Unit
 }
 
-open class PropertyMap(override val name: String, override val setter: (NativeView, Any?) -> Unit) : IValueMap
+open class PropertyMap(override val name: String, override val setter: (NativeView, Any?) -> Unit, override val valueType: Class<*>? = null) : IValueMap
 
 class TwoWayPropertyMap(name: String, setter: (NativeView, Any?) -> Unit, val twowayInitializer: ((NativeView, (Any?) -> Unit) -> Unit)) : PropertyMap(name, setter)
 
@@ -50,15 +51,23 @@ open class ViewMapper<TNativeView : NativeView> : IViewMapper<TNativeView> {
     protected open val hasDefaultProperty = false
     protected open val defaultPropertyMap: PropertyMap? = null
 
+    open fun getViewLayoutParams() : ViewGroup.LayoutParams {
+        return ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+    }
+
     override fun map(view: View, context: IShibaContext): TNativeView {
         val target = createNativeView(context).apply {
-            layoutParams = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            layoutParams = getViewLayoutParams()
         }
 
         val subscriptions = ArrayList<ISubscription>()
 
         fun setValue(context: IShibaContext, value: Any, propertyMap: PropertyMap, target: TNativeView) {
-            val targetValue = ShibaValueVisitor.getValue(value, context)
+            val targetValue = if (propertyMap.valueType != null && propertyMap.valueType == value.javaClass) {
+                value
+            } else {
+                ShibaValueVisitor.getValue(value, context)
+            }
 
             when (targetValue) {
                 is ShibaMultiBinding -> {
@@ -105,7 +114,9 @@ open class ViewMapper<TNativeView : NativeView> : IViewMapper<TNativeView> {
             }
         }
 
-        context.propertyChangedSubscription[target] = subscriptions
+        if (subscriptions.any()) {
+            context.propertyChangedSubscription[target] = subscriptions
+        }
 
         return target
     }
@@ -117,13 +128,13 @@ open class ViewMapper<TNativeView : NativeView> : IViewMapper<TNativeView> {
 
     protected open fun propertyMaps(): ArrayList<PropertyMap> {
         return arrayListOf(
-                PropertyMap("visible") { view, it ->
+                PropertyMap("visible", { view, it ->
                     if (it is Boolean) {
                         view.visibility = if (it) NativeView.VISIBLE else NativeView.GONE
                     }
-                },
-                PropertyMap("enable") { view, it -> if (it is Boolean) view.isEnabled = it },
-                PropertyMap("width") { view, it ->
+                }) ,
+                PropertyMap("enable", { view, it -> if (it is Boolean) view.isEnabled = it }),
+                PropertyMap("width", { view, it ->
                     val param = view.layoutParams
                     if (it is Number) param.width = it.toInt().dp
                     else if (it is String) {
@@ -131,8 +142,8 @@ open class ViewMapper<TNativeView : NativeView> : IViewMapper<TNativeView> {
                         else if (it.equals("match_parent", true)) param.width = ViewGroup.LayoutParams.MATCH_PARENT
                     }
                     view.layoutParams = param
-                },
-                PropertyMap("height") { view, it ->
+                }),
+                PropertyMap("height", { view, it ->
                     val param = view.layoutParams
                     if (it is Number) {
                         param.height = it.toInt().dp
@@ -141,8 +152,8 @@ open class ViewMapper<TNativeView : NativeView> : IViewMapper<TNativeView> {
                         else if (it.equals("match_parent", true)) param.height = ViewGroup.LayoutParams.MATCH_PARENT
                     }
                     view.layoutParams = param
-                },
-                PropertyMap("margin") { view, it ->
+                }),
+                PropertyMap("margin", { view, it ->
                     if (it is ShibaMap && view.layoutParams is ViewGroup.MarginLayoutParams) {
                         (view.layoutParams as ViewGroup.MarginLayoutParams).setMargins(
                                 it["left"]?.toString()?.toInt()?.dp ?: 0,
@@ -150,8 +161,8 @@ open class ViewMapper<TNativeView : NativeView> : IViewMapper<TNativeView> {
                                 it["right"]?.toString()?.toInt()?.dp ?: 0,
                                 it["bottom"]?.toString()?.toInt()?.dp ?: 0)
                     }
-                },
-                PropertyMap("padding") { view, it ->
+                }),
+                PropertyMap("padding", { view, it ->
                     if (it is ShibaMap) {
                         view.setPaddingRelative(
                                 it["left"]?.toString()?.toInt()?.dp ?: 0,
@@ -159,10 +170,10 @@ open class ViewMapper<TNativeView : NativeView> : IViewMapper<TNativeView> {
                                 it["right"]?.toString()?.toInt()?.dp ?: 0,
                                 it["bottom"]?.toString()?.toInt()?.dp ?: 0)
                     }
-                },
-                PropertyMap("alpha") { view, it -> if (it is Number) view.alpha = it.toFloat() },
-                PropertyMap("name") { view, it -> if (it is String) view.setTag(R.id.shiba_view_name_key, it) },
-                PropertyMap("background") { view, it -> }
+                }),
+                PropertyMap("alpha", { view, it -> if (it is Number) view.alpha = it.toFloat() }),
+                PropertyMap("name", { view, it -> if (it is String) view.setTag(R.id.shiba_view_name_key, it) }),
+                PropertyMap("background", { view, it -> })
         ).apply {
             if (defaultPropertyMap != null) {
                 add(defaultPropertyMap!!)

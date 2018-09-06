@@ -80,7 +80,7 @@ private final class ValueVisitor(override val type: Class<*> = ShibaParser.Value
 private final class ShibaExtensionVisitor(override val type: Class<*> = ShibaParser.ShibaExtensionContext::class.java) : AbsVisitor<ShibaParser.ShibaExtensionContext, ShibaExtension>() {
     override fun parse(tree: ShibaParser.ShibaExtensionContext): ShibaExtension {
         val name = tree.Identifier().text
-        val value = tree.basicValue().visit<BasicValue>() ?: throw IllegalArgumentException("ShibaExtension must have value")
+        val value = tree.basicValue()?.visit<BasicValue>()
         return ShibaExtension(name, value)
     }
 
