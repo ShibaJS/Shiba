@@ -3,6 +3,7 @@ using System.Linq;
 using Shiba.Controls;
 using Shiba.ViewMappers;
 using View = Shiba.Controls.View;
+using System.Collections;
 #if WINDOWS_UWP
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml;
@@ -23,6 +24,17 @@ namespace Shiba.ViewMappers
 {
     public class ListMapper : ViewMapper<NativeView>
     {
+
+#if FORMS
+        public override NativeView CreateNativeView()
+        {
+            return new NativeView
+            {
+                HasUnevenRows = true
+            };
+        }
+#endif
+        
         public override IEnumerable<IValueMap> PropertyMaps()
         {
             return base.PropertyMaps().Concat(GetProperties());
@@ -42,24 +54,27 @@ namespace Shiba.ViewMappers
                     var template = XamlReader.Load(templateString) as DataTemplate;
 #elif WPF
                     var factory = new FrameworkElementFactory(typeof(ShibaHost));
-                    factory.SetValue(ShibaHost.LayoutProperty, itemLayout.ToString());
+                    factory.SetValue(ShibaHost.ShibaLayoutProperty, itemLayout);
                     var template = new DataTemplate
                     {
                         DataType = typeof(ShibaHost),
                         VisualTree = factory
                     };
 #elif FORMS
-                    var template = new DataTemplate(() => new ShibaHost()
+                    var template = new DataTemplate(() => new ViewCell
                     {
-                        Layout = itemLayout.ToString()
+                        View = new ShibaHost
+                        {
+                            ShibaLayout = itemLayout
+                        }
                     });
 #endif
                     nativeView.SetValue(NativeView.ItemTemplateProperty, template);
                 }
             });
-            yield return new ManuallyValueMap("items", typeof(List<object>), (element, value) =>
+            yield return new ManuallyValueMap("items", typeof(IEnumerable), (element, value) =>
             {
-                if (element is NativeView nativeView && value is List<object> list)
+                if (element is NativeView nativeView && value is IEnumerable list)
                 {
                     nativeView.SetBinding(NativeView.ItemsSourceProperty, new NativeBinding
                     {
