@@ -46,29 +46,7 @@ namespace Shiba.ViewMappers
             {
                 if (element is NativeView nativeView && value is View itemLayout)
                 {
-                    var layout = itemLayout.ToString();
-                    
-#if WINDOWS_UWP
-                    var templateString =
-                        $"<DataTemplate xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"><views:{typeof(ShibaHost).Name} xmlns:views=\"using:{typeof(ShibaHost).Namespace}\" DataContext=\"{{Binding}}\" Layout=\"{itemLayout.ToString()}\"/></DataTemplate>";
-                    var template = XamlReader.Load(templateString) as DataTemplate;
-#elif WPF
-                    var factory = new FrameworkElementFactory(typeof(ShibaHost));
-                    factory.SetValue(ShibaHost.ShibaLayoutProperty, itemLayout);
-                    var template = new DataTemplate
-                    {
-                        DataType = typeof(ShibaHost),
-                        VisualTree = factory
-                    };
-#elif FORMS
-                    var template = new DataTemplate(() => new ViewCell
-                    {
-                        View = new ShibaHost
-                        {
-                            ShibaLayout = itemLayout
-                        }
-                    });
-#endif
+                    var template = itemLayout.ToDataTemplate();
                     nativeView.SetValue(NativeView.ItemTemplateProperty, template);
                 }
             });

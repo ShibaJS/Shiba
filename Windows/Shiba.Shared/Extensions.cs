@@ -5,6 +5,8 @@ using Shiba.Controls;
 using Shiba.Visitors;
 using ShibaView = Shiba.Controls.View;
 #if WINDOWS_UWP
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Markup;
 using NativeView = Windows.UI.Xaml.FrameworkElement;
 using NativeBinding = Windows.UI.Xaml.Data.Binding;
 using NativeProperty = Windows.UI.Xaml.DependencyProperty;
@@ -28,6 +30,36 @@ using System.Windows.Media;
 
 namespace Shiba
 {
+    public static class ViewExtension
+    {
+        public static DataTemplate ToDataTemplate(this ShibaView view)
+        {
+#if WINDOWS_UWP
+            var templateString =
+                $"<DataTemplate xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"><views:{typeof(ShibaHost).Name} xmlns:views=\"using:{typeof(ShibaHost).Namespace}\" DataContext=\"{{Binding}}\" Layout=\"{view.ToString()}\"/></DataTemplate>";
+            var template = XamlReader.Load(templateString) as DataTemplate;
+#elif WPF
+            var factory = new FrameworkElementFactory(typeof(ShibaHost));
+            factory.SetValue(ShibaHost.ShibaLayoutProperty, view);
+            var template = new DataTemplate
+            {
+                DataType = typeof(ShibaHost),
+                VisualTree = factory
+            };
+#elif FORMS
+            var template = new DataTemplate(() => new ViewCell
+            {
+                View = new ShibaHost
+                {
+                    ShibaLayout = view
+                }
+            });
+#endif
+
+            return template;
+        }
+    }
+    
     public static class ShibaMapExtension
     {
         
