@@ -49,7 +49,11 @@ private final class ViewVisitor(override val type: Class<*> = ShibaParser.ViewCo
             view.properties += tree.property().map { it.visit<Property>() }.filter { it != null }.map { it!! }
         }
         if (tree.view() != null) {
-            view.children += tree.view().map { it.visit<View>() }.filter { it != null }.map { it!! }
+            view.children += tree.view()
+                    .map { it.visit<View>() }
+                    .filter { it != null }
+                    .map { it!! }
+                    .map { it.apply { it.parent = view } }
         }
         return view
     }
