@@ -52,12 +52,20 @@ namespace Shiba.ViewMappers
             });
             yield return new ManuallyValueMap("items", typeof(IEnumerable), (element, value) =>
             {
-                if (element is NativeView nativeView && value is IEnumerable list)
+                if (element is NativeView nativeView)
                 {
-                    nativeView.SetBinding(NativeView.ItemsSourceProperty, new NativeBinding
+                    switch (value)
                     {
-                        Source = list
-                    });
+                        case IEnumerable list:
+                            nativeView.SetBinding(NativeView.ItemsSourceProperty, new NativeBinding
+                            {
+                                Source = list
+                            });
+                            break;
+                        case NativeBinding binding:
+                            nativeView.SetBinding(NativeView.ItemsSourceProperty, binding);
+                            break;
+                    }
                 }
             });
         }
