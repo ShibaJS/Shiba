@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -90,6 +91,8 @@ namespace Shiba.Controls
         public object DefaultValue { get; }
         public List<View> Children { get; } = new List<View>();
         public List<Property> Properties { get; } = new List<Property>();
+        public View Parent { get; internal set; }
+        
 
         public override string ToString()
         {

@@ -85,7 +85,12 @@ namespace Shiba.Parser
             
             if (tree.property() != null) view.Properties.AddRange(tree.property().Select(GetValue<Property>));
 
-            if (tree.view() != null) view.Children.AddRange(tree.view().Select(GetValue<View>));
+            if (tree.view() != null) view.Children.AddRange(tree.view().Select(it =>
+            {
+                var child = GetValue<View>(it);
+                child.Parent = view;
+                return child;
+            }));
 
             return view;
         }
