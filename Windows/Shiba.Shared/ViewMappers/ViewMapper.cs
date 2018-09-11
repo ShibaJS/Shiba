@@ -134,6 +134,11 @@ namespace Shiba.ViewMappers
     {
         private List<IValueMap> _propertyCache;
 
+        protected virtual IEnumerable<IValueMap> ExtendPropertyMap()
+        {
+            return null;
+        }
+
         public virtual IEnumerable<IValueMap> PropertyMaps()
         {
             yield return new PropertyMap("enable",
@@ -145,7 +150,6 @@ namespace Shiba.ViewMappers
                 typeof(bool));
             yield return new PropertyMap("width", NativeView.WidthProperty, typeof(double));
             yield return new PropertyMap("height", NativeView.HeightProperty, typeof(double));
-
 #if WINDOWS_UWP || WPF
             yield return new PropertyMap("maxHeight", NativeView.MaxHeightProperty, typeof(double));
             yield return new PropertyMap("minHeight", NativeView.MinHeightProperty, typeof(double));
@@ -174,36 +178,11 @@ namespace Shiba.ViewMappers
             {
                 yield return DefaultPropertyMap;
             }
-            yield return new ManuallyValueMap("grid", typeof(ShibaMap), (element, value) =>
+            var exprop = ExtendPropertyMap();
+            if (exprop != null)
             {
-                if (value is ShibaMap map)
-                {
-                    var row = map.Get<int>("row");
-                    var column = map.Get<int>("column");
-                    var rowSpan = map.Get<int>("rowSpan");
-                    var columnSpan = map.Get<int>("columnSpan");
-                    if (row != default)
-                    {
-                        Grid.SetRow(element, row);
-                    }
-
-                    if (column != default)
-                    {
-                        Grid.SetColumn(element, column);
-                    }
-
-                    if (rowSpan != default)
-                    {
-                        Grid.SetRowSpan(element, rowSpan);
-                    }
-
-                    if (columnSpan != default)
-                    {
-                        Grid.SetColumnSpan(element, columnSpan);
-                    }
-                }
-            });
-            
+                foreach (var item in exprop) yield return item;
+            }
         }
 
         protected object ColorConverter(object arg)

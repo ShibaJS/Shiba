@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using Jint;
 using Jint.Native;
 using Jint.Native.Function;
@@ -39,6 +41,12 @@ namespace Shiba
         public IBindingValueResolver BindingValueResolver { get; set; } = new DefaultBindingValueResolver();
         public IConverterExecutor ConverterExecutor { get; set; } = new DefaultConverterExecutor();
         public string PlatformType { get; set; } = "Windows";
+
+        public List<ICommonProperty> CommonProperties { get; } =
+            AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(it => it.ExportedTypes)
+                .Where(it => it.IsClass && !it.IsAbstract && typeof(ICommonProperty).IsAssignableFrom(it))
+                .Select(it => Activator.CreateInstance(it) as ICommonProperty).ToList();
     }
 
     public interface IConverterExecutor

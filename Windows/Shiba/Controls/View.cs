@@ -249,8 +249,14 @@ namespace Shiba.Controls
         public bool IsCurrentPlatform(string value)
         {
             if (ReferenceEquals(value, null)) return false;
-            return (Prefix == AbstractShiba.Instance.Configuration.PlatformType || string.IsNullOrEmpty(Prefix)) && string.Equals(value, Value);
+            return IsCurrentPlatform() && string.Equals(value, Value);
         }
+
+        public bool IsCurrentPlatform()
+        {
+            return Prefix == AbstractShiba.Instance.Configuration.PlatformType || string.IsNullOrEmpty(Prefix);
+        }
+        
 //        public static bool operator ==(string value, ShibaToken token)
 //        {
 //            if (ReferenceEquals(value, null)) return false;

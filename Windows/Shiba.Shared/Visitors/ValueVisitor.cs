@@ -110,7 +110,27 @@ namespace Shiba.Visitors
             var target = renderer.Map(view, context) as NativeView;
             if (view.Children.Any() && target is NativeViewGroup panel)
             {
-                view.Children.ForEach(it => panel.Children.Add(Parse(it, context)));
+                var commonprops = new List<(ShibaView view, NativeView native, List<Property> properties)>();
+                view.Children.ForEach(it =>
+                {
+                    var child = Parse(it, context);
+                    panel.Children.Add(child);
+                    var commonprop = it.Properties.Where(prop =>
+                        prop.Name.IsCurrentPlatform() &&
+                        AbstractShiba.Instance.Configuration.CommonProperties.Any(cp => cp.Name == prop.Name.Value)).ToList();
+                    if (commonprop.Any())
+                    {
+                        commonprops.Add((it, child, commonprop));
+                    }
+                });
+                
+                commonprops.ForEach(it =>
+                {
+                    it.properties.ForEach(prop =>
+                    {
+                        AbstractShiba.Instance.Configuration.CommonProperties.Where(cp => cp.Name == prop.Name.Value).ToList().ForEach(cp => cp.Handle(prop.Value, it.native, target));
+                    });
+                });
             }
 
             return target;
