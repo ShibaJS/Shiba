@@ -102,7 +102,7 @@ private class ShibaFunctionVisitor(override val type: Class<*> = ShibaFunction::
     }
 
     private fun getBindings(function: ShibaFunction): List<ShibaBinding> {
-        return function.paramter.map {
+        return function.parameter.map {
             when (it) {
                 is ShibaBinding -> arrayListOf(it)
                 is ShibaFunction -> getBindings(it)
@@ -113,7 +113,7 @@ private class ShibaFunctionVisitor(override val type: Class<*> = ShibaFunction::
 
     private fun parseFunction(function: ShibaFunction, context: IShibaContext?) : ShibaFunction {
         return function.apply {
-            paramter = paramter.map {
+            parameter = parameter.map {
                         when (it) {
                             is ShibaFunction -> parseFunction(it, context)
                             else -> {

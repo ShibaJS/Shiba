@@ -186,7 +186,7 @@ namespace Shiba.Parser
         {
             var name = tree.Identifier().GetText();
             var function = new ShibaFunction(name);
-            if (tree.value() != null) function.Paramters.AddRange(tree.value().Select(GetValue));
+            if (tree.value() != null) function.Parameters.AddRange(tree.value().Select(GetValue));
 
             return function;
         }

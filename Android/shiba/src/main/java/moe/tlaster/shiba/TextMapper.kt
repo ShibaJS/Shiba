@@ -26,7 +26,7 @@
 //
 //internal data class PropertyMethod(val getter: Method?, val setter: Method?)
 //
-//internal class SingleParamterFunctionConverter : FunctionConverter() {
+//internal class SingleParameterFunctionConverter : FunctionConverter() {
 //    override fun getValueFromDataContext(value: IBindingValue, dataContext: Any?): Any? {
 //        return dataContext
 //    }
@@ -34,17 +34,17 @@
 //
 //internal open class FunctionConverter {
 //    public fun executeFunction(function: ShibaFunction, dataContext: Any?): Any? {
-//        return Shiba.configuration.converterExecutor.execute(function.name, function.paramter.map { getParameterValue(it, dataContext) }.toTypedArray())
+//        return Shiba.configuration.converterExecutor.execute(function.name, function.parameter.map { getParameterValue(it, dataContext) }.toTypedArray())
 //    }
 //
-//    private fun getParameterValue(paramter: IParamter, dataContext: Any?): Any? {
-//        return when (paramter) {
-//            is ShibaFunction -> executeFunction(paramter, dataContext)
-//            is ValueParamter -> {
-//                when (paramter.value.value) {
-//                    is IBindingValue -> getValueFromDataContext(paramter.value.value as IBindingValue, dataContext)
-//                    is ShibaFunction -> executeFunction(paramter.value.value as ShibaFunction, dataContext)
-//                    else -> paramter.value.value
+//    private fun getParameterValue(parameter: IParameter, dataContext: Any?): Any? {
+//        return when (parameter) {
+//            is ShibaFunction -> executeFunction(parameter, dataContext)
+//            is ValueParameter -> {
+//                when (parameter.value.value) {
+//                    is IBindingValue -> getValueFromDataContext(parameter.value.value as IBindingValue, dataContext)
+//                    is ShibaFunction -> executeFunction(parameter.value.value as ShibaFunction, dataContext)
+//                    else -> parameter.value.value
 //                }
 //            }
 //            else -> null
@@ -142,9 +142,9 @@
 //                if (bindings.count() == 1) {
 //                    val binding = bindings.first()
 ////                    val targetValue = Shiba.configuration.bindingValueResolver.getValue(dataContext, binding.getTokenValue())
-////                    propertyMap.setter.invoke(target, Shiba.SingleParamterFunctionConverter.executeFunction(value, targetValue))
+////                    propertyMap.setter.invoke(target, Shiba.SingleParameterFunctionConverter.executeFunction(value, targetValue))
 //                    return PropertyChangedSubscription(binding.getTokenValue(), { view, notifyValue ->
-//                        propertyMap.setter.invoke(view, Shiba.SingleParamterFunctionConverter.executeFunction(value, notifyValue))
+//                        propertyMap.setter.invoke(view, Shiba.SingleParameterFunctionConverter.executeFunction(value, notifyValue))
 //                    })
 //                } else {
 //                    throw NotImplementedError()
@@ -158,15 +158,15 @@
 //        return null
 //    }
 //
-//    private fun getFunctionBindings(paramter: IParamter): List<IBindingValue> {
-//        return when (paramter) {
+//    private fun getFunctionBindings(parameter: IParameter): List<IBindingValue> {
+//        return when (parameter) {
 //            is ShibaFunction -> {
-//                paramter.paramter.map { getFunctionBindings(it) }.flatten()
+//                parameter.parameter.map { getFunctionBindings(it) }.flatten()
 //            }
-//            is ValueParamter -> {
-//                when (paramter.value.value) {
-//                    is IBindingValue -> listOf(paramter.value.value as IBindingValue)
-//                    is ShibaFunction -> getFunctionBindings(paramter.value.value as ShibaFunction)
+//            is ValueParameter -> {
+//                when (parameter.value.value) {
+//                    is IBindingValue -> listOf(parameter.value.value as IBindingValue)
+//                    is ShibaFunction -> getFunctionBindings(parameter.value.value as ShibaFunction)
 //                    else -> throw IllegalArgumentException()
 //                }
 //            }

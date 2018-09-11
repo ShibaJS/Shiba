@@ -102,7 +102,7 @@ const Visitors = {
         let name = tree.Identifier().getText();
         const shibaFunction = new ShibaFunction(name);
         if (tree.value()) {
-            shibaFunction.paramter.push(tree.value().map((value, index, array) => {
+            shibaFunction.parameter.push(tree.value().map((value, index, array) => {
                 let type = value.constructor.name;
                 return self[type + "Visitor"](value);
             }).filter((value, index, array) => {

@@ -22,10 +22,10 @@ namespace Shiba
         public object Execute(ShibaFunction function, object dataContext)
         {
             return AbstractShiba.Instance.Configuration.ConverterExecutor.Execute(function.Name,
-                function.Paramters.Select(it => GetParamterValue(it, dataContext)).ToArray());
+                function.Parameters.Select(it => GetParameterValue(it, dataContext)).ToArray());
         }
         
-        private object GetParamterValue(object it, object dataContext)
+        private object GetParameterValue(object it, object dataContext)
         {
             switch (it)
             {

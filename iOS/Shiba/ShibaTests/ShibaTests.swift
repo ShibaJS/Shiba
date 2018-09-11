@@ -29,9 +29,9 @@ class ShibaTests: XCTestCase {
         assert(tree?.children.first?.defaultValue != nil)
         assert(tree?.children.first?.defaultValue is ShibaFunction)
         assert((tree?.children.first?.defaultValue as! ShibaFunction).name == "awesome")
-        assert((tree?.children.first?.defaultValue as! ShibaFunction).paramter.first is ShibaFunction)
-        assert(((tree?.children.first?.defaultValue as! ShibaFunction).paramter.first as! ShibaFunction).name == "reverse")
-        assert(((tree?.children.first?.defaultValue as! ShibaFunction).paramter.first as! ShibaFunction).paramter.first is ShibaExtension)
+        assert((tree?.children.first?.defaultValue as! ShibaFunction).parameter.first is ShibaFunction)
+        assert(((tree?.children.first?.defaultValue as! ShibaFunction).parameter.first as! ShibaFunction).name == "reverse")
+        assert(((tree?.children.first?.defaultValue as! ShibaFunction).parameter.first as! ShibaFunction).parameter.first is ShibaExtension)
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }

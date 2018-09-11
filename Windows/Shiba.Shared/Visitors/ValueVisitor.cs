@@ -204,7 +204,7 @@ namespace Shiba.Visitors
 
         private IEnumerable<ShibaBinding> GetBindings(ShibaFunction function)
         {
-            foreach (var item in function.Paramters)
+            foreach (var item in function.Parameters)
             {
                 switch (item)
                 {
@@ -224,12 +224,12 @@ namespace Shiba.Visitors
 
         private ShibaFunction ParseFunction(ShibaFunction item, IShibaContext context)
         {
-            for (var i = 0; i < item.Paramters.Count; i++)
+            for (var i = 0; i < item.Parameters.Count; i++)
             {
-                var parameter = item.Paramters[i];
+                var parameter = item.Parameters[i];
                 if (parameter is ShibaFunction function)
                 {
-                    item.Paramters[i] = ParseFunction(function, context);
+                    item.Parameters[i] = ParseFunction(function, context);
                 }
                 else
                 {
@@ -239,7 +239,7 @@ namespace Shiba.Visitors
                         result = shibaBinding.Parameter;
                     }
 
-                    item.Paramters[i] = result;
+                    item.Parameters[i] = result;
                 }
             }
 

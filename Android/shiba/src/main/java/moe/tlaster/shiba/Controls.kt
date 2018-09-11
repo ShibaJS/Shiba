@@ -32,11 +32,11 @@ data class ShibaToken(val prefix: String, val value: String) {
 }
 
 data class ShibaFunction(val name: String) {
-    var paramter: List<Any> = ArrayList()
+    var parameter: List<Any> = ArrayList()
         internal set
 
     override fun toString(): String {
-        return "$name(${paramter.joinToString(separator = ",") { it.toString() }})"
+        return "$name(${parameter.joinToString(separator = ",") { it.toString() }})"
     }
 }
 

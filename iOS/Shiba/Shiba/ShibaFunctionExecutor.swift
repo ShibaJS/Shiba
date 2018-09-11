@@ -8,12 +8,12 @@ import Foundation
 class ShibaFunctionExecutor {
 
     func execute(function: ShibaFunction, dataContext: Any?) -> Any? {
-        return Shiba.instance.configuration.converterExecutor.execute(name: function.name, parameters: function.paramter.map { it in
-            getParamterValue(parameter: it, dataContext: dataContext)
+        return Shiba.instance.configuration.converterExecutor.execute(name: function.name, parameters: function.parameter.map { it in
+            getParameterValue(parameter: it, dataContext: dataContext)
         })
     }
 
-    private func getParamterValue(parameter: Any, dataContext: Any?) -> Any? {
+    private func getParameterValue(parameter: Any, dataContext: Any?) -> Any? {
         switch parameter {
         case is ShibaFunction:
             return execute(function: parameter as! ShibaFunction, dataContext: dataContext)

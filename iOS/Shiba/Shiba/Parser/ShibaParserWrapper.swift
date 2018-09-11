@@ -142,7 +142,7 @@ private class FunctionVisitor: ShibaVisitor<ShibaParser.FunctionCallContext, Shi
         let name = tree.Identifier()!.getText()
         let function = ShibaFunction(name: name)
         if tree.value() != nil {
-            function.paramter += tree.value().map { it in
+            function.parameter += tree.value().map { it in
                 it.visit()
             }
         }

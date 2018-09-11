@@ -127,7 +127,7 @@ private class ShibaFunctionVisitor: AbsValueVisitor<ShibaFunction, ShibaBinding>
     }
 
     private func getBindings(function: ShibaFunction) -> [ShibaBinding] {
-        let item: [[ShibaBinding]] = function.paramter.map { it in
+        let item: [[ShibaBinding]] = function.parameter.map { it in
             var ar: [ShibaBinding] = []
             switch it {
             case is ShibaBinding:
@@ -144,7 +144,7 @@ private class ShibaFunctionVisitor: AbsValueVisitor<ShibaFunction, ShibaBinding>
     }
 
     private func parseFunction(function: ShibaFunction, context: IShibaContext?) -> ShibaFunction {
-        function.paramter = function.paramter.map({ it in
+        function.parameter = function.parameter.map({ it in
             switch it {
             case is ShibaFunction:
                 return parseFunction(function: it as! ShibaFunction, context: context)

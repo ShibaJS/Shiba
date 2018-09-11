@@ -2,10 +2,10 @@ package moe.tlaster.shiba
 
 open class ShibaFunctionExecutor {
     fun execute(function: ShibaFunction, dataContext: Any?) : Any? {
-        return Shiba.configuration.converterExecutor.execute(function.name, function.paramter.map { getParamterValue(it, dataContext) }.toTypedArray())
+        return Shiba.configuration.converterExecutor.execute(function.name, function.parameter.map { getParameterValue(it, dataContext) }.toTypedArray())
     }
 
-    private fun getParamterValue(parameter: Any, dataContext: Any?) : Any? {
+    private fun getParameterValue(parameter: Any, dataContext: Any?) : Any? {
         return when (parameter) {
             is ShibaFunction -> execute(parameter, dataContext)
             is ShibaBinding -> getValueFromDataContext(parameter, dataContext)

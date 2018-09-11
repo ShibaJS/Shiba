@@ -145,7 +145,7 @@ private final class FunctionVisitor(override val type: Class<*> = ShibaParser.Fu
         val name = tree.Identifier().text
         if (tree.value() != null && tree.value().any()) {
             return ShibaFunction(name).apply {
-                paramter = tree.value().map { it.visit<Any>() }.filter { it != null }.map { it!! }
+                parameter = tree.value().map { it.visit<Any>() }.filter { it != null }.map { it!! }
             }
         }
         return ShibaFunction(name)

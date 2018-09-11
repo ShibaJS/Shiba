@@ -326,16 +326,16 @@ namespace Shiba.Controls
         }
 
         public string Name { get; }
-        public List<object> Paramters { get; } = new List<object>();
+        public List<object> Parameters { get; } = new List<object>();
 
         public override string ToString()
         {
-            return $"{Name}({string.Join(",", Paramters.Select(it => it.ToString()))})";
+            return $"{Name}({string.Join(",", Parameters.Select(it => it.ToString()))})";
         }
 
         private bool Equals(ShibaFunction other)
         {
-            return string.Equals(Name, other.Name) && Paramters.SequenceEqual(other.Paramters);
+            return string.Equals(Name, other.Name) && Parameters.SequenceEqual(other.Parameters);
         }
 
         public override bool Equals(object obj)
@@ -349,7 +349,7 @@ namespace Shiba.Controls
         {
             unchecked
             {
-                return ((Name != null ? Name.GetHashCode() : 0) * 397) ^ (Paramters != null ? Paramters.GetHashCode() : 0);
+                return ((Name != null ? Name.GetHashCode() : 0) * 397) ^ (Parameters != null ? Parameters.GetHashCode() : 0);
             }
         }
     }
