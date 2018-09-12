@@ -1,6 +1,8 @@
 package moe.tlaster.shiba
 
 import android.util.ArrayMap
+import moe.tlaster.shiba.commonProperty.GridProperty
+import moe.tlaster.shiba.commonProperty.ICommonProperty
 import moe.tlaster.shiba.mapper.*
 import org.mozilla.javascript.Context
 import org.mozilla.javascript.Function
@@ -16,11 +18,7 @@ class ShibaConfiguration {
     var bindingValueResolver: IBindingValueResolver = DefaultBindingValueResolver()
     var converterExecutor: IConverterExecutor = DefaultConverterExecutor()
     var platformType = "Android"
-    public fun addConverter(converter: String) {
-        if (converterExecutor is DefaultConverterExecutor) {
-            (converterExecutor as DefaultConverterExecutor).addConverter(converter)
-        }
-    }
+    val commonProperties = ArrayList<ICommonProperty>()
 }
 
 interface IConverterExecutor {
@@ -144,6 +142,14 @@ object Shiba {
         addRenderer("text", TextMapper())
         addRenderer("input", InputMapper())
         addRenderer("list", ListMapper())
+        addRenderer("grid", GridMapper())
+        configuration.commonProperties.add(GridProperty())
+    }
+
+    public fun addConverter(converter: String) {
+        if (configuration.converterExecutor is DefaultConverterExecutor) {
+            (configuration.converterExecutor as DefaultConverterExecutor).addConverter(converter)
+        }
     }
 
     public fun addRenderer(name: String, mapper: IViewMapper<*>) {

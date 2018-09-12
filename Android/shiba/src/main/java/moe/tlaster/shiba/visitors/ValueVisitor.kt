@@ -57,7 +57,23 @@ private class ViewVisitor(override val type: Class<*> = View::class.java) : AbsV
         }
         val target = mapper.map(tree, context)
         if (tree.children.any() && target is ViewGroup) {
-            tree.children.forEach { target.addView(parse(it, context)) }
+            val commonProps = ArrayList<Triple<View, NativeView, List<Property>>>()
+            tree.children.forEach {
+                val child = parse(it, context)
+                target.addView(child)
+                val comprop = it.properties.filter { it.name.isCurrentPlatform() && Shiba.configuration.commonProperties.any { cp -> cp.name == it.name.value } }.toList()
+                if (comprop.any()) {
+                    commonProps.add(Triple(it, child, comprop))
+                }
+            }
+
+
+            commonProps.forEach {
+                it.third.forEach { prop ->
+                    Shiba.configuration.commonProperties.filter { cp -> cp.name == prop.name.value }.forEach { cp -> cp.handle(prop.value, it.second, target) }
+                }
+            }
+
         }
         return target
     }
