@@ -8,6 +8,8 @@ using Shiba.Internal;
 using ShibaView = Shiba.Controls.View;
 using View = Shiba.Controls.View;
 #if WINDOWS_UWP
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Data;
 using NativeView = Windows.UI.Xaml.FrameworkElement;
 using NativeBinding = Windows.UI.Xaml.Data.Binding;
 using NativeProperty = Windows.UI.Xaml.DependencyProperty;
@@ -24,6 +26,7 @@ using NativeViewGroup = Xamarin.Forms.Layout<Xamarin.Forms.View>;
 #elif WPF
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using NativeView = System.Windows.FrameworkElement;
 using NativeBinding = System.Windows.Data.Binding;
 using NativeProperty = System.Windows.DependencyProperty;
@@ -67,7 +70,7 @@ namespace Shiba.Visitors
             }
 
             var visitor = Visitors.FirstOrDefault(it => it.HandleType == item.GetType());
-            
+
             if (visitor == null)
             {
                 return item;
@@ -95,18 +98,23 @@ namespace Shiba.Visitors
         //TODO: Dictionary means it does not support multiple renderer for one view (like Xamarin.Forms custom renderer)
         private static readonly ConcurrentDictionary<string, IViewMapper> Renderer =
             new ConcurrentDictionary<string, IViewMapper>();
+
         protected override NativeView Parse(View view, IShibaContext context)
         {
-            var attribute = AbstractShiba.Instance.ViewMapping.Mappers.LastOrDefault(it => view.ViewName.IsCurrentPlatform(it.ViewName));
+            var attribute =
+                AbstractShiba.Instance.ViewMapping.Mappers.LastOrDefault(it =>
+                    view.ViewName.IsCurrentPlatform(it.ViewName));
             if (attribute == null)
             {
                 return null;
             }
+
             var renderer = Renderer.GetOrAdd(attribute.ViewName, type => CreateRenderer(attribute));
             if (context == null)
             {
                 throw new ArgumentNullException($"{nameof(context)} can not be null");
             }
+
             var target = renderer.Map(view, context) as NativeView;
             if (view.Children.Any() && target is NativeViewGroup panel)
             {
@@ -116,19 +124,22 @@ namespace Shiba.Visitors
                     var child = Parse(it, context);
                     panel.Children.Add(child);
                     var commonprop = it.Properties.Where(prop =>
-                        prop.Name.IsCurrentPlatform() &&
-                        AbstractShiba.Instance.Configuration.CommonProperties.Any(cp => cp.Name == prop.Name.Value)).ToList();
+                            prop.Name.IsCurrentPlatform() &&
+                            AbstractShiba.Instance.Configuration.CommonProperties.Any(cp => cp.Name == prop.Name.Value))
+                        .ToList();
                     if (commonprop.Any())
                     {
                         commonprops.Add((it, child, commonprop));
                     }
                 });
-                
+
                 commonprops.ForEach(it =>
                 {
                     it.properties.ForEach(prop =>
                     {
-                        AbstractShiba.Instance.Configuration.CommonProperties.Where(cp => cp.Name == prop.Name.Value).ToList().ForEach(cp => cp.Handle(prop.Value, it.native, target));
+                        AbstractShiba.Instance.Configuration.CommonProperties
+                            .Where(cp => cp.Name == prop.Name.Value).ToList()
+                            .ForEach(cp => cp.Handle(prop.Value, it.native, target));
                     });
                 });
             }
@@ -142,99 +153,136 @@ namespace Shiba.Visitors
         }
     }
 
-    internal sealed class ShibaExtensionVisitor : GenericVisitor<ShibaExtension, ShibaBinding>
+    internal sealed class ShibaExtensionVisitor : GenericVisitor<ShibaExtension, object>
     {
-        protected override ShibaBinding Parse(ShibaExtension item, IShibaContext context)
+        protected override object Parse(ShibaExtension item, IShibaContext context)
         {
-            switch (item.Type)
+            var executor =
+                AbstractShiba.Instance.Configuration.ShibaExtensionExecutors.FirstOrDefault(it => it.Name == item.Type);
+            if (executor != null)
             {
-                case "bind":
-                {
-                    if (item.Value == null)
-                    {
-                        return new ShibaBinding
-                        {
-                            Path = ""
-                        };
-                    }
-                    switch (item.Value.TypeCode)
-                    {
-                        case ShibaValueType.Token:
-                            return new ShibaBinding
-                            {
-                                Path = item.Value.Value + ""
-                            };
-                        case ShibaValueType.Number:
-                        case ShibaValueType.Null:
-                        case ShibaValueType.Boolean:
-                        case ShibaValueType.String:
-                            return new ShibaBinding
-                            {
-                                Converter = Singleton<RawDataConverter>.Instance,
-                                Parameter = item.Value.Value,
-                            };
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-                }
+                return executor.ProvideValue(context, item);
             }
 
             throw new NotImplementedException();
         }
     }
 
-    internal sealed class ShibaFunctionVisitor : GenericVisitor<ShibaFunction, ShibaBinding>
+    internal sealed class ShibaFunctionVisitor : GenericVisitor<ShibaFunction, NativeBinding>
     {
-        protected override ShibaBinding Parse(ShibaFunction item, IShibaContext context)
+        protected override NativeBinding Parse(ShibaFunction item, IShibaContext context)
         {
             var function = ParseFunction(item, context);
-            var bindings = GetBindings(function)?.ToList();
+            var extensions = GetExtensions(function)?.ToList();
+//            var dataContextPath =
+//#if FORMS
+//                "BindingContext";
+//#elif WINDOWS_UWP || WPF
+//                "DataContext";
+//#endif
+////            var path = string.IsNullOrEmpty(binding.Path)
+////                ? dataContextPath
+////                : $"{dataContextPath}.{binding.Path}";
+//                    
+//            var targetValue = new NativeBinding
+//            {
+//                Source = context.ShibaHost,
+//#if FORMS
+////                Path = path,
+//#elif WINDOWS_UWP || WPF
+////                Path = new PropertyPath(path),
+//                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+//#endif
+////                Converter = binding.Converter,
+////                ConverterParameter = binding.Parameter,
+//            };
 
-            if (bindings == null || !bindings.Any())
+
+            if (extensions == null || !extensions.Any())
             {
-                return new ShibaBinding
+                return new NativeBinding
                 {
-                    Parameter = Singleton<ShibaFunctionExecutor>.Instance.Execute(function, null),
+                    ConverterParameter = Singleton<ShibaFunctionExecutor>.Instance.Execute(function, null),
                     Converter = Singleton<RawDataConverter>.Instance
                 };
             }
 
-            if (bindings.Count == 1)
+            if (extensions.Count == 1)
             {
-                return new ShibaBinding
+                var extension = extensions.FirstOrDefault();
+
+                var extensionValue = extension != null
+                    ? AbstractShiba.Instance.Configuration.ShibaExtensionExecutors
+                        .FirstOrDefault(it => it.Name == extension.Type)?.ProvideValue(context, extension)
+                    : null;
+
+                switch (extensionValue)
                 {
-                    Path = bindings.FirstOrDefault().Path,
-                    Parameter = function,
-                    Converter = Singleton<SingleBindingFunctionConverter>.Instance
-                };
+                    case NativeBinding binding:
+                        binding.Converter = Singleton<SingleBindingFunctionConverter>.Instance;
+                        binding.ConverterParameter = function;
+                        return binding;
+                    default:
+                        return new NativeBinding
+                        {
+                            ConverterParameter = Singleton<SingleBindingShibaFunctionExecutor>.Instance.Execute(function, extensionValue),
+                            Converter = Singleton<RawDataConverter>.Instance
+                        };
+                }
             }
 
-            if (bindings.Count > 1)
+            if (extensions.Count > 1)
             {
-                return new ShibaMultiBinding
-                {
-                    Parameter = function,
-                    Converter = Singleton<FunctionConverter>.Instance,
-                    Paths = bindings.Select(it => it.Path).ToArray()
-                };
+                throw new ArgumentOutOfRangeException($"Currently only support single ShibaExtension");
             }
 
-            throw new ArgumentOutOfRangeException();
+            throw new ArgumentOutOfRangeException($"Can not handle function call ${item}");
+
+//            if (bindings == null || !bindings.Any())
+//            {
+//                return new ShibaBinding
+//                {
+//                    Parameter = Singleton<ShibaFunctionExecutor>.Instance.Execute(function, null),
+//                    Converter = Singleton<RawDataConverter>.Instance
+//                };
+//            }
+//
+//            if (bindings.Count == 1)
+//            {
+//                return new ShibaBinding
+//                {
+//                    Path = bindings.FirstOrDefault().Path,
+//                    Parameter = function,
+//                    Converter = Singleton<SingleBindingFunctionConverter>.Instance
+//                };
+//            }
+//
+//            if (bindings.Count > 1)
+//            {
+//                return new ShibaMultiBinding
+//                {
+//                    Parameter = function,
+//                    Converter = Singleton<FunctionConverter>.Instance,
+//                    Paths = bindings.Select(it => it.Path).ToArray()
+//                };
+//            }
+//
+//            throw new ArgumentOutOfRangeException();
         }
 
-        private IEnumerable<ShibaBinding> GetBindings(ShibaFunction function)
+        private IEnumerable<ShibaExtension> GetExtensions(ShibaFunction function)
         {
             foreach (var item in function.Parameters)
             {
                 switch (item)
                 {
-                    case ShibaBinding binding:
-                        yield return binding;
+                    case ShibaExtension extension:
+                        yield return extension;
                         break;
                     case ShibaFunction shibaFunction:
-                        foreach (var shibaBinding in GetBindings(shibaFunction))
+                        foreach (var extension in GetExtensions(shibaFunction))
                         {
-                            yield return shibaBinding;
+                            yield return extension;
                         }
 
                         break;
@@ -247,19 +295,16 @@ namespace Shiba.Visitors
             for (var i = 0; i < item.Parameters.Count; i++)
             {
                 var parameter = item.Parameters[i];
-                if (parameter is ShibaFunction function)
+                switch (parameter)
                 {
-                    item.Parameters[i] = ParseFunction(function, context);
-                }
-                else
-                {
-                    var result = GetValue(parameter, context);
-                    if (result is ShibaBinding shibaBinding && shibaBinding.Converter is RawDataConverter)
-                    {
-                        result = shibaBinding.Parameter;
-                    }
-
-                    item.Parameters[i] = result;
+                    case ShibaFunction function:
+                        item.Parameters[i] = ParseFunction(function, context);
+                        break;
+                    case ShibaExtension extension:
+                        break;
+                    default:
+                        item.Parameters[i] = GetValue(parameter, context);
+                        break;
                 }
             }
 

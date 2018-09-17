@@ -35,8 +35,10 @@ namespace Shiba
         public static DataTemplate ToDataTemplate(this ShibaView view)
         {
 #if WINDOWS_UWP
+
+            var layoutString = view.ToString();
             var templateString =
-                $"<DataTemplate xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"><views:{typeof(ShibaHost).Name} xmlns:views=\"using:{typeof(ShibaHost).Namespace}\" DataContext=\"{{Binding}}\" Layout=\"{view.ToString()}\"/></DataTemplate>";
+                $"<DataTemplate xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"><views:{typeof(ShibaHost).Name} xmlns:views=\"using:{typeof(ShibaHost).Namespace}\" DataContext=\"{{Binding}}\" Layout='{layoutString}'/></DataTemplate>";
             var template = XamlReader.Load(templateString) as DataTemplate;
 #elif WPF
             var factory = new FrameworkElementFactory(typeof(ShibaHost));

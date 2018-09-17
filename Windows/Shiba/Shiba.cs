@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using Jint;
 using Jint.Native;
 using Jint.Native.Function;
@@ -27,20 +26,23 @@ namespace Shiba
 
         public void AddConverter(string converter)
         {
-            if (Configuration?.ConverterExecutor is DefaultConverterExecutor executor)
-            {
-                executor.Register(converter);
-            }
+            if (Configuration?.ConverterExecutor is DefaultConverterExecutor executor) executor.Register(converter);
         }
     }
 
     public class ShibaConfiguration
     {
-        public IJsonValueResolver JsonValueResolver { get; set; } = new DefaultJsonValueResolver();
-        public IValueResolver ResourceValueResolver { get; set; }
-        public IBindingValueResolver BindingValueResolver { get; set; } = new DefaultBindingValueResolver();
+//        public IJsonValueResolver JsonValueResolver { get; set; } = new DefaultJsonValueResolver();
+//        public IValueResolver ResourceValueResolver { get; set; }
+//        public IBindingValueResolver BindingValueResolver { get; set; } = new DefaultBindingValueResolver();
         public IConverterExecutor ConverterExecutor { get; set; } = new DefaultConverterExecutor();
         public string PlatformType { get; set; } = "Windows";
+
+        public List<IShibaExtensionExecutor> ShibaExtensionExecutors { get; } =
+            AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(it => it.ExportedTypes)
+                .Where(it => it.IsClass && !it.IsAbstract && typeof(IShibaExtensionExecutor).IsAssignableFrom(it))
+                .Select(it => Activator.CreateInstance(it) as IShibaExtensionExecutor).ToList();
 
         public List<ICommonProperty> CommonProperties { get; } =
             AppDomain.CurrentDomain.GetAssemblies()
@@ -53,7 +55,7 @@ namespace Shiba
     {
         object Execute(string functionName, params object[] parameters);
     }
-    
+
     public class DefaultConverterExecutor : IConverterExecutor
     {
         private readonly Engine _engine;
@@ -61,6 +63,17 @@ namespace Shiba
         public DefaultConverterExecutor(Engine engine = null)
         {
             _engine = engine ?? new Engine();
+        }
+
+        public object Execute(string functionName, params object[] parameters)
+        {
+            var jsConverter = _engine.GetValue(functionName);
+            if (jsConverter != null && jsConverter.Is<FunctionInstance>())
+                return jsConverter.Invoke(parameters.Select(it => JsValue.FromObject(_engine, it)).ToArray())
+                    .ToObject();
+
+
+            throw new EntryPointNotFoundException();
         }
 
         public void Register(string converter)
@@ -71,68 +84,46 @@ namespace Shiba
         public void Register(string name, Delegate @delegate)
         {
         }
-
-        public object Execute(string functionName, params object[] parameters)
-        {
-            var jsConverter = _engine.GetValue(functionName);
-            if (jsConverter != null && jsConverter.Is<FunctionInstance>())
-            {
-                return jsConverter.Invoke(parameters.Select(it => JsValue.FromObject(_engine, it)).ToArray()).ToObject();
-            }
-            
-
-            throw new EntryPointNotFoundException();
-        }
     }
+//
+//    public class DefaultJsonValueResolver : IJsonValueResolver
+//    {
+//        public object GetValue(object dataContext, string path)
+//        {
+//            if (!(dataContext is JObject jObject) || string.IsNullOrEmpty(path)) return null;
+//
+//            return jObject[path].Value<object>();
+//        }
+//    }
+//
+//    public class DefaultBindingValueResolver : IBindingValueResolver
+//    {
+//        public object GetValue(object dataContext, string name)
+//        {
+//            if (dataContext == null || string.IsNullOrEmpty(name)) return null;
+//
+//            var propertyInfo = dataContext.GetType().GetTypeInfo().DeclaredProperties.FirstOrDefault(it =>
+//                string.Equals(it.Name, name, StringComparison.OrdinalIgnoreCase));
+//
+//            if (propertyInfo == null) return null;
+//
+//            return propertyInfo.GetValue(dataContext);
+//        }
+//    }
 
-    public class DefaultJsonValueResolver : IJsonValueResolver
-    {
-        public object GetValue(object dataContext, string path)
-        {
-            if (!(dataContext is JObject jObject) || string.IsNullOrEmpty(path))
-            {
-                return null;
-            }
+//
+//    public interface IBindingValueResolver
+//    {
+//        object GetValue(object dataContext, string name);
+//    }
+//
+//    public interface IJsonValueResolver
+//    {
+//        object GetValue(object dataContext, string path);
+//    }
 
-            return jObject[path].Value<object>();
-        }
-    }
-    
-    public class DefaultBindingValueResolver : IBindingValueResolver
-    {
-        public object GetValue(object dataContext, string name)
-        {
-            if (dataContext == null || string.IsNullOrEmpty(name))
-            {
-                return null;
-            }
-
-            var propertyInfo = dataContext.GetType().GetTypeInfo().DeclaredProperties.FirstOrDefault(it =>
-                string.Equals(it.Name, name, StringComparison.OrdinalIgnoreCase));
-            
-            if (propertyInfo == null)
-            {
-                return null;
-            }
-
-            return propertyInfo.GetValue(dataContext);
-        }
-    }
-
-
-
-    public interface IBindingValueResolver
-    {
-        object GetValue(object dataContext, string name);
-    }
-
-    public interface IJsonValueResolver
-    {
-        object GetValue(object dataContext, string path);
-    }
-
-    public interface IValueResolver
-    {
-        object GetValue(object value);
-    }
+//    public interface IValueResolver
+//    {
+//        object GetValue(object value);
+//    }
 }

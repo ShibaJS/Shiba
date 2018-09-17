@@ -213,7 +213,7 @@ namespace Shiba.ViewMappers
         public TNativeView Map(ShibaView view, IShibaContext context)
         {
             var target = CreateNativeView();
-
+            
             if (_propertyCache == null)
             {
                 _propertyCache = PropertyMaps().ToList();
@@ -245,52 +245,51 @@ namespace Shiba.ViewMappers
         private void SetValue(IShibaContext context, object value, IValueMap valueMap, TNativeView target)
         {
             var targetValue = valueMap.ValueType == value?.GetType() ? value : ShibaValueVisitor.GetValue(value, context);
-            switch (targetValue)
-            {
-                case ShibaMultiBinding multiBinding:
-                    if (context.ShibaHost.DataContext != null)
-                    {
-#if WINDOWS_UWP 
-                        targetValue = multiBinding.Converter.Convert(context.ShibaHost.DataContext, valueMap.ValueType,
-                            multiBinding.Parameter, string.Empty);
-#elif FORMS || WPF
-                        targetValue = multiBinding.Converter.Convert(context.ShibaHost.DataContext, valueMap.ValueType,
-                            multiBinding.Parameter, null);
-#endif
-                    }
-                    else
-                    {
-                        targetValue = null;
-                    }
-                    break;
-                case ShibaBinding binding:
-                    var dataContextPath =
-#if FORMS
-                        "BindingContext";
-#elif WINDOWS_UWP || WPF
-                        "DataContext";
-#endif
-                    var path = string.IsNullOrEmpty(binding.Path)
-                        ? dataContextPath
-                        : $"{dataContextPath}.{binding.Path}";
-                    
-                    targetValue = new NativeBinding
-                    {
-                        Source = context.ShibaHost,
-#if FORMS
-                        Path = path,
-#elif WINDOWS_UWP || WPF
-                        Path = new PropertyPath(path),
-                        UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
-#endif
-                        Converter = binding.Converter,
-                        ConverterParameter = binding.Parameter,
-                        
-                    };
-                    break;
-                default:
-                    break;
-            }
+//            switch (targetValue)
+//            {
+//                case ShibaMultiBinding multiBinding:
+//                    if (context.ShibaHost.DataContext != null)
+//                    {
+//#if WINDOWS_UWP 
+//                        targetValue = multiBinding.Converter.Convert(context.ShibaHost.DataContext, valueMap.ValueType,
+//                            multiBinding.Parameter, string.Empty);
+//#elif FORMS || WPF
+//                        targetValue = multiBinding.Converter.Convert(context.ShibaHost.DataContext, valueMap.ValueType,
+//                            multiBinding.Parameter, null);
+//#endif
+//                    }
+//                    else
+//                    {
+//                        targetValue = null;
+//                    }
+//                    break;
+//                case ShibaBinding binding:
+//                    var dataContextPath =
+//#if FORMS
+//                        "BindingContext";
+//#elif WINDOWS_UWP || WPF
+//                        "DataContext";
+//#endif
+//                    var path = string.IsNullOrEmpty(binding.Path)
+//                        ? dataContextPath
+//                        : $"{dataContextPath}.{binding.Path}";
+//                    
+//                    targetValue = new NativeBinding
+//                    {
+//                        Source = context.ShibaHost,
+//#if FORMS
+//                        Path = path,
+//#elif WINDOWS_UWP || WPF
+//                        Path = new PropertyPath(path),
+//                        UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+//#endif
+//                        Converter = binding.Converter,
+//                        ConverterParameter = binding.Parameter,
+//                    };
+//                    break;
+//                default:
+//                    break;
+//            }
 
             
             valueMap.SetValue(target, targetValue);
