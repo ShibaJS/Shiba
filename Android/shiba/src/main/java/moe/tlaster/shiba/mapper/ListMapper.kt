@@ -36,10 +36,7 @@ class ListMapper : ViewMapper<RecyclerView>() {
     }
 }
 
-private class ShibaViewHolder(itemView: ShibaHost) : RecyclerView.ViewHolder(itemView) {
-
-}
-
+private class ShibaViewHolder(itemView: ShibaHost) : RecyclerView.ViewHolder(itemView)
 
 private class ShibaRecyclerAdapter(val context: Context) : RecyclerView.Adapter<ShibaViewHolder>() {
     var layout: View? = null
@@ -60,15 +57,14 @@ private class ShibaRecyclerAdapter(val context: Context) : RecyclerView.Adapter<
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): ShibaViewHolder {
-        return ShibaViewHolder(ShibaHost(context))
+        return ShibaViewHolder(ShibaHost(context).apply {
+            load(layout, null)
+        })
     }
 
     override fun getItemCount() = items.count()
 
     override fun onBindViewHolder(viewHolder: ShibaViewHolder, position: Int) {
-        (viewHolder.itemView as? ShibaHost)?.load(layout, items[position])
+        (viewHolder.itemView as? ShibaHost)?.dataContext = items[position]
     }
-
-
-
 }

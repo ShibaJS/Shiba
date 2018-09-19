@@ -60,8 +60,6 @@ open class ViewMapper<TNativeView : NativeView> : IViewMapper<TNativeView> {
             layoutParams = getViewLayoutParams()
         }
 
-        val subscriptions = ArrayList<ISubscription>()
-
         fun setValue(context: IShibaContext, value: Any, propertyMap: PropertyMap, target: TNativeView) {
             val targetValue = if (propertyMap.valueType != null && propertyMap.valueType == value.javaClass) {
                 value
@@ -70,30 +68,16 @@ open class ViewMapper<TNativeView : NativeView> : IViewMapper<TNativeView> {
             }
 
             when (targetValue) {
-                is ShibaMultiBinding -> {
-                    if (propertyMap is TwoWayPropertyMap) {
-                        Log.i("Shiba", "two way multi binding is not support")
-                        return
-                    }
-                    subscriptions += MultiSubscription(propertyMap.setter, targetValue)
-                }
                 is ShibaBinding -> {
-                    subscriptions += when (propertyMap) {
-                        is TwoWayPropertyMap -> {
-                            TwoWaySubscription(propertyMap.setter, targetValue).apply {
-                                propertyMap.twowayInitializer.invoke(target) {
-                                    if (!isChanging) {
-                                        isChanging = true
-                                        context.twowayToDataContext(binding.path, it)
-                                        isChanging = false
-                                    }
-                                }
-                            }
-                        }
-                        else -> {
-                            SingleSubscription(propertyMap.setter, targetValue)
+                    targetValue.targetView = target
+                    targetValue.viewSetter = propertyMap.setter
+                    if (propertyMap is TwoWayPropertyMap) {
+                        propertyMap.twowayInitializer.invoke(target) {
+                            targetValue.setValueToDataContext(it)
                         }
                     }
+                    targetValue.setValueToView()
+                    context.bindings += targetValue
                 }
                 else -> {
                     propertyMap.setter.invoke(target, targetValue)
@@ -112,10 +96,6 @@ open class ViewMapper<TNativeView : NativeView> : IViewMapper<TNativeView> {
                     setValue(context, property.value, cache, target)
                 }
             }
-        }
-
-        if (subscriptions.any()) {
-            context.propertyChangedSubscription[target] = subscriptions
         }
 
         return target

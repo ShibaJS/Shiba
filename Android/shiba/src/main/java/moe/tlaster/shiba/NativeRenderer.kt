@@ -9,8 +9,7 @@ import moe.tlaster.shiba.visitors.ShibaValueVisitor
 
 interface IShibaContext {
     fun getContext() : Context
-    fun twowayToDataContext(path: String, it: Any?)
-    val propertyChangedSubscription: ArrayMap<NativeView, ArrayList<ISubscription>>
+    val bindings: ArrayList<ShibaBinding>
 }
 
 internal object NativeRenderer {

@@ -8,18 +8,18 @@ open class ShibaFunctionExecutor {
     private fun getParameterValue(parameter: Any, dataContext: Any?) : Any? {
         return when (parameter) {
             is ShibaFunction -> execute(parameter, dataContext)
-            is ShibaBinding -> getValueFromDataContext(parameter, dataContext)
+            is ShibaExtension -> getValueFromDataContext(parameter, dataContext)
             else -> parameter
         }
     }
 
-    protected open fun getValueFromDataContext(binding: ShibaBinding, dataContext: Any?) : Any? {
-        return Shiba.configuration.bindingValueResolver.getValue(dataContext, binding.path)
+    protected open fun getValueFromDataContext(extension: ShibaExtension, dataContext: Any?) : Any? {
+        return Shiba.configuration.extensionExecutors.firstOrNull { it.name == extension.type }?.provideValue(null, extension)
     }
 }
 
 class SingleBindingShibaFunctionExecutor : ShibaFunctionExecutor() {
-    override fun getValueFromDataContext(binding: ShibaBinding, dataContext: Any?): Any? {
+    override fun getValueFromDataContext(extension: ShibaExtension, dataContext: Any?): Any? {
         return dataContext
     }
 }
