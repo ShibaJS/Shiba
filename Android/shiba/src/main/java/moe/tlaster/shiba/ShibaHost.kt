@@ -15,7 +15,7 @@ fun <T : View> View.findName(name: String) : T? {
     }
 }
 
-fun <T : View> View.findView(predicate: (View) -> Boolean): T? {
+private fun <T : View> View.findView(predicate: (View) -> Boolean): T? {
     if (predicate.invoke(this)) {
         return this as T
     }
@@ -33,30 +33,20 @@ fun <T : View> View.findView(predicate: (View) -> Boolean): T? {
 
 }
 
-class ShibaHost : ConstraintLayout, IShibaContext {
-
-    override val propertyChangedSubscription: ArrayMap<NativeView, ArrayList<ISubscription>> = ArrayMap()
+class ShibaHost : ConstraintLayout, IShibaContext, INotifyPropertyChanged {
+    override var propertyChanged: Event<String> = Event()
+    override val bindings: ArrayList<ShibaBinding> = ArrayList()
 
     constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        init(context, attrs)
-    }
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init(context, attrs)
-    }
-
-//    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
-//        init(context, attrs)
-//    }
-
-
-//    var layout: String? = null
-
+    @get:Binding(name = "dataContext")
+    @set:Binding(name = "dataContext")
     var dataContext: Any? = null
         set(value) {
-            handleDataContextChanged(field, value)
             field = value
+            propertyChanged.invoke(this, "dataContext")
         }
 
 
@@ -76,73 +66,13 @@ class ShibaHost : ConstraintLayout, IShibaContext {
 
     override fun removeAllViews() {
         super.removeAllViews()
-        propertyChangedSubscription.clear()
+        bindings.forEach { it.release() }
+        bindings.clear()
     }
-
-
-    private fun handleDataContextChanged(oldValue: Any?, newValue: Any?) {
-        if (oldValue is INotifyPropertyChanged) {
-            oldValue.propertyChanged.clear()
-        }
-
-        if (newValue is INotifyPropertyChanged) {
-            newValue.propertyChanged += { sender, name ->
-                handlePropertyChanged(sender, name)
-            }
-        }
-        propertyChangedSubscription.forEach { view, sub ->
-            sub.forEach {
-                it.isChanging = true
-                setValueToView(newValue, it, view)
-                it.isChanging = false
-            }
-        }
-    }
-
-    private fun setValueToView(dataContext: Any?, sub: ISubscription, view: NativeView) {
-        val value = Shiba.configuration.bindingValueResolver.getValue(dataContext, sub.binding.path)
-        if (sub.binding.converter != null) {
-            sub.setter.invoke(view, sub.binding.converter?.convert(value, sub.binding.parameter))
-        } else {
-            sub.setter.invoke(view, value)
-        }
-    }
-
-    private fun handlePropertyChanged(sender: Any, name: String) {
-        propertyChangedSubscription.forEach { view, subs ->
-            subs.forEach {
-                if (it.binding.path == name) {
-                    setValueToView(sender, it, view)
-                }
-            }
-        }
-    }
-
-    override fun twowayToDataContext(path: String, it: Any?) {
-        if (dataContext != null) {
-            Shiba.configuration.bindingValueResolver.setValue(dataContext, path, it)
-        }
-    }
-
 
     fun <T : View> findViewByName(name: String) : T? {
         return findView { it ->
             it.getTag(R.id.shiba_view_name_key) == name
         }
     }
-
-    private fun init(context: Context?, attrs: AttributeSet?) {
-//        val typedArray = context?.theme?.obtainStyledAttributes(attrs, R.styleable.ShibaHost, 0, 0)
-//        if (typedArray != null) {
-//            layout = typedArray.getString(R.styleable.ShibaHost_layout)
-//            typedArray.recycle()
-//        }
-    }
-
-//    override fun onDetachedFromWindow() {
-//        dataContext = null
-//        layout = null
-//        propertyChangedSubscription.clear()
-//        super.onDetachedFromWindow()
-//    }
 }

@@ -31,23 +31,23 @@ namespace Shiba
             {
                 case ShibaFunction function:
                     return Execute(function, dataContext);
-                case ShibaBinding binding:
-                    return GetValueFromDataContext(binding, dataContext);
+                case ShibaExtension extension:
+                    return GetValueFromDataContext(extension, dataContext);
                 default:
                     return it;
             }
         }
 
-        protected virtual object GetValueFromDataContext(ShibaBinding binding, object dataContext)
+        protected virtual object GetValueFromDataContext(ShibaExtension extension, object dataContext)
         {
-            return AbstractShiba.Instance.Configuration.BindingValueResolver.GetValue(dataContext,
-                binding.Path);
+            return AbstractShiba.Instance.Configuration.ShibaExtensionExecutors
+                .FirstOrDefault(it => it.Name == extension.Type)?.ProvideValue(null, extension);
         }
     }
 
     internal class SingleBindingShibaFunctionExecutor : ShibaFunctionExecutor
     {
-        protected override object GetValueFromDataContext(ShibaBinding binding, object dataContext)
+        protected override object GetValueFromDataContext(ShibaExtension binding, object dataContext)
         {
             return dataContext;
         }

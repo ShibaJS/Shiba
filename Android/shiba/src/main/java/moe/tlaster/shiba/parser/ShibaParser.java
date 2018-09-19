@@ -25,7 +25,7 @@ public class ShibaParser extends Parser {
 		RULE_view = 0, RULE_property = 1, RULE_value = 2, RULE_map = 3, RULE_basicValue = 4, 
 		RULE_functionCall = 5, RULE_shibaExtension = 6, RULE_array = 7, RULE_identifier = 8;
 	public static final String[] ruleNames = {
-		"view", "property", "value", "map", "basicValue", "functionCall", "shibaExtension", 
+		"view", "propertyPath", "value", "map", "basicValue", "functionCall", "shibaExtension",
 		"array", "identifier"
 	};
 

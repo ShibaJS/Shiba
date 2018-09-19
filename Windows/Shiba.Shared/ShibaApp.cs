@@ -16,13 +16,13 @@ namespace Shiba.WPF
 namespace Shiba.Forms
 #endif
 {
-    public class DefaultResourceValueResolver : IValueResolver
-    {
-        public object GetValue(object value)
-        {
-            return Application.Current.Resources[value + ""];
-        }
-    }
+//    public class DefaultResourceValueResolver : IValueResolver
+//    {
+//        public object GetValue(object value)
+//        {
+//            return Application.Current.Resources[value + ""];
+//        }
+//    }
 
     public class ShibaApp : AbstractShiba
     {
@@ -30,7 +30,7 @@ namespace Shiba.Forms
         {
             Instance = new ShibaApp(c =>
             {
-                c.ResourceValueResolver = new DefaultResourceValueResolver();
+//                c.ResourceValueResolver = new DefaultResourceValueResolver();
                 c.PlatformType =
 #if WINDOWS_UWP
                     "UWP"

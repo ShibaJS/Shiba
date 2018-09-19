@@ -66,7 +66,7 @@ private final class PropertyVisitor(override val type: Class<*> = ShibaParser.Pr
         if (tokenName != null && value != null) {
             return Property(tokenName, value)
         }
-        throw IllegalArgumentException("property can not contain null at line:${tree.start.line} column: ${tree.start.startIndex}")
+        throw IllegalArgumentException("propertyPath can not contain null at line:${tree.start.line} column: ${tree.start.startIndex}")
     }
 }
 
