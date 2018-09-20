@@ -10,6 +10,11 @@ namespace Shiba
         object ProvideValue(IShibaContext context, ShibaExtension value);
     }
 
+    public interface IMutableShibaExtensionExecutor : IShibaExtensionExecutor
+    {
+        
+    }
+    
     public interface IAsyncShibaExtensionExecutor : IShibaExtensionExecutor
     {
         Task<object> ProvideValueAsync(IShibaContext context, ShibaExtension value);

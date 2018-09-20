@@ -131,7 +131,14 @@ private class ShibaFunctionVisitor(override val type: Class<*> = ShibaFunction::
             parameter = parameter.map {
                         when (it) {
                             is ShibaFunction -> parseFunction(it, context)
-                            is ShibaExtension -> it
+                            is ShibaExtension -> {
+                                val executor = Shiba.configuration.extensionExecutors.firstOrNull { e -> e.name == it.type }
+                                if (executor is IMutableShibaExtensionExecutor) {
+                                     executor.provideValue(context, it)
+                                } else {
+                                    it
+                                }
+                            }
                             else -> {
                                 val result = it.visit<Any>(context)
                                 result

@@ -301,6 +301,12 @@ namespace Shiba.Visitors
                         item.Parameters[i] = ParseFunction(function, context);
                         break;
                     case ShibaExtension extension:
+                        var executor = AbstractShiba.Instance.Configuration.ShibaExtensionExecutors
+                            .FirstOrDefault(it => it.Name == extension.Type);
+                        if (executor is IMutableShibaExtensionExecutor)
+                        {
+                            item.Parameters[i] = executor.ProvideValue(context, extension);
+                        }
                         break;
                     default:
                         item.Parameters[i] = GetValue(parameter, context);
