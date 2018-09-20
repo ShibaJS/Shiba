@@ -37,8 +37,8 @@ private fun getRawPropertyMethods(dataContext: Any?): Map<String, PropertyMethod
 
 private fun generatePropertyMethod(method: Map.Entry<String, List<Method>>): PropertyMethod {
     val getter = method.value.firstOrNull { !it.parameterTypes.any() }
-    val setter = method.value.firstOrNull {
-        it.parameterTypes.count { it == (getter?.returnType ?: it) } == 1
+    val setter = method.value.firstOrNull { method ->
+        method.parameterTypes.count { it == (getter?.returnType ?: it) } == 1
     }
     return PropertyMethod(getter, setter)
 }
@@ -89,7 +89,9 @@ class ShibaBinding(val path: String) {
         val target = targetView
         val setter = viewSetter
         if (source != null && target != null && setter != null && !isChanging) {
+            isChanging = true
             setter.invoke(target, executeConverter(getValueFromDataContext(source.dataContext, source.propertyPath)))
+            isChanging = false
         }
     }
 
@@ -161,14 +163,15 @@ class ShibaBinding(val path: String) {
 //                source.dataContext = value
                 // TODO: Add twoway binding for root data context
             } else {
-                when (dataContext) {
+                val setter = when (dataContext) {
                     is INotifyPropertyChanged -> {
-                        getPropertyMethods(dataContext)?.get(source.propertyPath)?.setter?.invoke(dataContext, value)
+                        getPropertyMethods(dataContext)?.get(source.propertyPath)?.setter
                     }
                     else -> {
-                        getRawPropertyMethods(dataContext)?.get(source.propertyPath)?.setter?.invoke(dataContext, value)
+                        getRawPropertyMethods(dataContext)?.get(source.propertyPath)?.setter
                     }
                 }
+                setter?.invoke(dataContext, value)
             }
 
             isChanging = false
