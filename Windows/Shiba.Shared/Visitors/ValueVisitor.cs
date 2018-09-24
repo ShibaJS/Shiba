@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -219,8 +219,20 @@ namespace Shiba.Visitors
                 switch (extensionValue)
                 {
                     case NativeBinding binding:
+                        if (binding.Converter != null)
+                        {
+                            binding.ConverterParameter = new ShibaConverterParameter
+                            {
+                                InnerConverter = binding.Converter,
+                                InnerParameter = binding.ConverterParameter,
+                                Function = function
+                            };
+                        }
+                        else
+                        {
+                            binding.ConverterParameter = function;
+                        }
                         binding.Converter = Singleton<SingleBindingFunctionConverter>.Instance;
-                        binding.ConverterParameter = function;
                         return binding;
                     default:
                         return new NativeBinding

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using Shiba.Controls;
@@ -62,12 +62,29 @@ namespace Shiba
     {    
         protected override object Convert(object value, Type targetType, object parameter)
         {
-            if (!(parameter is ShibaFunction function))
+            switch (parameter)
             {
-                throw new ArgumentException();
+                case ShibaFunction function:
+                    return Executor.Execute(function, value);
+                case ShibaConverterParameter converterParameter:
+                    if (converterParameter.InnerConverter != null)
+                    {
+#if WINDOWS_UWP
+                        var innerResult = converterParameter.InnerConverter.Convert(value, targetType,
+                            converterParameter.InnerParameter, string.Empty);
+#elif WPF || FORMS
+                        var innerResult = converterParameter.InnerConverter.Convert(value, targetType,
+                            converterParameter.InnerParameter, CultureInfo.CurrentCulture);
+#endif
+                        return Executor.Execute(converterParameter.Function, innerResult);
+                    }
+                    else
+                    {
+                        return Executor.Execute(converterParameter.Function, value);
+                    }
+                default:
+                    throw new NotImplementedException();
             }
-
-            return Executor.Execute(function, value);
         }
 
         protected virtual ShibaFunctionExecutor Executor => Singleton<ShibaFunctionExecutor>.Instance;
@@ -120,6 +137,13 @@ namespace Shiba
 
             return value;
         }
+    }
+
+    internal class ShibaConverterParameter
+    {
+        public IValueConverter InnerConverter { get; set; }
+        public object InnerParameter { get; set; }
+        public ShibaFunction Function { get; set; }
     }
 
     internal abstract class ShibaConverter : IValueConverter

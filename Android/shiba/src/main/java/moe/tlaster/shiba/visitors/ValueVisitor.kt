@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import moe.tlaster.shiba.*
 import moe.tlaster.shiba.converters.FunctionConverter
 import moe.tlaster.shiba.converters.RawConverter
+import moe.tlaster.shiba.converters.ShibaConverterParameter
 import moe.tlaster.shiba.converters.SingleBindingFunctionConverter
 
 private interface IValueVisitor {
@@ -96,8 +97,12 @@ private class ShibaFunctionVisitor(override val type: Class<*> = ShibaFunction::
             return when (extensionValue) {
                 is ShibaBinding -> {
                     extensionValue.apply {
+                        parameter = if (converter != null) {
+                            ShibaConverterParameter(converter, parameter, function)
+                        } else {
+                            function
+                        }
                         converter = Singleton.get<SingleBindingFunctionConverter>()
-                        parameter = function
                     }
                 }
                 else -> {
