@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -174,30 +174,6 @@ namespace Shiba.Visitors
         {
             var function = ParseFunction(item, context);
             var extensions = GetExtensions(function)?.ToList();
-//            var dataContextPath =
-//#if FORMS
-//                "BindingContext";
-//#elif WINDOWS_UWP || WPF
-//                "DataContext";
-//#endif
-////            var path = string.IsNullOrEmpty(binding.Path)
-////                ? dataContextPath
-////                : $"{dataContextPath}.{binding.Path}";
-//                    
-//            var targetValue = new NativeBinding
-//            {
-//                Source = context.ShibaHost,
-//#if FORMS
-////                Path = path,
-//#elif WINDOWS_UWP || WPF
-////                Path = new PropertyPath(path),
-//                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
-//#endif
-////                Converter = binding.Converter,
-////                ConverterParameter = binding.Parameter,
-//            };
-
-
             if (extensions == null || !extensions.Any())
             {
                 return new NativeBinding
@@ -249,37 +225,6 @@ namespace Shiba.Visitors
             }
 
             throw new ArgumentOutOfRangeException($"Can not handle function call ${item}");
-
-//            if (bindings == null || !bindings.Any())
-//            {
-//                return new ShibaBinding
-//                {
-//                    Parameter = Singleton<ShibaFunctionExecutor>.Instance.Execute(function, null),
-//                    Converter = Singleton<RawDataConverter>.Instance
-//                };
-//            }
-//
-//            if (bindings.Count == 1)
-//            {
-//                return new ShibaBinding
-//                {
-//                    Path = bindings.FirstOrDefault().Path,
-//                    Parameter = function,
-//                    Converter = Singleton<SingleBindingFunctionConverter>.Instance
-//                };
-//            }
-//
-//            if (bindings.Count > 1)
-//            {
-//                return new ShibaMultiBinding
-//                {
-//                    Parameter = function,
-//                    Converter = Singleton<FunctionConverter>.Instance,
-//                    Paths = bindings.Select(it => it.Path).ToArray()
-//                };
-//            }
-//
-//            throw new ArgumentOutOfRangeException();
         }
 
         private IEnumerable<ShibaExtension> GetExtensions(ShibaFunction function)

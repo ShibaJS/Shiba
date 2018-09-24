@@ -6,11 +6,11 @@ import moe.tlaster.shiba.SingleBindingShibaFunctionExecutor
 import moe.tlaster.shiba.Singleton
 
 abstract class ShibaConverter {
-    abstract fun convert(value: Any?, parameter: Any?) : Any?
+    abstract fun convert(value: Any?, parameter: Any?): Any?
 }
 
 class RawConverter : ShibaConverter() {
-    override fun convert(value: Any?, parameter: Any?) : Any? {
+    override fun convert(value: Any?, parameter: Any?): Any? {
         return value
     }
 }
