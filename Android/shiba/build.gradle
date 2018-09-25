@@ -49,18 +49,21 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.+'
 }
 
-
-
-
-task makeJar(type: Copy) {
-    delete 'build/libs/shiba.jar'
-    from('build/intermediates/bundles/release/')
-    into('build/libs/')
-    include('classes.jar')
-    rename('classes.jar', 'shiba.jar')
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
 }
-
-makeJar.dependsOn(build)
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+    archives sourcesJar
+}
 
 def siteUrl = 'https://github.com/Tlaster/Shiba'
 def gitUrl = 'https://github.com/Tlaster/Shiba.git'
@@ -98,11 +101,6 @@ install {
             }
         }
     }
-}
-
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
 }
 
 bintray {
