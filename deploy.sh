@@ -1,2 +1,2 @@
 cd Android
-./gradlew :clean :shiba:assembleRelease :shiba:bintrayUpload
+./gradlew :clean :shiba:install :shiba:bintrayUpload
