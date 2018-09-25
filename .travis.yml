@@ -1,0 +1,27 @@
+language: android 
+
+android:
+  components:
+    - platform-tools
+    - tools
+    - build-tools-28.0.3
+    - android-28
+    - extra-android-m2repository
+    - extra-google-m2repository
+    - extra-android-support
+  licenses:
+    - 'android-sdk-preview-license-52d11cd2'
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
+
+script:
+    - ./gradlew build connectedCheck
+    - ./gradlew clean build
+
+deploy:
+  provider: script
+  script: ./gradlew :clean :shiba:assembleRelease :shiba:bintrayUpload
+  skip_cleanup: true # to upload artifacts created during the build
+  dry-run: false
+  on:
+    branch: master
