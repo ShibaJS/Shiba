@@ -16,7 +16,7 @@ android:
 
 before_install:
   - chmod +x ./build.sh
-
+  - chmod +x Android/gradlew
 
 script:
     - ./build.sh
