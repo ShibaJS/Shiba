@@ -3,7 +3,6 @@ package moe.tlaster.shiba
 import android.content.Context
 import android.util.ArrayMap
 import android.view.View
-import moe.tlaster.shiba.mapper.ISubscription
 import moe.tlaster.shiba.parser.ShibaParserWrapper
 import moe.tlaster.shiba.visitors.ShibaValueVisitor
 

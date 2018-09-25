@@ -7,7 +7,6 @@ import android.util.AttributeSet
 import android.widget.FrameLayout
 import android.view.View
 import android.view.ViewGroup
-import moe.tlaster.shiba.mapper.ISubscription
 
 fun <T : View> View.findName(name: String) : T? {
     return findView { it ->
