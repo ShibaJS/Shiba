@@ -2,7 +2,7 @@ language: android
 
 android:
   components:
-    - platform-tools
+    - platform-tools  
     - tools
     - build-tools-28.0.3
     - android-28
@@ -15,16 +15,15 @@ android:
     - 'google-gdk-license-.+'
 
 before_install:
-  - chmod +x Android/gradlew
+  - chmod +x ./build.sh
 
 
 script:
-    - Android/gradlew build connectedCheck
-    - Android/gradlew clean build
+    - ./build.sh
 
 deploy:
   provider: script
-  script: Android/gradlew :clean :shiba:assembleRelease :shiba:bintrayUpload
+  script: ./deploy.sh
   skip_cleanup: true # to upload artifacts created during the build
   dry-run: false
   on:
