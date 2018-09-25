@@ -58,7 +58,7 @@ tasks.withType(Javadoc).all {
 publishing {
     publications {
         Production(MavenPublication) {
-            artifact("$buildDir/outputs/aar/droidils-release.aar")
+            artifact("$buildDir/outputs/aar/shiba-release.aar")
             groupId 'moe.tlaster'
             artifactId 'shiba'
             version '0.0.1'
