@@ -1,29 +1,11 @@
 version: 0.0.1-build{build}
 image: Visual Studio 2017
-environment:
-  ANDROID_HOME: "C:\\android-sdk-windows"
-install:
-  - mkdir ANDROID_HOME
-  - appveyor DownloadFile https://dl.google.com/android/repository/sdk-tools-windows-4333796.zip
-  - 7z x sdk-tools-windows-4333796.zip -oc:\android-sdk-windows
-  - yes | C:\android-sdk-windows\tools\bin\sdkmanager.bat --licenses
-  - C:\android-sdk-windows\tools\bin\sdkmanager.bat "platform-tools" "platforms;android-28" "build-tools;28.0.2" "extras;android;m2repository" "extras;google;m2repository"
 build_script:
 - ps: >-
     nuget restore "Windows\\Shiba.sln"
-
     msbuild "Windows\\Shiba.sln" /m /verbosity:minimal /p:Configuration=Release
-
     nuget pack "Windows\\Shiba.nuspec" -Version $env:appveyor_build_version
-
-    cd Android
-
-    .\gradlew.bat clean publish -Pversion="$env:appveyor_build_version" --parallel --stacktrace
-
-    cd ..
 artifacts:
 - path: '*.nupkg'
   name: nuget
-- path: 'Android\shiba\build\repo\moe\tlaster\Shiba'
-  name: bintray
 
