@@ -5,7 +5,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'com.jfrog.bintray'
-apply plugin: 'maven-publish'
+apply plugin: 'com.github.dcendents.android-maven'
 
 
 android {
@@ -50,50 +50,75 @@ dependencies {
 }
 
 
-tasks.withType(Javadoc).all {
-    enabled = false
+
+
+task makeJar(type: Copy) {
+    delete 'build/libs/shiba.jar'
+    from('build/intermediates/bundles/release/')
+    into('build/libs/')
+    include('classes.jar')
+    rename('classes.jar', 'shiba.jar')
 }
 
+makeJar.dependsOn(build)
 
-publishing {
-    publications {
-        Production(MavenPublication) {
-            artifact("$buildDir/outputs/aar/shiba-release.aar")
-            groupId 'moe.tlaster'
-            artifactId 'shiba'
-            version '0.0.1'
-            pom.withXml {
-                configurations.compile.allDependencies.each {
-                    if (it.name != 'unspecified') {
-                        def dependencyNode = dependenciesNode.appendNode('dependency')
-                        dependencyNode.appendNode('groupId', it.group)
-                        dependencyNode.appendNode('artifactId', it.name)
-                        dependencyNode.appendNode('version', it.version)
+def siteUrl = 'https://github.com/Tlaster/Shiba'
+def gitUrl = 'https://github.com/Tlaster/Shiba.git'
+def issueUrl = 'https://github.com/Tlaster/Shiba/issues'
+def buildNum = System.getenv('TRAVIS_BUILD_NUMBER')
+
+group = "shiba"
+version = "0.0.$buildNum"
+
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                packaging 'aar'
+                name 'Lightweight Cross-Platform UI framework'
+                url siteUrl
+                licenses {
+                    license {
+                        name 'Lightweight Cross-Platform UI framework'
+                        url 'https://github.com/Tlaster/Shiba/blob/master/LICENSE.md'
                     }
+                }
+                developers {
+                    developer {
+                        id 'tlaster'
+                        name 'tlaster'
+                        email 'tlaster@outlook.com'
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
                 }
             }
         }
     }
 }
 
-bintray {
-    user = System.getenv('BINTRAY_USER') // Get bintray User
-    key = System.getenv('BINTRAY_API_KEY') // Get bintray Secret API Key
-    dryRun = false
-    override = false
-    publish = true
-    pkg {
-        repo = 'Shiba'
-        name = project.name
-        userOrg = 'tlaster'
-        licenses = ['MIT']
-        desc = 'Lightweight Cross-Platform UI framework'
-        vcsUrl = 'https://github.com/Tlaster/Shiba.git'
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
 
-        version {
-            name = '0.0.1'
-            vcsTag = '0.0.1'
-        }
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_API_KEY')
+    configurations = ['archives']
+    pkg {
+        repo = "Shiba"
+        name = "Shiba"
+        desc = "Lightweight Cross-Platform UI framework"
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        issueTrackerUrl = issueUrl
+        licenses = ["MIT"]
+        labels = ['android']
+        publish = true
+        publicDownloadNumbers = true
     }
-    publications = ['Production']
 }
