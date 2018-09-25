@@ -18,7 +18,6 @@
 
     public interface IViewMapper
     {
-        string ViewName { get; }
         object Map(View view, IShibaContext context);
     }
     

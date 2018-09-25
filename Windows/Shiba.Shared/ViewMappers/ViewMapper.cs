@@ -55,14 +55,11 @@ namespace Shiba.ViewMappers
         public Type ValueType { get; }
         public virtual void SetValue(NativeView view, object value)
         {
-
             value.TryChangeType(ValueType, out value);
-
             Action?.Invoke(view, value);
         }
 
         public Action<NativeView, object> Action { get; protected set; }
-
     }
 
     public sealed class PropertyMap : ManuallyValueMap
@@ -84,41 +81,22 @@ namespace Shiba.ViewMappers
 
         public override void SetValue(NativeView view, object value)
         {
-            if (value == null)
+            switch (value)
             {
-                view.SetValue(DependencyProperty, null);
-                return;
-            }
-
-            value.TryChangeType(ValueType, out value);
-
-            value = Converter == null ? value : Converter.Invoke(value);
-            
-            if (value.GetType() == PropertyType)
-            {
-                view.SetValue(DependencyProperty, value);
-            }
-            else switch (value)
-            {
-//                case ShibaMap shibaMap:
-//                    value = shibaMap.GetValue<object>(AbstractShiba.Instance.Configuration.PlatformType);
-//                    if (value == null)
-//                    {
-//                        break;
-//                    }
-//                    if (value.GetType() == PropertyType)
-//                    {
-//                        view.SetValue(DependencyProperty, value);
-//                    }
-//
-//                    if (value is BasicValue basicValue)
-//                    {
-//                        view.SetValue(DependencyProperty, basicValue.Value);
-//                    }
-//                    break;
+                case null:
+                    view.SetValue(DependencyProperty, null);
+                    break;
                 case NativeBinding binding:
                     binding.Mode = IsTwoWay ? BindingMode.TwoWay : BindingMode.OneWay;
                     view.SetBinding(DependencyProperty, binding);
+                    break;
+                default:
+                    value.TryChangeType(ValueType, out value);
+                    value = Converter == null ? value : Converter.Invoke(value);
+                    if (value.GetType() == PropertyType)
+                    {
+                        view.SetValue(DependencyProperty, value);
+                    }
                     break;
             }
         }
@@ -203,8 +181,6 @@ namespace Shiba.ViewMappers
 
         protected virtual PropertyMap DefaultPropertyMap { get; }
 
-        public virtual string ViewName { get; } = "view";
-
         object IViewMapper.Map(ShibaView view, IShibaContext context)
         {
             return Map(view, context);
@@ -245,55 +221,7 @@ namespace Shiba.ViewMappers
         private void SetValue(IShibaContext context, object value, IValueMap valueMap, TNativeView target)
         {
             var targetValue = valueMap.ValueType == value?.GetType() ? value : ShibaValueVisitor.GetValue(value, context);
-//            switch (targetValue)
-//            {
-//                case ShibaMultiBinding multiBinding:
-//                    if (context.ShibaHost.DataContext != null)
-//                    {
-//#if WINDOWS_UWP 
-//                        targetValue = multiBinding.Converter.Convert(context.ShibaHost.DataContext, valueMap.ValueType,
-//                            multiBinding.Parameter, string.Empty);
-//#elif FORMS || WPF
-//                        targetValue = multiBinding.Converter.Convert(context.ShibaHost.DataContext, valueMap.ValueType,
-//                            multiBinding.Parameter, null);
-//#endif
-//                    }
-//                    else
-//                    {
-//                        targetValue = null;
-//                    }
-//                    break;
-//                case ShibaBinding binding:
-//                    var dataContextPath =
-//#if FORMS
-//                        "BindingContext";
-//#elif WINDOWS_UWP || WPF
-//                        "DataContext";
-//#endif
-//                    var path = string.IsNullOrEmpty(binding.Path)
-//                        ? dataContextPath
-//                        : $"{dataContextPath}.{binding.Path}";
-//                    
-//                    targetValue = new NativeBinding
-//                    {
-//                        Source = context.ShibaHost,
-//#if FORMS
-//                        Path = path,
-//#elif WINDOWS_UWP || WPF
-//                        Path = new PropertyPath(path),
-//                        UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
-//#endif
-//                        Converter = binding.Converter,
-//                        ConverterParameter = binding.Parameter,
-//                    };
-//                    break;
-//                default:
-//                    break;
-//            }
-
-            
             valueMap.SetValue(target, targetValue);
-
         }
 
         public virtual TNativeView CreateNativeView()
