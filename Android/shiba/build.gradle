@@ -70,7 +70,7 @@ def gitUrl = 'https://github.com/Tlaster/Shiba.git'
 def issueUrl = 'https://github.com/Tlaster/Shiba/issues'
 def buildNum = System.getenv('TRAVIS_BUILD_NUMBER')
 
-group = "shiba"
+group = "moe.tlaster"
 version = "0.0.$buildNum"
 
 install {
