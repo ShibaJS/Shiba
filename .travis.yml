@@ -15,12 +15,12 @@ android:
     - 'google-gdk-license-.+'
 
 script:
-    - ./gradlew build connectedCheck
-    - ./gradlew clean build
+    - Android/gradlew build connectedCheck
+    - Android/gradlew clean build
 
 deploy:
   provider: script
-  script: ./gradlew :clean :shiba:assembleRelease :shiba:bintrayUpload
+  script: Android/gradlew :clean :shiba:assembleRelease :shiba:bintrayUpload
   skip_cleanup: true # to upload artifacts created during the build
   dry-run: false
   on:
