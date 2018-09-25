@@ -1,9 +1,18 @@
 # Status  
 [![Build status](https://ci.appveyor.com/api/projects/status/2qp96xf35naduen7?svg=true)](https://ci.appveyor.com/project/Tlaster/shiba)
+[![Build Status](https://travis-ci.com/Tlaster/Shiba.svg?branch=master)](https://travis-ci.com/Tlaster/Shiba)
 [![NuGet version](https://badge.fury.io/nu/Shiba.svg)](https://badge.fury.io/nu/Shiba)  
 Shiba is still in development, you can check the progress at the bottom of page
 
 # Getting Start
+
+For WPF/UWP/Xamarin.Forms:
+You can install from nuget
+
+For Android:
+```
+implementation 'moe.tlaster:shiba:0.0.+'
+```
 
 Make sure calling the initialization before using Shiba
 
