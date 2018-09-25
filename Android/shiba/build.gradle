@@ -4,7 +4,6 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
-apply plugin: 'digital.wup.android-maven-publish'
 
 
 android {
@@ -46,32 +45,4 @@ dependencies {
     implementation 'com.android.support:gridlayout-v7:28.+'
     implementation 'com.android.support:recyclerview-v7:28.+'
     implementation 'com.android.support.constraint:constraint-layout:1.+'
-}
-publishing {
-    publications {
-
-        mavenReleaseAar(MavenPublication) {
-            from components.android
-            groupId 'moe.tlaster'
-            artifactId 'Shiba'
-            if (project.hasProperty('version')) {
-                version version
-            } else {
-                version '1.0'
-            }
-        }
-//        android.libraryVariants.all { variant ->
-////            "maven${variant.name.capitalize()}Aar"(MavenPublication) {
-////                from components.findByName("android${variant.name.capitalize()}")
-////                groupId 'moe.tlaster'
-////                artifactId 'Shiba'
-////                version "0.0.1-${variant.name}"
-////            }
-//        }
-    }
-    repositories {
-        maven {
-            url "$buildDir/repo"
-        }
-    }
 }

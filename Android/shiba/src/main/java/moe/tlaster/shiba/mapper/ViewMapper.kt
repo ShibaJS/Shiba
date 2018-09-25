@@ -21,27 +21,9 @@ interface IValueMap {
     val setter: (NativeView, Any?) -> Unit
 }
 
-interface ISubscription {
-    var isChanging: Boolean
-    val binding: ShibaBinding
-    val setter: (NativeView, Any?) -> Unit
-}
-
 open class PropertyMap(override val name: String, override val setter: (NativeView, Any?) -> Unit, override val valueType: Class<*>? = null) : IValueMap
 
 class TwoWayPropertyMap(name: String, setter: (NativeView, Any?) -> Unit, val twowayInitializer: ((NativeView, (Any?) -> Unit) -> Unit)) : PropertyMap(name, setter)
-
-class SingleSubscription(override val setter: (NativeView, Any?) -> Unit, override val binding: ShibaBinding) : ISubscription {
-    override var isChanging: Boolean = false
-}
-
-class MultiSubscription(override val setter: (NativeView, Any?) -> Unit, override val binding: ShibaBinding) : ISubscription {
-    override var isChanging: Boolean = false
-}
-
-class TwoWaySubscription(override val setter: (NativeView, Any?) -> Unit, override val binding: ShibaBinding) : ISubscription {
-    override var isChanging: Boolean = false
-}
 
 open class ViewMapper<TNativeView : NativeView> : IViewMapper<TNativeView> {
     private val _propertyCache by lazy {
