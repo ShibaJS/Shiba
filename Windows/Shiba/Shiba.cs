@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -40,12 +40,14 @@ namespace Shiba
 
         public List<IShibaExtensionExecutor> ShibaExtensionExecutors { get; } =
             AppDomain.CurrentDomain.GetAssemblies()
+                .Where(it => !it.IsDynamic)
                 .SelectMany(it => it.ExportedTypes)
                 .Where(it => it.IsClass && !it.IsAbstract && typeof(IShibaExtensionExecutor).IsAssignableFrom(it))
                 .Select(it => Activator.CreateInstance(it) as IShibaExtensionExecutor).ToList();
 
         public List<ICommonProperty> CommonProperties { get; } =
             AppDomain.CurrentDomain.GetAssemblies()
+                .Where(it => !it.IsDynamic)
                 .SelectMany(it => it.ExportedTypes)
                 .Where(it => it.IsClass && !it.IsAbstract && typeof(ICommonProperty).IsAssignableFrom(it))
                 .Select(it => Activator.CreateInstance(it) as ICommonProperty).ToList();
