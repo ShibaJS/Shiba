@@ -3,9 +3,11 @@ using Shiba.Controls;
 #if WINDOWS_UWP
 using Windows.UI.Xaml;
 using NativeParent = Windows.UI.Xaml.Controls.ContentControl;
+using Windows.UI.Xaml.Markup;
 #elif WPF
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Markup;
 using NativeParent = System.Windows.Controls.ContentControl;
 #elif FORMS
 using Xamarin.Forms;
@@ -16,6 +18,11 @@ using View = Shiba.Controls.View;
 
 namespace Shiba
 {
+#if WINDOWS_UWP
+    [ContentProperty(Name = nameof(Layout))]
+#elif WPF || FORMS
+    [ContentProperty(nameof(Layout))]
+#endif
     public class ShibaHost : NativeParent, IShibaHost
     {
 #if FORMS
