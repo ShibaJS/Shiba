@@ -36,11 +36,16 @@ using System.Windows.Data;
 
 namespace Shiba.ExtensionExecutors
 {
-    public class BindingExecutor : IShibaExtensionExecutor
+    public class BindingExecutor : IBindingExtensionExecutor
     {
         public string Name { get; } = "bind";
 
         public object ProvideValue(IShibaContext context, ShibaExtension value)
+        {
+            return ProvideNativeBinding(context, value);
+        }
+
+        public NativeBinding ProvideNativeBinding(IShibaContext context, ShibaExtension value)
         {
             var dataContextPath =
 #if FORMS
@@ -57,7 +62,7 @@ namespace Shiba.ExtensionExecutors
             {
                 Source = context.ShibaHost,
 #if FORMS
-                        Path = path,
+                Path = path,
 #elif WINDOWS_UWP || WPF
                 Path = new PropertyPath(path),
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,

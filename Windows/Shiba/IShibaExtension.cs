@@ -4,13 +4,13 @@ using Shiba.Controls;
 
 namespace Shiba
 {
-    public interface IShibaExtensionExecutor
+    public interface IExtensionExecutor
     {
         string Name { get; }
         object ProvideValue(IShibaContext context, ShibaExtension value);
     }
 
-    public interface IMutableShibaExtensionExecutor : IShibaExtensionExecutor
+    public interface IMutableExtensionExecutor : IExtensionExecutor
     {
         
     }

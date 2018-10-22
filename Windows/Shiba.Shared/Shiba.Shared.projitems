@@ -14,6 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)CommonProperty\RelativeProperty.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExtensionExecutors\BindingExecutor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ExtensionExecutors\IBindingExtensionExecutor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NativeRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConvertExtensions.cs" />

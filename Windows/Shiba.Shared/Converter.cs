@@ -40,7 +40,7 @@ namespace Shiba
 
         protected virtual object GetValueFromDataContext(ShibaExtension extension, object dataContext)
         {
-            return AbstractShiba.Instance.Configuration.ShibaExtensionExecutors
+            return AbstractShiba.Instance.Configuration.ExtensionExecutors
                 .FirstOrDefault(it => it.Name == extension.Type)?.ProvideValue(null, extension);
         }
     }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -158,7 +158,7 @@ namespace Shiba.Visitors
         protected override object Parse(ShibaExtension item, IShibaContext context)
         {
             var executor =
-                AbstractShiba.Instance.Configuration.ShibaExtensionExecutors.FirstOrDefault(it => it.Name == item.Type);
+                AbstractShiba.Instance.Configuration.ExtensionExecutors.FirstOrDefault(it => it.Name == item.Type);
             if (executor != null)
             {
                 return executor.ProvideValue(context, item);
@@ -188,7 +188,7 @@ namespace Shiba.Visitors
                 var extension = extensions.FirstOrDefault();
 
                 var extensionValue = extension != null
-                    ? AbstractShiba.Instance.Configuration.ShibaExtensionExecutors
+                    ? AbstractShiba.Instance.Configuration.ExtensionExecutors
                         .FirstOrDefault(it => it.Name == extension.Type)?.ProvideValue(context, extension)
                     : null;
 
@@ -258,9 +258,9 @@ namespace Shiba.Visitors
                         item.Parameters[i] = ParseFunction(function, context);
                         break;
                     case ShibaExtension extension:
-                        var executor = AbstractShiba.Instance.Configuration.ShibaExtensionExecutors
+                        var executor = AbstractShiba.Instance.Configuration.ExtensionExecutors
                             .FirstOrDefault(it => it.Name == extension.Type);
-                        if (executor is IMutableShibaExtensionExecutor)
+                        if (executor is IMutableExtensionExecutor)
                         {
                             item.Parameters[i] = executor.ProvideValue(context, extension);
                         }

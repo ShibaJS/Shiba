@@ -38,12 +38,12 @@ namespace Shiba
         public IConverterExecutor ConverterExecutor { get; set; } = new DefaultConverterExecutor();
         public string PlatformType { get; set; } = "Windows";
 
-        public List<IShibaExtensionExecutor> ShibaExtensionExecutors { get; } =
+        public List<IExtensionExecutor> ExtensionExecutors { get; } =
             AppDomain.CurrentDomain.GetAssemblies()
                 .Where(it => !it.IsDynamic)
                 .SelectMany(it => it.ExportedTypes)
-                .Where(it => it.IsClass && !it.IsAbstract && typeof(IShibaExtensionExecutor).IsAssignableFrom(it))
-                .Select(it => Activator.CreateInstance(it) as IShibaExtensionExecutor).ToList();
+                .Where(it => it.IsClass && !it.IsAbstract && typeof(IExtensionExecutor).IsAssignableFrom(it))
+                .Select(it => Activator.CreateInstance(it) as IExtensionExecutor).ToList();
 
         public List<ICommonProperty> CommonProperties { get; } =
             AppDomain.CurrentDomain.GetAssemblies()
