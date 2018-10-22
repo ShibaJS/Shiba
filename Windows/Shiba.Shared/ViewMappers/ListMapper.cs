@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Shiba.Controls;
@@ -50,24 +51,7 @@ namespace Shiba.ViewMappers
                     nativeView.SetValue(NativeView.ItemTemplateProperty, template);
                 }
             });
-            yield return new ManuallyValueMap("items", typeof(IEnumerable), (element, value) =>
-            {
-                if (element is NativeView nativeView)
-                {
-                    switch (value)
-                    {
-                        case IEnumerable list:
-                            nativeView.SetBinding(NativeView.ItemsSourceProperty, new NativeBinding
-                            {
-                                Source = list
-                            });
-                            break;
-                        case NativeBinding binding:
-                            nativeView.SetBinding(NativeView.ItemsSourceProperty, binding);
-                            break;
-                    }
-                }
-            });
+            yield return new PropertyMap("items", NativeView.ItemsSourceProperty, typeof(IEnumerable));
         }
     }
 }

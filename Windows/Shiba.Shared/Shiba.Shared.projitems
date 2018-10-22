@@ -18,7 +18,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Extensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NativeRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConvertExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ShibaBinding.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ShibaApp.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ShibaHost.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Singleton.cs" />

@@ -5,7 +5,6 @@ using System.Reflection;
 using Jint;
 using Jint.Native;
 using Jint.Native.Function;
-using Newtonsoft.Json.Linq;
 using Shiba.Controls;
 
 namespace Shiba
@@ -32,9 +31,6 @@ namespace Shiba
 
     public class ShibaConfiguration
     {
-//        public IJsonValueResolver JsonValueResolver { get; set; } = new DefaultJsonValueResolver();
-//        public IValueResolver ResourceValueResolver { get; set; }
-//        public IBindingValueResolver BindingValueResolver { get; set; } = new DefaultBindingValueResolver();
         public IConverterExecutor ConverterExecutor { get; set; } = new DefaultConverterExecutor();
         public string PlatformType { get; set; } = "Windows";
 
@@ -87,45 +83,4 @@ namespace Shiba
         {
         }
     }
-//
-//    public class DefaultJsonValueResolver : IJsonValueResolver
-//    {
-//        public object GetValue(object dataContext, string path)
-//        {
-//            if (!(dataContext is JObject jObject) || string.IsNullOrEmpty(path)) return null;
-//
-//            return jObject[path].Value<object>();
-//        }
-//    }
-//
-//    public class DefaultBindingValueResolver : IBindingValueResolver
-//    {
-//        public object GetValue(object dataContext, string name)
-//        {
-//            if (dataContext == null || string.IsNullOrEmpty(name)) return null;
-//
-//            var propertyInfo = dataContext.GetType().GetTypeInfo().DeclaredProperties.FirstOrDefault(it =>
-//                string.Equals(it.Name, name, StringComparison.OrdinalIgnoreCase));
-//
-//            if (propertyInfo == null) return null;
-//
-//            return propertyInfo.GetValue(dataContext);
-//        }
-//    }
-
-//
-//    public interface IBindingValueResolver
-//    {
-//        object GetValue(object dataContext, string name);
-//    }
-//
-//    public interface IJsonValueResolver
-//    {
-//        object GetValue(object dataContext, string path);
-//    }
-
-//    public interface IValueResolver
-//    {
-//        object GetValue(object value);
-//    }
 }
