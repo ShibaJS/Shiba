@@ -14,9 +14,4 @@ namespace Shiba
     {
         
     }
-    
-    public interface IAsyncShibaExtensionExecutor : IShibaExtensionExecutor
-    {
-        Task<object> ProvideValueAsync(IShibaContext context, ShibaExtension value);
-    }
 }
