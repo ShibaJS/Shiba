@@ -21,7 +21,7 @@ android {
         versionCode 1
         versionName "0.0.1"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }
 
@@ -39,14 +39,14 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation 'org.antlr:antlr4:4.7.1'
     // use ANTLR version 4
-    implementation 'com.android.support:appcompat-v7:28.+'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'org.mozilla:rhino:1.7.10'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation 'com.android.support:gridlayout-v7:28.+'
-    implementation 'com.android.support:recyclerview-v7:28.+'
-    implementation 'com.android.support.constraint:constraint-layout:1.+'
+    androidTestImplementation 'androidx.test:runner:1.1.0-beta02'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha3'
+    implementation 'androidx.gridlayout:gridlayout:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
 }
 
 task sourcesJar(type: Jar) {

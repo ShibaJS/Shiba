@@ -1,7 +1,7 @@
 package moe.tlaster.shiba
 
 import android.os.Build
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 import moe.tlaster.shiba.visitors.ShibaValueVisitor
 import java.util.function.Predicate
 

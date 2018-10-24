@@ -1,12 +1,12 @@
 package moe.tlaster.shibasample
 
 import android.content.Context
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v4.view.LayoutInflaterCompat
-import android.support.v7.widget.LinearLayoutCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.core.view.LayoutInflaterCompat
+import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -31,7 +31,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        host.load("list { itemLayout = text -> \$bind items = \$bind androidList }", WithListModel())
+//        host.load("list { itemLayout = text -> \$bind items = \$bind androidList }", WithListModel())
+
+        host.load("list { itemLayout = stack { input -> \$bind text text -> awesome(\$bind text) } items = \$bind list }", WithListModel())
 
 //        list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 //        list.adapter = Adapter(this)
@@ -52,10 +54,14 @@ class WithListModel : BaseNotifyObject() {
 
     @get:Binding(name = "androidList")
     @set:Binding(name = "androidList")
-    var list = (1 until 1000).map { "Text $it" }
+    var androidList = (1 until 1000).map { "Text $it" }
+
+    @get:Binding(name = "list")
+    @set:Binding(name = "list")
+    var list = (1 until 1000).map { Model("Text $it") }
 }
 
-class Adapter(private val context: Context) : RecyclerView.Adapter<ViewHolder>() {
+class Adapter(private val context: Context) : androidx.recyclerview.widget.RecyclerView.Adapter<ViewHolder>() {
 
     private val items = (1 until 1000).map { Model("Text $it") }
 
@@ -76,6 +82,6 @@ class Adapter(private val context: Context) : RecyclerView.Adapter<ViewHolder>()
 
 }
 
-class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
 
 }

@@ -1,19 +1,19 @@
 package moe.tlaster.shiba.mapper
 
 import android.content.Context
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import moe.tlaster.shiba.*
 
-class ListMapper : ViewMapper<RecyclerView>() {
+class ListMapper : ViewMapper<androidx.recyclerview.widget.RecyclerView>() {
     override fun getViewLayoutParams(): ViewGroup.LayoutParams {
         return ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
     }
 
-    override fun createNativeView(context: IShibaContext): RecyclerView {
-        return RecyclerView(context.getContext()).apply {
-            layoutManager = LinearLayoutManager(context.getContext(), LinearLayoutManager.VERTICAL, false)
+    override fun createNativeView(context: IShibaContext): androidx.recyclerview.widget.RecyclerView {
+        return androidx.recyclerview.widget.RecyclerView(context.getContext()).apply {
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context.getContext(), androidx.recyclerview.widget.LinearLayoutManager.VERTICAL, false)
             adapter = ShibaRecyclerAdapter(context.getContext())
         }
     }
@@ -21,13 +21,13 @@ class ListMapper : ViewMapper<RecyclerView>() {
     override fun propertyMaps(): ArrayList<PropertyMap> {
         return super.propertyMaps().apply {
             add(PropertyMap("itemLayout", { view, value ->
-                if (view is RecyclerView && value is View) {
+                if (view is androidx.recyclerview.widget.RecyclerView && value is View) {
                     val adapter = view.adapter as? ShibaRecyclerAdapter
                     adapter?.layout = value
                 }
             }, View::class.java))
             add(PropertyMap("items", { view, value ->
-                if (view is RecyclerView && value is List<*>) {
+                if (view is androidx.recyclerview.widget.RecyclerView && value is List<*>) {
                     val adapter = view.adapter as? ShibaRecyclerAdapter
                     adapter?.items?.addAll(value)
                 }
@@ -36,9 +36,9 @@ class ListMapper : ViewMapper<RecyclerView>() {
     }
 }
 
-private class ShibaViewHolder(itemView: ShibaHost) : RecyclerView.ViewHolder(itemView)
+private class ShibaViewHolder(itemView: ShibaHost) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView)
 
-private class ShibaRecyclerAdapter(val context: Context) : RecyclerView.Adapter<ShibaViewHolder>() {
+private class ShibaRecyclerAdapter(val context: Context) : androidx.recyclerview.widget.RecyclerView.Adapter<ShibaViewHolder>() {
     var layout: View? = null
     set(value) {
         field = value

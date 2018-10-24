@@ -1,6 +1,6 @@
 package moe.tlaster.shiba.commonProperty
 
-import android.support.v7.widget.GridLayout
+import androidx.gridlayout.widget.GridLayout
 import android.view.ViewGroup
 import moe.tlaster.shiba.NativeView
 import moe.tlaster.shiba.ShibaMap
@@ -11,9 +11,9 @@ class GridProperty(override val name: String = "grid") : AbsCommonProperty<Shiba
         val column = value["column"]?.toString()?.toInt() ?: 0
         val rowSpan = value["rowSpan"]?.toString()?.toInt() ?: 1
         val columnSpan = value["columnSpan"]?.toString()?.toInt() ?: 1
-        val layoutParams = GridLayout.LayoutParams(nativeView.layoutParams)
-        layoutParams.rowSpec = GridLayout.spec(row, rowSpan)
-        layoutParams.columnSpec = GridLayout.spec(column, columnSpan)
+        val layoutParams = androidx.gridlayout.widget.GridLayout.LayoutParams(nativeView.layoutParams)
+        layoutParams.rowSpec = androidx.gridlayout.widget.GridLayout.spec(row, rowSpan)
+        layoutParams.columnSpec = androidx.gridlayout.widget.GridLayout.spec(column, columnSpan)
         nativeView.layoutParams = layoutParams
     }
 

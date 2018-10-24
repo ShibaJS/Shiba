@@ -42,31 +42,6 @@ open class ViewMapper<TNativeView : NativeView> : IViewMapper<TNativeView> {
             layoutParams = getViewLayoutParams()
         }
 
-        fun setValue(context: IShibaContext, value: Any, propertyMap: PropertyMap, target: TNativeView) {
-            val targetValue = if (propertyMap.valueType != null && propertyMap.valueType == value.javaClass) {
-                value
-            } else {
-                ShibaValueVisitor.getValue(value, context)
-            }
-
-            when (targetValue) {
-                is ShibaBinding -> {
-                    targetValue.targetView = target
-                    targetValue.viewSetter = propertyMap.setter
-                    if (propertyMap is TwoWayPropertyMap) {
-                        propertyMap.twowayInitializer.invoke(target) {
-                            targetValue.setValueToDataContext(it)
-                        }
-                    }
-                    targetValue.setValueToView()
-                    context.bindings += targetValue
-                }
-                else -> {
-                    propertyMap.setter.invoke(target, targetValue)
-                }
-            }
-        }
-
         if (view.defaultValue != null && defaultPropertyMap != null && hasDefaultProperty) {
             setValue(context, view.defaultValue!!, defaultPropertyMap!!, target)
         }
@@ -83,6 +58,30 @@ open class ViewMapper<TNativeView : NativeView> : IViewMapper<TNativeView> {
         return target
     }
 
+    private fun setValue(context: IShibaContext, value: Any, propertyMap: PropertyMap, target: TNativeView) {
+        val targetValue = if (propertyMap.valueType != null && propertyMap.valueType == value.javaClass) {
+            value
+        } else {
+            ShibaValueVisitor.getValue(value, context)
+        }
+
+        when (targetValue) {
+            is ShibaBinding -> {
+                targetValue.targetView = target
+                targetValue.viewSetter = propertyMap.setter
+                if (propertyMap is TwoWayPropertyMap) {
+                    propertyMap.twowayInitializer.invoke(target) {
+                        targetValue.setValueToDataContext(it)
+                    }
+                }
+                targetValue.setValueToView()
+                context.bindings += targetValue
+            }
+            else -> {
+                propertyMap.setter.invoke(target, targetValue)
+            }
+        }
+    }
 
     open override fun createNativeView(context: IShibaContext): TNativeView {
         return NativeView(context.getContext()) as TNativeView
@@ -94,7 +93,7 @@ open class ViewMapper<TNativeView : NativeView> : IViewMapper<TNativeView> {
                     if (it is Boolean) {
                         view.visibility = if (it) NativeView.VISIBLE else NativeView.GONE
                     }
-                }) ,
+                }),
                 PropertyMap("enable", { view, it -> if (it is Boolean) view.isEnabled = it }),
                 PropertyMap("width", { view, it ->
                     val param = view.layoutParams

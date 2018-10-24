@@ -1,21 +1,21 @@
 package moe.tlaster.shiba.mapper
 
-import android.support.v7.widget.GridLayout
+import androidx.gridlayout.widget.GridLayout
 import moe.tlaster.shiba.IShibaContext
 
-class GridMapper : ViewMapper<GridLayout>()  {
-    override fun createNativeView(context: IShibaContext): GridLayout {
-        return GridLayout(context.getContext())
+class GridMapper : ViewMapper<androidx.gridlayout.widget.GridLayout>()  {
+    override fun createNativeView(context: IShibaContext): androidx.gridlayout.widget.GridLayout {
+        return androidx.gridlayout.widget.GridLayout(context.getContext())
     }
     override fun propertyMaps(): ArrayList<PropertyMap> {
         return super.propertyMaps().apply {
             add(PropertyMap("row", { view, value ->
-                if (view is GridLayout && value is Number) {
+                if (view is androidx.gridlayout.widget.GridLayout && value is Number) {
                     view.rowCount = value.toInt()
                 }
             }))
             add(PropertyMap("column", { view, value ->
-                if (view is GridLayout && value is Number) {
+                if (view is androidx.gridlayout.widget.GridLayout && value is Number) {
                     view.columnCount = value.toInt()
                 }
             }))

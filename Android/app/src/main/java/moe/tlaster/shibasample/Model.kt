@@ -3,18 +3,14 @@ package moe.tlaster.shibasample
 import moe.tlaster.shiba.BaseNotifyObject
 import moe.tlaster.shiba.Binding
 
-class Model : BaseNotifyObject {
+class Model(text: String) : BaseNotifyObject() {
 
 
-    constructor(text: String) {
-        this.text = text
-    }
-
-    @get:Binding(name = "androidText")
-    @set:Binding(name = "androidText")
-    var text = "Android"
+    @get:Binding(name = "text")
+    @set:Binding(name = "text")
+    var text = text
         set(text) {
             field = text
-            notifyPropertyChanged("androidText")
+            notifyPropertyChanged("text")
         }
 }
