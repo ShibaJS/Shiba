@@ -1,7 +1,9 @@
 # Status  
-[![Build status](https://ci.appveyor.com/api/projects/status/2qp96xf35naduen7?svg=true)](https://ci.appveyor.com/project/Tlaster/shiba)
-[![Build Status](https://travis-ci.com/Tlaster/Shiba.svg?branch=master)](https://travis-ci.com/Tlaster/Shiba)
-[![NuGet version](https://badge.fury.io/nu/Shiba.svg)](https://badge.fury.io/nu/Shiba)  
+| Platform |  Build Status |  Download |
+|:---:|:---:|:---:|
+| .Net |[![Build status](https://ci.appveyor.com/api/projects/status/2qp96xf35naduen7?svg=true)](https://ci.appveyor.com/project/Tlaster/shiba) | [![NuGet version](https://badge.fury.io/nu/Shiba.svg)](https://badge.fury.io/nu/Shiba)|
+| Android |[![Build Status](https://travis-ci.com/Tlaster/Shiba.svg?branch=master)](https://travis-ci.com/Tlaster/Shiba)|[![Download](https://api.bintray.com/packages/tlaster/Shiba/Shiba/images/download.svg)](https://bintray.com/tlaster/Shiba/Shiba/_latestVersion) |  
+
 Shiba is still in development, you can check the progress at the bottom of page
 
 # Getting Start
@@ -93,12 +95,12 @@ You can mix your native code with Shiba, you can also use Shiba to create a simp
   - [x] WPF && UWP   
   - [x] Android   
   - [x] iOS && macOS  
-  - [ ] Xamarin support
+  - [x] Xamarin support  
 - [ ] Basic layout renderer
   - [x] WPF && UWP   
-  - [ ] Android  
+  - [x] Android  
   - [ ] iOS && macOS  
-  - [ ] Xamarin support
+  - [x] Xamarin support  
 
 # LICENSE
 The MIT License (MIT)

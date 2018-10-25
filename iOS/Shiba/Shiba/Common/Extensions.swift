@@ -7,7 +7,7 @@ import Foundation
 import UIKit
 
 extension UIView {
-    func isVisible(visible: Bool, dimension: CGFloat = 0.0, attribute: NSLayoutAttribute = .height) -> Void {
+    func isVisible(visible: Bool, dimension: CGFloat = 0.0, attribute: NSLayoutConstraint.Attribute = .height) -> Void {
         if let constraint = (self.constraints.filter {
             $0.firstAttribute == attribute
         }.first) {
