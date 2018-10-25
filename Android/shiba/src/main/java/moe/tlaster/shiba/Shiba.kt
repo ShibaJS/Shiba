@@ -8,7 +8,6 @@ import moe.tlaster.shiba.mapper.*
 import org.mozilla.javascript.Context
 import org.mozilla.javascript.Function
 import org.mozilla.javascript.ScriptableObject
-import java.lang.reflect.Method
 
 internal typealias NativeView = android.view.View
 internal typealias ShibaView = moe.tlaster.shiba.View
@@ -17,7 +16,7 @@ class ShibaConfiguration {
     var converterExecutor: IConverterExecutor = DefaultConverterExecutor()
     var platformType = "Android"
     val commonProperties = ArrayList<ICommonProperty>()
-    val extensionExecutors = ArrayList<IShibaExtensionExecutor>()
+    val extensionExecutors = ArrayList<IExtensionExecutor>()
 }
 
 interface IConverterExecutor {
@@ -71,7 +70,7 @@ object Shiba {
         viewMapping[name] = mapper
     }
 
-    public fun addExtensionExecutor(executor: IShibaExtensionExecutor) {
+    public fun addExtensionExecutor(executor: IExtensionExecutor) {
         configuration.extensionExecutors.add(executor)
     }
 }

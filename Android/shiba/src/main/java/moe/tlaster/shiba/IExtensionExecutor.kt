@@ -1,14 +1,14 @@
 package moe.tlaster.shiba
 
-interface IShibaExtensionExecutor {
+interface IExtensionExecutor {
     val name: String
     fun provideValue(context: IShibaContext?, extension: ShibaExtension) : Any?
 }
 
-interface IMutableShibaExtensionExecutor : IShibaExtensionExecutor {
+interface IMutableExtensionExecutor : IExtensionExecutor {
 
 }
 
-interface IAsyncShibaExtensionExecutor : IShibaExtensionExecutor {
+interface IAsyncExtensionExecutor : IExtensionExecutor {
     suspend fun provideValueAsync(context: IShibaContext?, extension: ShibaExtension) : Any?
 }
