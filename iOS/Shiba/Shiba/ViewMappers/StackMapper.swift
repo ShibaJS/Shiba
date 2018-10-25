@@ -9,7 +9,7 @@ import UIKit
 public class StackMapper : ViewMapper<UIStackView> {
     override func createNativeView(context: IShibaContext) -> UIStackView {
         let view = UIStackView(frame: context.frame)
-        view.axis = UILayoutConstraintAxis.vertical
+        view.axis = NSLayoutConstraint.Axis.vertical
         return view
     }
 
