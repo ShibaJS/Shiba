@@ -2,7 +2,6 @@ package moe.tlaster.shiba.visitors
 
 import android.view.ViewGroup
 import moe.tlaster.shiba.*
-import moe.tlaster.shiba.converters.FunctionConverter
 import moe.tlaster.shiba.converters.RawConverter
 import moe.tlaster.shiba.converters.ShibaConverterParameter
 import moe.tlaster.shiba.converters.SingleBindingFunctionConverter
@@ -138,7 +137,7 @@ private class ShibaFunctionVisitor(override val type: Class<*> = ShibaFunction::
                             is ShibaFunction -> parseFunction(it, context)
                             is ShibaExtension -> {
                                 val executor = Shiba.configuration.extensionExecutors.firstOrNull { e -> e.name == it.type }
-                                if (executor is IMutableShibaExtensionExecutor) {
+                                if (executor is IMutableExtensionExecutor) {
                                      executor.provideValue(context, it)
                                 } else {
                                     it
