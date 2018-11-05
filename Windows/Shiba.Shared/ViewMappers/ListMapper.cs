@@ -8,6 +8,7 @@ using System.Collections;
 #if WINDOWS_UWP
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using NativeBinding = Windows.UI.Xaml.Data.Binding;
 using NativeView = Windows.UI.Xaml.Controls.ListView;
 #elif WPF
@@ -51,7 +52,23 @@ namespace Shiba.ViewMappers
                     nativeView.SetValue(NativeView.ItemTemplateProperty, template);
                 }
             });
-            yield return new PropertyMap("items", NativeView.ItemsSourceProperty, typeof(IEnumerable));
+            yield return new ManuallyValueMap("items", typeof(IEnumerable), (element, value) =>
+            {
+                if (element is NativeView nativeView)
+                {
+                    if (value is NativeBinding binding)
+                    {
+                        nativeView.SetBinding(NativeView.ItemsSourceProperty, binding);
+                    }
+                    else
+                    {
+                        nativeView.SetBinding(NativeView.ItemsSourceProperty, new NativeBinding
+                        {
+                            Source = value
+                        });
+                    }
+                }
+            });
         }
     }
 }
