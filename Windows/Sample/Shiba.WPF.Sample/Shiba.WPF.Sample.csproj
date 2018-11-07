@@ -48,22 +48,6 @@
       <HintPath>..\..\packages\JavaScriptEngineSwitcher.Core.3.0.0-rc1\lib\net45\JavaScriptEngineSwitcher.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="ChakraCore.NET.Hosting, Version=1.0.2.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\packages\ChakraCore.NET.Hosting.1.0.2\lib\netstandard2.0\ChakraCore.NET.Hosting.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ChakraCore.NET.Promise, Version=1.1.1.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\packages\ChakraCore.NET.Promise.1.1.1\lib\netstandard1.4\ChakraCore.NET.Promise.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ChakraCore.NET.ShareMemoryObjects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\packages\ChakraCore.NET.ShareMemoryObjects.1.0.0\lib\netstandard1.4\ChakraCore.NET.ShareMemoryObjects.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ChakraCore.NET.Timer, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\packages\ChakraCore.NET.Timer.1.0.1\lib\netstandard1.4\ChakraCore.NET.Timer.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.Win32.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.Win32.Primitives.4.3.0\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
       <Private>True</Private>
