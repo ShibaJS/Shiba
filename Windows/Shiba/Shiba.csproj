@@ -5,7 +5,11 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Antlr4.Runtime.Standard" Version="4.7.1.1" />
-    <PackageReference Include="ChakraCore.NET.Hosting" Version="1.0.2" />
+    <PackageReference Include="JavaScriptEngineSwitcher.ChakraCore" Version="3.0.0-rc1" />
+    <PackageReference Include="JavaScriptEngineSwitcher.ChakraCore.Native.win-arm" Version="3.0.0-rc1" />
+    <PackageReference Include="JavaScriptEngineSwitcher.ChakraCore.Native.win-x64" Version="3.0.0-rc1" />
+    <PackageReference Include="JavaScriptEngineSwitcher.ChakraCore.Native.win-x86" Version="3.0.0-rc1" />
+    <PackageReference Include="JavaScriptEngineSwitcher.Jint" Version="3.0.0-rc1" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>
 </Project>
