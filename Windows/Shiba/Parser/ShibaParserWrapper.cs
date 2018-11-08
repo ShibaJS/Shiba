@@ -198,7 +198,8 @@ namespace Shiba.Parser
         {
             var name = tree.Identifier().GetText();
             var value = GetValue<BasicValue>(tree.basicValue());
-            var extension = new ShibaExtension(name, value);
+            var script = tree.Script()?.GetText();
+            var extension = new ShibaExtension(name, value, script);
             return extension;
         }
     }
