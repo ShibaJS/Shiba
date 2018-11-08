@@ -2,9 +2,12 @@ package moe.tlaster.shiba.visitors
 
 import android.view.ViewGroup
 import moe.tlaster.shiba.*
+import moe.tlaster.shiba.common.sha1
 import moe.tlaster.shiba.converters.RawConverter
 import moe.tlaster.shiba.converters.ShibaConverterParameter
 import moe.tlaster.shiba.converters.SingleBindingFunctionConverter
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentMap
 
 private interface IValueVisitor {
     val type: Class<*>
@@ -69,10 +72,42 @@ private class ViewVisitor(override val type: Class<*> = View::class.java) : AbsV
 }
 
 private class ShibaExtensionVisitor(override val type: Class<*> = ShibaExtension::class.java) : AbsValueVisitor<ShibaExtension, Any?>() {
+
+    private val scriptsCache = ConcurrentHashMap<String, String>()
+
     override fun parse(tree: ShibaExtension, context: IShibaContext?): Any? {
         val executor = Shiba.configuration.extensionExecutors.firstOrNull { it.name == tree.type }
         if (executor != null) {
-            return executor.provideValue(context, tree)
+            val value = executor.provideValue(context, tree)
+            if (tree.script.isNullOrBlank()) {
+                return value
+            }
+
+            val funcName = scriptsCache.getOrPut(tree.script) {
+                val name = "_${tree.script.sha1()}"
+                Shiba.addConverter("function $name(it){ ${tree.script.trimStart('$').trimStart('{').trimEnd('}')} }")
+                name
+            }
+
+            val func = ShibaFunction(funcName).apply {
+                parameter = arrayListOf(tree)
+            }
+
+            return when (value) {
+                is ShibaBinding -> value.apply {
+                    parameter = if (converter != null) {
+                        ShibaConverterParameter(converter, parameter, func)
+                    } else {
+                        func
+                    }
+                    converter = Singleton.get<SingleBindingFunctionConverter>()
+                }
+                else ->
+                    ShibaBinding("").apply {
+                        converter = Singleton.get<RawConverter>()
+                        parameter = Singleton.get<SingleBindingShibaFunctionExecutor>().execute(func, tree)
+                    }
+            }
         }
         throw NotImplementedError()
     }
@@ -92,7 +127,7 @@ private class ShibaFunctionVisitor(override val type: Class<*> = ShibaFunction::
 
         if (extensions.size == 1) {
             val extension = extensions.first()
-            val extensionValue = Shiba.configuration.extensionExecutors.firstOrNull { it.name == extension.type }?.provideValue(context, extension)
+            val extensionValue = extension.visit<Any>(context)
             return when (extensionValue) {
                 is ShibaBinding -> {
                     extensionValue.apply {

@@ -85,7 +85,8 @@ private final class ShibaExtensionVisitor(override val type: Class<*> = ShibaPar
     override fun parse(tree: ShibaParser.ShibaExtensionContext): ShibaExtension {
         val name = tree.Identifier().text
         val value = tree.basicValue()?.visit<BasicValue>()
-        return ShibaExtension(name, value)
+        val script = tree.Script()?.text
+        return ShibaExtension(name, value, script)
     }
 
 }
