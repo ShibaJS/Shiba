@@ -234,14 +234,20 @@ namespace Shiba.Visitors
                 switch (item)
                 {
                     case ShibaExtension extension:
-                        yield return extension;
+                    {
+                        var executor = AbstractShiba.Instance.Configuration.ExtensionExecutors
+                            .FirstOrDefault(it => it.Name == extension.Type);
+                        if (!(executor is IMutableExtensionExecutor))
+                        {
+                            yield return extension;
+                        }
+                    }
                         break;
                     case ShibaFunction shibaFunction:
                         foreach (var extension in GetExtensions(shibaFunction))
                         {
                             yield return extension;
                         }
-
                         break;
                 }
             }
