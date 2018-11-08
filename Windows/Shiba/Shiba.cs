@@ -1,12 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using JavaScriptEngineSwitcher.ChakraCore;
-using JavaScriptEngineSwitcher.Core;
-using JavaScriptEngineSwitcher.Jint;
+using ChakraCore.NET.API;
 using Shiba.Controls;
+using Shiba.Converter;
 
 namespace Shiba
 {
@@ -52,51 +50,6 @@ namespace Shiba
 
     public interface IConverterExecutor
     {
-        object Execute(string functionName, params object[] parameters);
-    }
-
-    public class DefaultConverterExecutor : IConverterExecutor
-    {
-        private readonly IJsEngine _engine;
-
-        public DefaultConverterExecutor()
-        {
-            var engineSwitcher = JsEngineSwitcher.Current;
-            engineSwitcher.EngineFactories
-                .AddJint()
-                .AddChakraCore();
-
-            
-            switch (Environment.OSVersion.Platform)
-            {
-                case PlatformID.Win32NT:
-                case PlatformID.Win32S:
-                case PlatformID.WinCE:
-                case PlatformID.Xbox:
-                case PlatformID.Win32Windows:
-                    engineSwitcher.DefaultEngineName = ChakraCoreJsEngine.EngineName;
-                    _engine = JsEngineSwitcher.Current.CreateEngine(ChakraCoreJsEngine.EngineName);
-                    break;
-                default:
-                    engineSwitcher.DefaultEngineName = JintJsEngine.EngineName;
-                    _engine = JsEngineSwitcher.Current.CreateEngine(JintJsEngine.EngineName);
-                    break;
-            }
-        }
-
-        public void Register(string converter)
-        {
-            _engine.Execute(converter);
-        }
-
-        public void Register(string name, Delegate @delegate)
-        {
-        }
-
-        public object Execute(string functionName, params object[] parameters)
-        {
-            var result = _engine.CallFunction(functionName, parameters);
-            return result;
-        }
+        object Execute(string functionName, Type targetType, params object[] parameters);
     }
 }

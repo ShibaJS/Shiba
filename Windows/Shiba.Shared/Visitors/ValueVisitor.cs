@@ -178,7 +178,7 @@ namespace Shiba.Visitors
             {
                 return new NativeBinding
                 {
-                    ConverterParameter = Singleton<ShibaFunctionExecutor>.Instance.Execute(function, null),
+                    ConverterParameter = Singleton<ShibaFunctionExecutor>.Instance.Execute(function, null, typeof(object)),
                     Converter = Singleton<RawDataConverter>.Instance
                 };
             }
@@ -213,7 +213,7 @@ namespace Shiba.Visitors
                     default:
                         return new NativeBinding
                         {
-                            ConverterParameter = Singleton<SingleBindingShibaFunctionExecutor>.Instance.Execute(function, extensionValue),
+                            ConverterParameter = Singleton<SingleBindingShibaFunctionExecutor>.Instance.Execute(function, extensionValue, typeof(object)),
                             Converter = Singleton<RawDataConverter>.Instance
                         };
                 }
@@ -234,14 +234,20 @@ namespace Shiba.Visitors
                 switch (item)
                 {
                     case ShibaExtension extension:
-                        yield return extension;
+                    {
+                        var executor = AbstractShiba.Instance.Configuration.ExtensionExecutors
+                            .FirstOrDefault(it => it.Name == extension.Type);
+                        if (!(executor is IMutableExtensionExecutor))
+                        {
+                            yield return extension;
+                        }
+                    }
                         break;
                     case ShibaFunction shibaFunction:
                         foreach (var extension in GetExtensions(shibaFunction))
                         {
                             yield return extension;
                         }
-
                         break;
                 }
             }
