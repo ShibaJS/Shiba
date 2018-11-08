@@ -123,7 +123,14 @@ private class ShibaFunctionVisitor(override val type: Class<*> = ShibaFunction::
     private fun getExtensions(function: ShibaFunction): List<ShibaExtension> {
         return function.parameter.map {
             when (it) {
-                is ShibaExtension -> arrayListOf(it)
+                is ShibaExtension -> {
+                    val executor = Shiba.configuration.extensionExecutors.firstOrNull { e -> e.name == it.type }
+                    if (executor !is IMutableExtensionExecutor) {
+                        arrayListOf(it)
+                    } else {
+                        null
+                    }
+                }
                 is ShibaFunction -> getExtensions(it)
                 else -> null
             }
