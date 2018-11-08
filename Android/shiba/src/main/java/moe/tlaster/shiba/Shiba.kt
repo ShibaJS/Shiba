@@ -1,13 +1,12 @@
 package moe.tlaster.shiba
 
 import android.util.ArrayMap
+import com.eclipsesource.v8.*
+import com.eclipsesource.v8.utils.V8ObjectUtils
 import moe.tlaster.shiba.commonProperty.GridProperty
 import moe.tlaster.shiba.commonProperty.ICommonProperty
 import moe.tlaster.shiba.extensionExecutor.BindingExecutor
 import moe.tlaster.shiba.mapper.*
-import org.mozilla.javascript.Context
-import org.mozilla.javascript.Function
-import org.mozilla.javascript.ScriptableObject
 
 internal typealias NativeView = android.view.View
 internal typealias ShibaView = moe.tlaster.shiba.View
@@ -23,24 +22,62 @@ interface IConverterExecutor {
     fun execute(name: String, parameters: Array<Any?>): Any?
 }
 
+interface ITypeConversion {
+    val objectType: Class<*>
+}
+
+interface IObjectConversion : ITypeConversion {
+    fun convert(value: Any): Map<String, Any?>
+}
+
+interface IArrayConversion : ITypeConversion {
+    fun convert(value: Any): List<Any?>
+}
 
 class DefaultConverterExecutor : IConverterExecutor {
-    private val context = Context.enter().apply {
-        optimizationLevel = -1
-        languageVersion = Context.VERSION_ES6
-    }
-    private val scope: ScriptableObject by lazy {
-        context.initStandardObjects()
+    private val runtime = V8.createV8Runtime()
+
+    private val conversions = ArrayList<ITypeConversion>()
+
+    public fun addTypeConversion(conversion: ITypeConversion) {
+        conversions.add(conversion)
     }
 
     public fun addConverter(converter: String) {
-        context.evaluateString(scope, converter, "JavaScript", 0, null)
+        runtime.executeScript(converter)
     }
 
     override fun execute(name: String, parameters: Array<Any?>): Any? {
-        val obj = scope.get(name, scope)
-        if (obj is Function) {
-            return obj.call(context, scope, scope, parameters)
+        val obj = runtime.getObject(name)
+        if (obj is V8Function) {
+            val v8Parameters = V8Array(runtime)
+            parameters.forEach {
+                when (it) {
+                    is Double -> v8Parameters.push(it)
+                    is Int -> v8Parameters.push(it)
+                    is String -> v8Parameters.push(it)
+                    else -> {
+                        when (it) {
+                            null -> v8Parameters.pushNull()
+                            is List<*> -> {
+                                v8Parameters.push(V8ObjectUtils.toV8Array(runtime, it))
+                            }
+                            else -> {
+                                val converter = conversions.firstOrNull { conversion -> conversion.objectType == it.javaClass }
+                                when (converter) {
+                                    is IObjectConversion -> v8Parameters.push(V8ObjectUtils.toV8Object(runtime, converter.convert(it)))
+                                    is IArrayConversion -> v8Parameters.push(V8ObjectUtils.toV8Array(runtime, converter.convert(it)))
+                                    else -> v8Parameters.pushUndefined()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            val result = obj.call(runtime, v8Parameters)
+            v8Parameters.release()
+            return result
         }
         return null
     }

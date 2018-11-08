@@ -1,10 +1,11 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Jint;
-using Jint.Native;
-using Jint.Native.Function;
+using JavaScriptEngineSwitcher.ChakraCore;
+using JavaScriptEngineSwitcher.Core;
+using JavaScriptEngineSwitcher.Jint;
 using Shiba.Controls;
 
 namespace Shiba
@@ -56,22 +57,31 @@ namespace Shiba
 
     public class DefaultConverterExecutor : IConverterExecutor
     {
-        private readonly Engine _engine;
+        private readonly IJsEngine _engine;
 
-        public DefaultConverterExecutor(Engine engine = null)
+        public DefaultConverterExecutor()
         {
-            _engine = engine ?? new Engine();
-        }
+            var engineSwitcher = JsEngineSwitcher.Current;
+            engineSwitcher.EngineFactories
+                .AddJint()
+                .AddChakraCore();
 
-        public object Execute(string functionName, params object[] parameters)
-        {
-            var jsConverter = _engine.GetValue(functionName);
-            if (jsConverter != null && jsConverter.Is<FunctionInstance>())
-                return jsConverter.Invoke(parameters.Select(it => JsValue.FromObject(_engine, it)).ToArray())
-                    .ToObject();
-
-
-            throw new EntryPointNotFoundException();
+            
+            switch (Environment.OSVersion.Platform)
+            {
+                case PlatformID.Win32NT:
+                case PlatformID.Win32S:
+                case PlatformID.WinCE:
+                case PlatformID.Xbox:
+                case PlatformID.Win32Windows:
+                    engineSwitcher.DefaultEngineName = ChakraCoreJsEngine.EngineName;
+                    _engine = JsEngineSwitcher.Current.CreateEngine(ChakraCoreJsEngine.EngineName);
+                    break;
+                default:
+                    engineSwitcher.DefaultEngineName = JintJsEngine.EngineName;
+                    _engine = JsEngineSwitcher.Current.CreateEngine(JintJsEngine.EngineName);
+                    break;
+            }
         }
 
         public void Register(string converter)
@@ -81,6 +91,12 @@ namespace Shiba
 
         public void Register(string name, Delegate @delegate)
         {
+        }
+
+        public object Execute(string functionName, params object[] parameters)
+        {
+            var result = _engine.CallFunction(functionName, parameters);
+            return result;
         }
     }
 }

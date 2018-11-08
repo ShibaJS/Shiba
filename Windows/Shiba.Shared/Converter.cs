@@ -21,8 +21,8 @@ namespace Shiba
     {
         public object Execute(ShibaFunction function, object dataContext)
         {
-            return AbstractShiba.Instance.Configuration.ConverterExecutor.Execute(function.Name,
-                function.Parameters.Select(it => GetParameterValue(it, dataContext)).ToArray());
+            return AbstractShiba.Instance.Configuration.ConverterExecutor.Execute(function.Name, 
+                function.Parameters.Select(it => GetParameterValue(it, dataContext)).ToArray());                            
         }
         
         private object GetParameterValue(object it, object dataContext)
