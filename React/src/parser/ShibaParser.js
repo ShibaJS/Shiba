@@ -5,7 +5,7 @@ var ShibaListener = require('./ShibaListener').ShibaListener;
 var grammarFileName = "Shiba.g4";
 
 var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
-    "\u0003\u0018i\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004\t",
+    "\u0003\u0019l\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004\t",
     "\u0004\u0004\u0005\t\u0005\u0004\u0006\t\u0006\u0004\u0007\t\u0007\u0004",
     "\b\t\b\u0004\t\t\t\u0004\n\t\n\u0003\u0002\u0003\u0002\u0003\u0002\u0003",
     "\u0002\u0005\u0002\u0019\n\u0002\u0003\u0002\u0005\u0002\u001c\n\u0002",
@@ -18,54 +18,56 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0003\u0006\u0003\u0006\u0003\u0007\u0003\u0007\u0003\u0007\u0003\u0007",
     "\u0005\u0007I\n\u0007\u0007\u0007K\n\u0007\f\u0007\u000e\u0007N\u000b",
     "\u0007\u0003\u0007\u0003\u0007\u0003\b\u0003\b\u0003\b\u0005\bU\n\b",
-    "\u0003\t\u0003\t\u0003\t\u0005\tZ\n\t\u0007\t\\\n\t\f\t\u000e\t_\u000b",
-    "\t\u0003\t\u0003\t\u0003\n\u0003\n\u0005\ne\n\n\u0003\n\u0003\n\u0003",
-    "\n\u0002\u0002\u000b\u0002\u0004\u0006\b\n\f\u000e\u0010\u0012\u0002",
-    "\u0003\u0003\u0002\u0004\b\u0002r\u0002\u0014\u0003\u0002\u0002\u0002",
-    "\u0004*\u0003\u0002\u0002\u0002\u00064\u0003\u0002\u0002\u0002\b6\u0003",
-    "\u0002\u0002\u0002\nB\u0003\u0002\u0002\u0002\fD\u0003\u0002\u0002\u0002",
-    "\u000eQ\u0003\u0002\u0002\u0002\u0010V\u0003\u0002\u0002\u0002\u0012",
-    "d\u0003\u0002\u0002\u0002\u0014(\u0005\u0012\n\u0002\u0015\u001f\u0007",
-    "\u0011\u0002\u0002\u0016\u0019\u0005\u0004\u0003\u0002\u0017\u0019\u0005",
-    "\u0002\u0002\u0002\u0018\u0016\u0003\u0002\u0002\u0002\u0018\u0017\u0003",
-    "\u0002\u0002\u0002\u0019\u001b\u0003\u0002\u0002\u0002\u001a\u001c\u0007",
-    "\n\u0002\u0002\u001b\u001a\u0003\u0002\u0002\u0002\u001b\u001c\u0003",
-    "\u0002\u0002\u0002\u001c\u001e\u0003\u0002\u0002\u0002\u001d\u0018\u0003",
-    "\u0002\u0002\u0002\u001e!\u0003\u0002\u0002\u0002\u001f\u001d\u0003",
-    "\u0002\u0002\u0002\u001f \u0003\u0002\u0002\u0002 \"\u0003\u0002\u0002",
-    "\u0002!\u001f\u0003\u0002\u0002\u0002\")\u0007\u0012\u0002\u0002#&\u0007",
-    "\t\u0002\u0002$\'\u0005\u0006\u0004\u0002%\'\u0005\u0004\u0003\u0002",
-    "&$\u0003\u0002\u0002\u0002&%\u0003\u0002\u0002\u0002\')\u0003\u0002",
-    "\u0002\u0002(\u0015\u0003\u0002\u0002\u0002(#\u0003\u0002\u0002\u0002",
-    "()\u0003\u0002\u0002\u0002)\u0003\u0003\u0002\u0002\u0002*+\u0005\u0012",
-    "\n\u0002+,\u0007\f\u0002\u0002,-\u0005\u0006\u0004\u0002-\u0005\u0003",
-    "\u0002\u0002\u0002.5\u0005\n\u0006\u0002/5\u0005\u0010\t\u000205\u0005",
-    "\b\u0005\u000215\u0005\f\u0007\u000225\u0005\u000e\b\u000235\u0005\u0002",
-    "\u0002\u00024.\u0003\u0002\u0002\u00024/\u0003\u0002\u0002\u000240\u0003",
-    "\u0002\u0002\u000241\u0003\u0002\u0002\u000242\u0003\u0002\u0002\u0002",
-    "43\u0003\u0002\u0002\u00025\u0007\u0003\u0002\u0002\u00026=\u0007\u000f",
-    "\u0002\u000279\u0005\u0004\u0003\u00028:\u0007\n\u0002\u000298\u0003",
-    "\u0002\u0002\u00029:\u0003\u0002\u0002\u0002:<\u0003\u0002\u0002\u0002",
-    ";7\u0003\u0002\u0002\u0002<?\u0003\u0002\u0002\u0002=;\u0003\u0002\u0002",
-    "\u0002=>\u0003\u0002\u0002\u0002>@\u0003\u0002\u0002\u0002?=\u0003\u0002",
-    "\u0002\u0002@A\u0007\u0010\u0002\u0002A\t\u0003\u0002\u0002\u0002BC",
-    "\t\u0002\u0002\u0002C\u000b\u0003\u0002\u0002\u0002DE\u0007\u0007\u0002",
-    "\u0002EL\u0007\r\u0002\u0002FH\u0005\u0006\u0004\u0002GI\u0007\n\u0002",
-    "\u0002HG\u0003\u0002\u0002\u0002HI\u0003\u0002\u0002\u0002IK\u0003\u0002",
-    "\u0002\u0002JF\u0003\u0002\u0002\u0002KN\u0003\u0002\u0002\u0002LJ\u0003",
-    "\u0002\u0002\u0002LM\u0003\u0002\u0002\u0002MO\u0003\u0002\u0002\u0002",
-    "NL\u0003\u0002\u0002\u0002OP\u0007\u000e\u0002\u0002P\r\u0003\u0002",
-    "\u0002\u0002QR\u0007\u0003\u0002\u0002RT\u0007\u0007\u0002\u0002SU\u0005",
-    "\n\u0006\u0002TS\u0003\u0002\u0002\u0002TU\u0003\u0002\u0002\u0002U",
-    "\u000f\u0003\u0002\u0002\u0002V]\u0007\u000f\u0002\u0002WY\u0005\u0006",
-    "\u0004\u0002XZ\u0007\n\u0002\u0002YX\u0003\u0002\u0002\u0002YZ\u0003",
-    "\u0002\u0002\u0002Z\\\u0003\u0002\u0002\u0002[W\u0003\u0002\u0002\u0002",
-    "\\_\u0003\u0002\u0002\u0002][\u0003\u0002\u0002\u0002]^\u0003\u0002",
-    "\u0002\u0002^`\u0003\u0002\u0002\u0002_]\u0003\u0002\u0002\u0002`a\u0007",
-    "\u0010\u0002\u0002a\u0011\u0003\u0002\u0002\u0002bc\u0007\u0007\u0002",
-    "\u0002ce\u0007\u000b\u0002\u0002db\u0003\u0002\u0002\u0002de\u0003\u0002",
-    "\u0002\u0002ef\u0003\u0002\u0002\u0002fg\u0007\u0007\u0002\u0002g\u0013",
-    "\u0003\u0002\u0002\u0002\u0010\u0018\u001b\u001f&(49=HLTY]d"].join("");
+    "\u0003\b\u0005\bX\n\b\u0003\t\u0003\t\u0003\t\u0005\t]\n\t\u0007\t_",
+    "\n\t\f\t\u000e\tb\u000b\t\u0003\t\u0003\t\u0003\n\u0003\n\u0005\nh\n",
+    "\n\u0003\n\u0003\n\u0003\n\u0002\u0002\u000b\u0002\u0004\u0006\b\n\f",
+    "\u000e\u0010\u0012\u0002\u0003\u0003\u0002\u0005\t\u0002v\u0002\u0014",
+    "\u0003\u0002\u0002\u0002\u0004*\u0003\u0002\u0002\u0002\u00064\u0003",
+    "\u0002\u0002\u0002\b6\u0003\u0002\u0002\u0002\nB\u0003\u0002\u0002\u0002",
+    "\fD\u0003\u0002\u0002\u0002\u000eQ\u0003\u0002\u0002\u0002\u0010Y\u0003",
+    "\u0002\u0002\u0002\u0012g\u0003\u0002\u0002\u0002\u0014(\u0005\u0012",
+    "\n\u0002\u0015\u001f\u0007\u0012\u0002\u0002\u0016\u0019\u0005\u0004",
+    "\u0003\u0002\u0017\u0019\u0005\u0002\u0002\u0002\u0018\u0016\u0003\u0002",
+    "\u0002\u0002\u0018\u0017\u0003\u0002\u0002\u0002\u0019\u001b\u0003\u0002",
+    "\u0002\u0002\u001a\u001c\u0007\u000b\u0002\u0002\u001b\u001a\u0003\u0002",
+    "\u0002\u0002\u001b\u001c\u0003\u0002\u0002\u0002\u001c\u001e\u0003\u0002",
+    "\u0002\u0002\u001d\u0018\u0003\u0002\u0002\u0002\u001e!\u0003\u0002",
+    "\u0002\u0002\u001f\u001d\u0003\u0002\u0002\u0002\u001f \u0003\u0002",
+    "\u0002\u0002 \"\u0003\u0002\u0002\u0002!\u001f\u0003\u0002\u0002\u0002",
+    "\")\u0007\u0013\u0002\u0002#&\u0007\n\u0002\u0002$\'\u0005\u0006\u0004",
+    "\u0002%\'\u0005\u0004\u0003\u0002&$\u0003\u0002\u0002\u0002&%\u0003",
+    "\u0002\u0002\u0002\')\u0003\u0002\u0002\u0002(\u0015\u0003\u0002\u0002",
+    "\u0002(#\u0003\u0002\u0002\u0002()\u0003\u0002\u0002\u0002)\u0003\u0003",
+    "\u0002\u0002\u0002*+\u0005\u0012\n\u0002+,\u0007\r\u0002\u0002,-\u0005",
+    "\u0006\u0004\u0002-\u0005\u0003\u0002\u0002\u0002.5\u0005\n\u0006\u0002",
+    "/5\u0005\u0010\t\u000205\u0005\b\u0005\u000215\u0005\f\u0007\u00022",
+    "5\u0005\u000e\b\u000235\u0005\u0002\u0002\u00024.\u0003\u0002\u0002",
+    "\u00024/\u0003\u0002\u0002\u000240\u0003\u0002\u0002\u000241\u0003\u0002",
+    "\u0002\u000242\u0003\u0002\u0002\u000243\u0003\u0002\u0002\u00025\u0007",
+    "\u0003\u0002\u0002\u00026=\u0007\u0010\u0002\u000279\u0005\u0004\u0003",
+    "\u00028:\u0007\u000b\u0002\u000298\u0003\u0002\u0002\u00029:\u0003\u0002",
+    "\u0002\u0002:<\u0003\u0002\u0002\u0002;7\u0003\u0002\u0002\u0002<?\u0003",
+    "\u0002\u0002\u0002=;\u0003\u0002\u0002\u0002=>\u0003\u0002\u0002\u0002",
+    ">@\u0003\u0002\u0002\u0002?=\u0003\u0002\u0002\u0002@A\u0007\u0011\u0002",
+    "\u0002A\t\u0003\u0002\u0002\u0002BC\t\u0002\u0002\u0002C\u000b\u0003",
+    "\u0002\u0002\u0002DE\u0007\b\u0002\u0002EL\u0007\u000e\u0002\u0002F",
+    "H\u0005\u0006\u0004\u0002GI\u0007\u000b\u0002\u0002HG\u0003\u0002\u0002",
+    "\u0002HI\u0003\u0002\u0002\u0002IK\u0003\u0002\u0002\u0002JF\u0003\u0002",
+    "\u0002\u0002KN\u0003\u0002\u0002\u0002LJ\u0003\u0002\u0002\u0002LM\u0003",
+    "\u0002\u0002\u0002MO\u0003\u0002\u0002\u0002NL\u0003\u0002\u0002\u0002",
+    "OP\u0007\u000f\u0002\u0002P\r\u0003\u0002\u0002\u0002QR\u0007\u0003",
+    "\u0002\u0002RT\u0007\b\u0002\u0002SU\u0005\n\u0006\u0002TS\u0003\u0002",
+    "\u0002\u0002TU\u0003\u0002\u0002\u0002UW\u0003\u0002\u0002\u0002VX\u0007",
+    "\u0004\u0002\u0002WV\u0003\u0002\u0002\u0002WX\u0003\u0002\u0002\u0002",
+    "X\u000f\u0003\u0002\u0002\u0002Y`\u0007\u0010\u0002\u0002Z\\\u0005\u0006",
+    "\u0004\u0002[]\u0007\u000b\u0002\u0002\\[\u0003\u0002\u0002\u0002\\",
+    "]\u0003\u0002\u0002\u0002]_\u0003\u0002\u0002\u0002^Z\u0003\u0002\u0002",
+    "\u0002_b\u0003\u0002\u0002\u0002`^\u0003\u0002\u0002\u0002`a\u0003\u0002",
+    "\u0002\u0002ac\u0003\u0002\u0002\u0002b`\u0003\u0002\u0002\u0002cd\u0007",
+    "\u0011\u0002\u0002d\u0011\u0003\u0002\u0002\u0002ef\u0007\b\u0002\u0002",
+    "fh\u0007\f\u0002\u0002ge\u0003\u0002\u0002\u0002gh\u0003\u0002\u0002",
+    "\u0002hi\u0003\u0002\u0002\u0002ij\u0007\b\u0002\u0002j\u0013\u0003",
+    "\u0002\u0002\u0002\u0011\u0018\u001b\u001f&(49=HLTW\\`g"].join("");
 
 
 var atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
@@ -74,15 +76,16 @@ var decisionsToDFA = atn.decisionToState.map( function(ds, index) { return new a
 
 var sharedContextCache = new antlr4.PredictionContextCache();
 
-var literalNames = [ null, "'$'", "'null'", null, null, null, null, "'->'", 
-                     "','", "':'", "'='", "'('", "')'", "'['", "']'", "'{'", 
-                     "'}'" ];
+var literalNames = [ null, "'$'", null, "'null'", null, null, null, null, 
+                     "'->'", "','", "':'", "'='", "'('", "')'", "'['", "']'", 
+                     "'{'", "'}'" ];
 
-var symbolicNames = [ null, null, "Null", "String", "Boolean", "Identifier", 
-                      "Number", "Arrow", "Comma", "Colon", "Assign", "LeftParen", 
-                      "RightParen", "LeftBracket", "RightBracket", "LeftBrace", 
-                      "RightBrace", "Hws", "Vws", "DocComment", "BlockComment", 
-                      "LineComment", "LineCommentExt" ];
+var symbolicNames = [ null, null, "Script", "Null", "String", "Boolean", 
+                      "Identifier", "Number", "Arrow", "Comma", "Colon", 
+                      "Assign", "LeftParen", "RightParen", "LeftBracket", 
+                      "RightBracket", "LeftBrace", "RightBrace", "Hws", 
+                      "Vws", "DocComment", "BlockComment", "LineComment", 
+                      "LineCommentExt" ];
 
 var ruleNames =  [ "view", "property", "value", "map", "basicValue", "functionCall", 
                    "shibaExtension", "array", "identifier" ];
@@ -107,27 +110,28 @@ Object.defineProperty(ShibaParser.prototype, "atn", {
 
 ShibaParser.EOF = antlr4.Token.EOF;
 ShibaParser.T__0 = 1;
-ShibaParser.Null = 2;
-ShibaParser.String = 3;
-ShibaParser.Boolean = 4;
-ShibaParser.Identifier = 5;
-ShibaParser.Number = 6;
-ShibaParser.Arrow = 7;
-ShibaParser.Comma = 8;
-ShibaParser.Colon = 9;
-ShibaParser.Assign = 10;
-ShibaParser.LeftParen = 11;
-ShibaParser.RightParen = 12;
-ShibaParser.LeftBracket = 13;
-ShibaParser.RightBracket = 14;
-ShibaParser.LeftBrace = 15;
-ShibaParser.RightBrace = 16;
-ShibaParser.Hws = 17;
-ShibaParser.Vws = 18;
-ShibaParser.DocComment = 19;
-ShibaParser.BlockComment = 20;
-ShibaParser.LineComment = 21;
-ShibaParser.LineCommentExt = 22;
+ShibaParser.Script = 2;
+ShibaParser.Null = 3;
+ShibaParser.String = 4;
+ShibaParser.Boolean = 5;
+ShibaParser.Identifier = 6;
+ShibaParser.Number = 7;
+ShibaParser.Arrow = 8;
+ShibaParser.Comma = 9;
+ShibaParser.Colon = 10;
+ShibaParser.Assign = 11;
+ShibaParser.LeftParen = 12;
+ShibaParser.RightParen = 13;
+ShibaParser.LeftBracket = 14;
+ShibaParser.RightBracket = 15;
+ShibaParser.LeftBrace = 16;
+ShibaParser.RightBrace = 17;
+ShibaParser.Hws = 18;
+ShibaParser.Vws = 19;
+ShibaParser.DocComment = 20;
+ShibaParser.BlockComment = 21;
+ShibaParser.LineComment = 22;
+ShibaParser.LineCommentExt = 23;
 
 ShibaParser.RULE_view = 0;
 ShibaParser.RULE_property = 1;
@@ -838,6 +842,10 @@ ShibaExtensionContext.prototype.basicValue = function() {
     return this.getTypedRuleContext(BasicValueContext,0);
 };
 
+ShibaExtensionContext.prototype.Script = function() {
+    return this.getToken(ShibaParser.Script, 0);
+};
+
 ShibaExtensionContext.prototype.enterRule = function(listener) {
     if(listener instanceof ShibaListener ) {
         listener.enterShibaExtension(this);
@@ -859,6 +867,7 @@ ShibaParser.prototype.shibaExtension = function() {
 
     var localctx = new ShibaExtensionContext(this, this._ctx, this.state);
     this.enterRule(localctx, 12, ShibaParser.RULE_shibaExtension);
+    var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 79;
@@ -873,6 +882,14 @@ ShibaParser.prototype.shibaExtension = function() {
             this.basicValue();
 
         }
+        this.state = 85;
+        this._errHandler.sync(this);
+        _la = this._input.LA(1);
+        if(_la===ShibaParser.Script) {
+            this.state = 84;
+            this.match(ShibaParser.Script);
+        }
+
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -958,27 +975,27 @@ ShibaParser.prototype.array = function() {
     var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 84;
+        this.state = 87;
         this.match(ShibaParser.LeftBracket);
-        this.state = 91;
+        this.state = 94;
         this._errHandler.sync(this);
         _la = this._input.LA(1);
         while((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << ShibaParser.T__0) | (1 << ShibaParser.Null) | (1 << ShibaParser.String) | (1 << ShibaParser.Boolean) | (1 << ShibaParser.Identifier) | (1 << ShibaParser.Number) | (1 << ShibaParser.LeftBracket))) !== 0)) {
-            this.state = 85;
+            this.state = 88;
             this.value();
-            this.state = 87;
+            this.state = 90;
             this._errHandler.sync(this);
             _la = this._input.LA(1);
             if(_la===ShibaParser.Comma) {
-                this.state = 86;
+                this.state = 89;
                 this.match(ShibaParser.Comma);
             }
 
-            this.state = 93;
+            this.state = 96;
             this._errHandler.sync(this);
             _la = this._input.LA(1);
         }
-        this.state = 94;
+        this.state = 97;
         this.match(ShibaParser.RightBracket);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
@@ -1049,17 +1066,17 @@ ShibaParser.prototype.identifier = function() {
     this.enterRule(localctx, 16, ShibaParser.RULE_identifier);
     try {
         this.enterOuterAlt(localctx, 1);
-        this.state = 98;
+        this.state = 101;
         this._errHandler.sync(this);
-        var la_ = this._interp.adaptivePredict(this._input,13,this._ctx);
+        var la_ = this._interp.adaptivePredict(this._input,14,this._ctx);
         if(la_===1) {
-            this.state = 96;
+            this.state = 99;
             this.match(ShibaParser.Identifier);
-            this.state = 97;
+            this.state = 100;
             this.match(ShibaParser.Colon);
 
         }
-        this.state = 100;
+        this.state = 103;
         this.match(ShibaParser.Identifier);
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {

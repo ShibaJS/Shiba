@@ -15,11 +15,11 @@ open class ShibaLexer: Lexer {
 	internal static let _sharedContextCache = PredictionContextCache()
 
 	public
-	static let T__0=1, Null=2, String=3, Boolean=4, Identifier=5, Number=6, 
-            Arrow=7, Comma=8, Colon=9, Assign=10, LeftParen=11, RightParen=12, 
-            LeftBracket=13, RightBracket=14, LeftBrace=15, RightBrace=16, 
-            Hws=17, Vws=18, DocComment=19, BlockComment=20, LineComment=21, 
-            LineCommentExt=22
+	static let T__0=1, Script=2, Null=3, String=4, Boolean=5, Identifier=6, 
+            Number=7, Arrow=8, Comma=9, Colon=10, Assign=11, LeftParen=12, 
+            RightParen=13, LeftBracket=14, RightBracket=15, LeftBrace=16, 
+            RightBrace=17, Hws=18, Vws=19, DocComment=20, BlockComment=21, 
+            LineComment=22, LineCommentExt=23
 
 	public
 	static let channelNames: [String] = [
@@ -33,19 +33,19 @@ open class ShibaLexer: Lexer {
 
 	public
 	static let ruleNames: [String] = [
-		"T__0", "Null", "String", "Boolean", "Identifier", "Number", "Arrow", 
-		"Comma", "Colon", "Assign", "LeftParen", "RightParen", "LeftBracket", 
+		"T__0", "Script", "Null", "String", "Boolean", "Identifier", "Number", 
+		"Arrow", "Comma", "Colon", "Assign", "LeftParen", "RightParen", "LeftBracket", 
 		"RightBracket", "LeftBrace", "RightBrace", "INT", "EXP", "Hws", "Vws", 
 		"DocComment", "BlockComment", "LineComment", "LineCommentExt"
 	]
 
 	private static let _LITERAL_NAMES: [String?] = [
-		nil, "'$'", "'null'", nil, nil, nil, nil, "'->'", "','", "':'", "'='", 
+		nil, "'$'", nil, "'null'", nil, nil, nil, nil, "'->'", "','", "':'", "'='", 
 		"'('", "')'", "'['", "']'", "'{'", "'}'"
 	]
 	private static let _SYMBOLIC_NAMES: [String?] = [
-		nil, nil, "Null", "String", "Boolean", "Identifier", "Number", "Arrow", 
-		"Comma", "Colon", "Assign", "LeftParen", "RightParen", "LeftBracket", 
+		nil, nil, "Script", "Null", "String", "Boolean", "Identifier", "Number", 
+		"Arrow", "Comma", "Colon", "Assign", "LeftParen", "RightParen", "LeftBracket", 
 		"RightBracket", "LeftBrace", "RightBrace", "Hws", "Vws", "DocComment", 
 		"BlockComment", "LineComment", "LineCommentExt"
 	]

@@ -187,9 +187,9 @@ data class ShibaMap(val properties: List<Property>) : Map<String, Any> {
     }
 }
 
-data class ShibaExtension(val type: String, val value: BasicValue?) {
+data class ShibaExtension(val type: String, val value: BasicValue?, val script: String?) {
     override fun toString(): String {
-        return if (value != null) "\$$type $value" else "\$$type"
+        return if (value != null) "\$$type $value $script" else "\$$type $script"
     }
 }
 

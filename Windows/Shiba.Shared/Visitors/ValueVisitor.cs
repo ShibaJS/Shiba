@@ -3,6 +3,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using Shiba.Controls;
 using Shiba.Internal;
 using ShibaView = Shiba.Controls.View;
@@ -155,13 +157,65 @@ namespace Shiba.Visitors
 
     internal sealed class ShibaExtensionVisitor : GenericVisitor<ShibaExtension, object>
     {
+        public ConcurrentDictionary<string, string> ScriptsCache { get; } = new ConcurrentDictionary<string, string>();
+
+        private string Hash(string input)
+        {
+            var hash = (new SHA1Managed()).ComputeHash(Encoding.UTF8.GetBytes(input));
+            return string.Join("", hash.Select(b => b.ToString("x2")).ToArray());
+        }
+
+
         protected override object Parse(ShibaExtension item, IShibaContext context)
         {
             var executor =
                 AbstractShiba.Instance.Configuration.ExtensionExecutors.FirstOrDefault(it => it.Name == item.Type);
             if (executor != null)
             {
-                return executor.ProvideValue(context, item);
+                var value = executor.ProvideValue(context, item);
+                if (string.IsNullOrEmpty(item.Script))
+                {
+                    return value;
+                }
+
+                var funcName = ScriptsCache.GetOrAdd(item.Script, script =>
+                {
+                    var hash = $"_{Hash(script)}";
+                    //TODO: function parameter name
+                    AbstractShiba.Instance.AddConverter($"function {hash}(it){{ {script.TrimStart('$').TrimStart('{').TrimEnd('}')} }}");
+                    return hash;
+                });
+                var func = new ShibaFunction(funcName) {Parameters = {item}};
+                if (value is NativeBinding binding)
+                {
+                    
+                    if (binding.Converter != null)
+                    {
+                        binding.ConverterParameter = new ShibaConverterParameter
+                        {
+                            InnerConverter = binding.Converter,
+                            InnerParameter = binding.ConverterParameter,
+                            Function = func
+                        };
+                    }
+                    else
+                    {
+                        binding.ConverterParameter = func;
+                    }
+                    binding.Converter = Singleton<SingleBindingFunctionConverter>.Instance;
+                    return binding;
+                }
+                else
+                {
+                    return new NativeBinding
+                    {
+                        ConverterParameter =
+                            Singleton<SingleBindingShibaFunctionExecutor>.Instance.Execute(func, item,
+                                typeof(object)),
+                        Converter = Singleton<RawDataConverter>.Instance
+                    };
+                }
+                
             }
 
             throw new NotImplementedException();
@@ -187,10 +241,7 @@ namespace Shiba.Visitors
             {
                 var extension = extensions.FirstOrDefault();
 
-                var extensionValue = extension != null
-                    ? AbstractShiba.Instance.Configuration.ExtensionExecutors
-                        .FirstOrDefault(it => it.Name == extension.Type)?.ProvideValue(context, extension)
-                    : null;
+                var extensionValue = GetValue(extension, context);
 
                 switch (extensionValue)
                 {

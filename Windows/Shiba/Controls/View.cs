@@ -44,14 +44,16 @@ namespace Shiba.Controls
 
     public sealed class ShibaExtension
     {
-        public ShibaExtension(string type, BasicValue value)
+        public ShibaExtension(string type, BasicValue value, string script)
         {
             Type = type;
             Value = value;
+            Script = script;
         }
 
         public string Type { get; }
         public BasicValue Value { get; }
+        public string Script { get; }
 
         public override string ToString()
         {

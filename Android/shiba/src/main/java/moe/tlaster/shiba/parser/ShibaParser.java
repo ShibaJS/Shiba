@@ -17,25 +17,25 @@ public class ShibaParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, Null=2, String=3, Boolean=4, Identifier=5, Number=6, Arrow=7, 
-		Comma=8, Colon=9, Assign=10, LeftParen=11, RightParen=12, LeftBracket=13, 
-		RightBracket=14, LeftBrace=15, RightBrace=16, Hws=17, Vws=18, DocComment=19, 
-		BlockComment=20, LineComment=21, LineCommentExt=22;
+		T__0=1, Script=2, Null=3, String=4, Boolean=5, Identifier=6, Number=7, 
+		Arrow=8, Comma=9, Colon=10, Assign=11, LeftParen=12, RightParen=13, LeftBracket=14, 
+		RightBracket=15, LeftBrace=16, RightBrace=17, Hws=18, Vws=19, DocComment=20, 
+		BlockComment=21, LineComment=22, LineCommentExt=23;
 	public static final int
 		RULE_view = 0, RULE_property = 1, RULE_value = 2, RULE_map = 3, RULE_basicValue = 4, 
 		RULE_functionCall = 5, RULE_shibaExtension = 6, RULE_array = 7, RULE_identifier = 8;
 	public static final String[] ruleNames = {
-		"view", "propertyPath", "value", "map", "basicValue", "functionCall", "shibaExtension",
+		"view", "property", "value", "map", "basicValue", "functionCall", "shibaExtension", 
 		"array", "identifier"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
-		null, "'$'", "'null'", null, null, null, null, "'->'", "','", "':'", "'='", 
-		"'('", "')'", "'['", "']'", "'{'", "'}'"
+		null, "'$'", null, "'null'", null, null, null, null, "'->'", "','", "':'", 
+		"'='", "'('", "')'", "'['", "']'", "'{'", "'}'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, null, "Null", "String", "Boolean", "Identifier", "Number", "Arrow", 
-		"Comma", "Colon", "Assign", "LeftParen", "RightParen", "LeftBracket", 
+		null, null, "Script", "Null", "String", "Boolean", "Identifier", "Number", 
+		"Arrow", "Comma", "Colon", "Assign", "LeftParen", "RightParen", "LeftBracket", 
 		"RightBracket", "LeftBrace", "RightBrace", "Hws", "Vws", "DocComment", 
 		"BlockComment", "LineComment", "LineCommentExt"
 	};
@@ -586,6 +586,7 @@ public class ShibaParser extends Parser {
 		public BasicValueContext basicValue() {
 			return getRuleContext(BasicValueContext.class,0);
 		}
+		public TerminalNode Script() { return getToken(ShibaParser.Script, 0); }
 		public ShibaExtensionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -603,6 +604,7 @@ public class ShibaParser extends Parser {
 	public final ShibaExtensionContext shibaExtension() throws RecognitionException {
 		ShibaExtensionContext _localctx = new ShibaExtensionContext(_ctx, getState());
 		enterRule(_localctx, 12, RULE_shibaExtension);
+		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -620,6 +622,16 @@ public class ShibaParser extends Parser {
 				}
 				break;
 			}
+			setState(85);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			if (_la==Script) {
+				{
+				setState(84);
+				match(Script);
+				}
+			}
+
 			}
 		}
 		catch (RecognitionException re) {
@@ -667,33 +679,33 @@ public class ShibaParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(84);
+			setState(87);
 			match(LeftBracket);
-			setState(91);
+			setState(94);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << Null) | (1L << String) | (1L << Boolean) | (1L << Identifier) | (1L << Number) | (1L << LeftBracket))) != 0)) {
 				{
 				{
-				setState(85);
+				setState(88);
 				value();
-				setState(87);
+				setState(90);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==Comma) {
 					{
-					setState(86);
+					setState(89);
 					match(Comma);
 					}
 				}
 
 				}
 				}
-				setState(93);
+				setState(96);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(94);
+			setState(97);
 			match(RightBracket);
 			}
 		}
@@ -734,19 +746,19 @@ public class ShibaParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(98);
+			setState(101);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,13,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,14,_ctx) ) {
 			case 1:
 				{
-				setState(96);
+				setState(99);
 				match(Identifier);
-				setState(97);
+				setState(100);
 				match(Colon);
 				}
 				break;
 			}
-			setState(100);
+			setState(103);
 			match(Identifier);
 			}
 		}
@@ -762,33 +774,34 @@ public class ShibaParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\30i\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\31l\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\3\2\3\2\3\2"+
 		"\3\2\5\2\31\n\2\3\2\5\2\34\n\2\7\2\36\n\2\f\2\16\2!\13\2\3\2\3\2\3\2\3"+
 		"\2\5\2\'\n\2\5\2)\n\2\3\3\3\3\3\3\3\3\3\4\3\4\3\4\3\4\3\4\3\4\5\4\65\n"+
 		"\4\3\5\3\5\3\5\5\5:\n\5\7\5<\n\5\f\5\16\5?\13\5\3\5\3\5\3\6\3\6\3\7\3"+
 		"\7\3\7\3\7\5\7I\n\7\7\7K\n\7\f\7\16\7N\13\7\3\7\3\7\3\b\3\b\3\b\5\bU\n"+
-		"\b\3\t\3\t\3\t\5\tZ\n\t\7\t\\\n\t\f\t\16\t_\13\t\3\t\3\t\3\n\3\n\5\ne"+
-		"\n\n\3\n\3\n\3\n\2\2\13\2\4\6\b\n\f\16\20\22\2\3\3\2\4\b\2r\2\24\3\2\2"+
-		"\2\4*\3\2\2\2\6\64\3\2\2\2\b\66\3\2\2\2\nB\3\2\2\2\fD\3\2\2\2\16Q\3\2"+
-		"\2\2\20V\3\2\2\2\22d\3\2\2\2\24(\5\22\n\2\25\37\7\21\2\2\26\31\5\4\3\2"+
-		"\27\31\5\2\2\2\30\26\3\2\2\2\30\27\3\2\2\2\31\33\3\2\2\2\32\34\7\n\2\2"+
-		"\33\32\3\2\2\2\33\34\3\2\2\2\34\36\3\2\2\2\35\30\3\2\2\2\36!\3\2\2\2\37"+
-		"\35\3\2\2\2\37 \3\2\2\2 \"\3\2\2\2!\37\3\2\2\2\")\7\22\2\2#&\7\t\2\2$"+
-		"\'\5\6\4\2%\'\5\4\3\2&$\3\2\2\2&%\3\2\2\2\')\3\2\2\2(\25\3\2\2\2(#\3\2"+
-		"\2\2()\3\2\2\2)\3\3\2\2\2*+\5\22\n\2+,\7\f\2\2,-\5\6\4\2-\5\3\2\2\2.\65"+
-		"\5\n\6\2/\65\5\20\t\2\60\65\5\b\5\2\61\65\5\f\7\2\62\65\5\16\b\2\63\65"+
-		"\5\2\2\2\64.\3\2\2\2\64/\3\2\2\2\64\60\3\2\2\2\64\61\3\2\2\2\64\62\3\2"+
-		"\2\2\64\63\3\2\2\2\65\7\3\2\2\2\66=\7\17\2\2\679\5\4\3\28:\7\n\2\298\3"+
-		"\2\2\29:\3\2\2\2:<\3\2\2\2;\67\3\2\2\2<?\3\2\2\2=;\3\2\2\2=>\3\2\2\2>"+
-		"@\3\2\2\2?=\3\2\2\2@A\7\20\2\2A\t\3\2\2\2BC\t\2\2\2C\13\3\2\2\2DE\7\7"+
-		"\2\2EL\7\r\2\2FH\5\6\4\2GI\7\n\2\2HG\3\2\2\2HI\3\2\2\2IK\3\2\2\2JF\3\2"+
-		"\2\2KN\3\2\2\2LJ\3\2\2\2LM\3\2\2\2MO\3\2\2\2NL\3\2\2\2OP\7\16\2\2P\r\3"+
-		"\2\2\2QR\7\3\2\2RT\7\7\2\2SU\5\n\6\2TS\3\2\2\2TU\3\2\2\2U\17\3\2\2\2V"+
-		"]\7\17\2\2WY\5\6\4\2XZ\7\n\2\2YX\3\2\2\2YZ\3\2\2\2Z\\\3\2\2\2[W\3\2\2"+
-		"\2\\_\3\2\2\2][\3\2\2\2]^\3\2\2\2^`\3\2\2\2_]\3\2\2\2`a\7\20\2\2a\21\3"+
-		"\2\2\2bc\7\7\2\2ce\7\13\2\2db\3\2\2\2de\3\2\2\2ef\3\2\2\2fg\7\7\2\2g\23"+
-		"\3\2\2\2\20\30\33\37&(\649=HLTY]d";
+		"\b\3\b\5\bX\n\b\3\t\3\t\3\t\5\t]\n\t\7\t_\n\t\f\t\16\tb\13\t\3\t\3\t\3"+
+		"\n\3\n\5\nh\n\n\3\n\3\n\3\n\2\2\13\2\4\6\b\n\f\16\20\22\2\3\3\2\5\t\2"+
+		"v\2\24\3\2\2\2\4*\3\2\2\2\6\64\3\2\2\2\b\66\3\2\2\2\nB\3\2\2\2\fD\3\2"+
+		"\2\2\16Q\3\2\2\2\20Y\3\2\2\2\22g\3\2\2\2\24(\5\22\n\2\25\37\7\22\2\2\26"+
+		"\31\5\4\3\2\27\31\5\2\2\2\30\26\3\2\2\2\30\27\3\2\2\2\31\33\3\2\2\2\32"+
+		"\34\7\13\2\2\33\32\3\2\2\2\33\34\3\2\2\2\34\36\3\2\2\2\35\30\3\2\2\2\36"+
+		"!\3\2\2\2\37\35\3\2\2\2\37 \3\2\2\2 \"\3\2\2\2!\37\3\2\2\2\")\7\23\2\2"+
+		"#&\7\n\2\2$\'\5\6\4\2%\'\5\4\3\2&$\3\2\2\2&%\3\2\2\2\')\3\2\2\2(\25\3"+
+		"\2\2\2(#\3\2\2\2()\3\2\2\2)\3\3\2\2\2*+\5\22\n\2+,\7\r\2\2,-\5\6\4\2-"+
+		"\5\3\2\2\2.\65\5\n\6\2/\65\5\20\t\2\60\65\5\b\5\2\61\65\5\f\7\2\62\65"+
+		"\5\16\b\2\63\65\5\2\2\2\64.\3\2\2\2\64/\3\2\2\2\64\60\3\2\2\2\64\61\3"+
+		"\2\2\2\64\62\3\2\2\2\64\63\3\2\2\2\65\7\3\2\2\2\66=\7\20\2\2\679\5\4\3"+
+		"\28:\7\13\2\298\3\2\2\29:\3\2\2\2:<\3\2\2\2;\67\3\2\2\2<?\3\2\2\2=;\3"+
+		"\2\2\2=>\3\2\2\2>@\3\2\2\2?=\3\2\2\2@A\7\21\2\2A\t\3\2\2\2BC\t\2\2\2C"+
+		"\13\3\2\2\2DE\7\b\2\2EL\7\16\2\2FH\5\6\4\2GI\7\13\2\2HG\3\2\2\2HI\3\2"+
+		"\2\2IK\3\2\2\2JF\3\2\2\2KN\3\2\2\2LJ\3\2\2\2LM\3\2\2\2MO\3\2\2\2NL\3\2"+
+		"\2\2OP\7\17\2\2P\r\3\2\2\2QR\7\3\2\2RT\7\b\2\2SU\5\n\6\2TS\3\2\2\2TU\3"+
+		"\2\2\2UW\3\2\2\2VX\7\4\2\2WV\3\2\2\2WX\3\2\2\2X\17\3\2\2\2Y`\7\20\2\2"+
+		"Z\\\5\6\4\2[]\7\13\2\2\\[\3\2\2\2\\]\3\2\2\2]_\3\2\2\2^Z\3\2\2\2_b\3\2"+
+		"\2\2`^\3\2\2\2`a\3\2\2\2ac\3\2\2\2b`\3\2\2\2cd\7\21\2\2d\21\3\2\2\2ef"+
+		"\7\b\2\2fh\7\f\2\2ge\3\2\2\2gh\3\2\2\2hi\3\2\2\2ij\7\b\2\2j\23\3\2\2\2"+
+		"\21\30\33\37&(\649=HLTW\\`g";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
