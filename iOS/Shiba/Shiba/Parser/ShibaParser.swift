@@ -16,11 +16,12 @@ open class ShibaParser: Parser {
 
 	public
 	enum Tokens: Int {
-		case EOF = -1, T__0 = 1, Null = 2, String = 3, Boolean = 4, Identifier = 5, 
-                 Number = 6, Arrow = 7, Comma = 8, Colon = 9, Assign = 10, 
-                 LeftParen = 11, RightParen = 12, LeftBracket = 13, RightBracket = 14, 
-                 LeftBrace = 15, RightBrace = 16, Hws = 17, Vws = 18, DocComment = 19, 
-                 BlockComment = 20, LineComment = 21, LineCommentExt = 22
+		case EOF = -1, T__0 = 1, Script = 2, Null = 3, String = 4, Boolean = 5, 
+                 Identifier = 6, Number = 7, Arrow = 8, Comma = 9, Colon = 10, 
+                 Assign = 11, LeftParen = 12, RightParen = 13, LeftBracket = 14, 
+                 RightBracket = 15, LeftBrace = 16, RightBrace = 17, Hws = 18, 
+                 Vws = 19, DocComment = 20, BlockComment = 21, LineComment = 22, 
+                 LineCommentExt = 23
 	}
 
 	public
@@ -35,12 +36,12 @@ open class ShibaParser: Parser {
 	]
 
 	private static let _LITERAL_NAMES: [String?] = [
-		nil, "'$'", "'null'", nil, nil, nil, nil, "'->'", "','", "':'", "'='", 
+		nil, "'$'", nil, "'null'", nil, nil, nil, nil, "'->'", "','", "':'", "'='", 
 		"'('", "')'", "'['", "']'", "'{'", "'}'"
 	]
 	private static let _SYMBOLIC_NAMES: [String?] = [
-		nil, nil, "Null", "String", "Boolean", "Identifier", "Number", "Arrow", 
-		"Comma", "Colon", "Assign", "LeftParen", "RightParen", "LeftBracket", 
+		nil, nil, "Script", "Null", "String", "Boolean", "Identifier", "Number", 
+		"Arrow", "Comma", "Colon", "Assign", "LeftParen", "RightParen", "LeftBracket", 
 		"RightBracket", "LeftBrace", "RightBrace", "Hws", "Vws", "DocComment", 
 		"BlockComment", "LineComment", "LineCommentExt"
 	]
@@ -686,6 +687,10 @@ open class ShibaParser: Parser {
 			func basicValue() -> BasicValueContext? {
 				return getRuleContext(BasicValueContext.self, 0)
 			}
+			open
+			func Script() -> TerminalNode? {
+				return getToken(ShibaParser.Tokens.Script.rawValue, 0)
+			}
 		override open
 		func getRuleIndex() -> Int {
 			return ShibaParser.RULE_shibaExtension
@@ -707,6 +712,7 @@ open class ShibaParser: Parser {
 	 open func shibaExtension() throws -> ShibaExtensionContext {
 		var _localctx: ShibaExtensionContext = ShibaExtensionContext(_ctx, getState())
 		try enterRule(_localctx, 12, ShibaParser.RULE_shibaExtension)
+		var _la: Int = 0
 		defer {
 	    		try! exitRule()
 	    }
@@ -726,6 +732,19 @@ open class ShibaParser: Parser {
 		 		break
 		 	default: break
 		 	}
+		 	setState(85)
+		 	try _errHandler.sync(self)
+		 	_la = try _input.LA(1)
+		 	if (//closure
+		 	 { () -> Bool in
+		 	      let testSet: Bool = _la == ShibaParser.Tokens.Script.rawValue
+		 	      return testSet
+		 	 }()) {
+		 		setState(84)
+		 		try match(ShibaParser.Tokens.Script.rawValue)
+
+		 	}
+
 
 		}
 		catch ANTLRException.recognition(let re) {
@@ -789,9 +808,9 @@ open class ShibaParser: Parser {
 	    }
 		do {
 		 	try enterOuterAlt(_localctx, 1)
-		 	setState(84)
+		 	setState(87)
 		 	try match(ShibaParser.Tokens.LeftBracket.rawValue)
-		 	setState(91)
+		 	setState(94)
 		 	try _errHandler.sync(self)
 		 	_la = try _input.LA(1)
 		 	while (//closure
@@ -802,9 +821,9 @@ open class ShibaParser: Parser {
 		 	}()
 		 	      return testSet
 		 	 }()) {
-		 		setState(85)
+		 		setState(88)
 		 		try value()
-		 		setState(87)
+		 		setState(90)
 		 		try _errHandler.sync(self)
 		 		_la = try _input.LA(1)
 		 		if (//closure
@@ -812,18 +831,18 @@ open class ShibaParser: Parser {
 		 		      let testSet: Bool = _la == ShibaParser.Tokens.Comma.rawValue
 		 		      return testSet
 		 		 }()) {
-		 			setState(86)
+		 			setState(89)
 		 			try match(ShibaParser.Tokens.Comma.rawValue)
 
 		 		}
 
 
 
-		 		setState(93)
+		 		setState(96)
 		 		try _errHandler.sync(self)
 		 		_la = try _input.LA(1)
 		 	}
-		 	setState(94)
+		 	setState(97)
 		 	try match(ShibaParser.Tokens.RightBracket.rawValue)
 
 		}
@@ -875,19 +894,19 @@ open class ShibaParser: Parser {
 	    }
 		do {
 		 	try enterOuterAlt(_localctx, 1)
-		 	setState(98)
+		 	setState(101)
 		 	try _errHandler.sync(self)
-		 	switch (try getInterpreter().adaptivePredict(_input,13,_ctx)) {
+		 	switch (try getInterpreter().adaptivePredict(_input,14,_ctx)) {
 		 	case 1:
-		 		setState(96)
+		 		setState(99)
 		 		try match(ShibaParser.Tokens.Identifier.rawValue)
-		 		setState(97)
+		 		setState(100)
 		 		try match(ShibaParser.Tokens.Colon.rawValue)
 
 		 		break
 		 	default: break
 		 	}
-		 	setState(100)
+		 	setState(103)
 		 	try match(ShibaParser.Tokens.Identifier.rawValue)
 
 		}

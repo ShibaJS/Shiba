@@ -6,7 +6,8 @@ view:
 		| Arrow (value | property)
 	)?;
 
-property: identifier Assign value;
+property: 
+    identifier Assign value;
 
 value:
 	basicValue
@@ -22,11 +23,14 @@ basicValue: String | Number | Boolean | Null | Identifier;
 
 functionCall: Identifier LeftParen (value Comma?)* RightParen;
 
-shibaExtension: '$' Identifier basicValue?;
+shibaExtension: '$' Identifier basicValue? Script?;
 
 array: LeftBracket (value Comma?)* RightBracket;
 
 identifier: (Identifier Colon)? Identifier;
+
+Script: '${' .*? '}';
+
 
 Null: 'null';
 String: '"' (~'"')* '"';
