@@ -28,6 +28,7 @@ namespace Shiba.Converter
         
         private void InitConversion()
         {
+            AddConversion(new ObjectConversion());
             AddConversion(JavaScriptValueType.String, JavaScriptValue.FromString, it => it.ToString());
             AddConversion(JavaScriptValueType.Number, JavaScriptValue.FromDouble, it => it.ToDouble());
             AddConversion(JavaScriptValueType.Number, JavaScriptValue.FromInt32, it => it.ToInt32());
@@ -35,7 +36,6 @@ namespace Shiba.Converter
             AddConversion(JavaScriptValueType.Number, it => JavaScriptValue.FromDouble(it), it => Convert.ToSingle(it.ToDouble()));
             AddConversion(JavaScriptValueType.Number, it => JavaScriptValue.FromDouble(Convert.ToDouble(it)), it => Convert.ToDecimal(it.ToDouble()));
             AddConversion(new JTokenConversion());
-            AddConversion(new ObjectConversion());
         }
         
         public DefaultConverterExecutor(ChakraContext context = null)
