@@ -27,14 +27,35 @@ import moe.tlaster.shiba.INotifyPropertyChanged
 
 class MainActivity : AppCompatActivity() {
 
+    val dataContext = WithListModel()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
 //        host.load("list { itemLayout = text -> \$bind items = \$bind androidList }", WithListModel())
 
-        host.load("list { itemLayout = stack { input -> \$bind text text -> awesome(\$bind text) } items = \$bind list }", WithListModel())
+        val layout = "text -> awesome(\$bind androidText \${ if (it === null) return null; return it + \"  +1!\" }) "
+        host.load(layout, dataContext)
+        input.setText(layout)
+        input.addTextChangedListener(object : TextWatcher{
+            override fun afterTextChanged(s: Editable?) {
+                try {
+                    host.load(s.toString(), dataContext)
+                } catch (e: Exception) {
 
+                } catch (e: Error) {
+
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+        })
 //        list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 //        list.adapter = Adapter(this)
 //        host.load("stack { text { text = \$bind text } input { text = \$bind text} }", Model())

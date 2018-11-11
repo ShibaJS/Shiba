@@ -1,7 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Controls;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 // https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x804 上介绍了“空白页”项模板
 
@@ -46,6 +49,9 @@ namespace Shiba.UWP.Sample
     {
         public Model ViewModel { get; set; } = new Model();
 
+        public JToken Json { get; set; } =
+            JsonConvert.DeserializeObject<JToken>("{\"hello\": {\"world\": \"hello world!\"}}");
+
         public MainPage()
         {
             InitializeComponent();
@@ -59,5 +65,17 @@ namespace Shiba.UWP.Sample
 
         public string Layout { get; set; } =
             "stack { text { text=[WPF: $bind Text, UWP:$bind UWPText] } input { text=[WPF: $bind Text, UWP:$bind UWPText] } }";
+
+        private void TextBox_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            try
+            {
+                host.Layout = text.Text;
+            }
+            catch (Exception ex)
+            {
+                
+            }
+        }
     }
 }

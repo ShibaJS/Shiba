@@ -9,16 +9,23 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
-        <shiba:ShibaHost>
-            <shiba:ShibaHost.Layout>
-                list {
-                itemLayout = stack {
-                        
-                text -> awesome($bind)
-                }
-                items = [ "text1", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2", "text2" ]
-                }
-            </shiba:ShibaHost.Layout>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <shiba:ShibaHost Name="host" DataContext="{x:Bind Json}">
+            text -> $bind ${
+                if (it === null) return null;
+                return it.hello.world
+            }
         </shiba:ShibaHost>
+        <TextBox Grid.Row="1" Name="text" TextChanged="TextBox_OnTextChanged" AcceptsReturn="True">
+            <TextBox.Text>
+                text -> $bind ${
+                if (it === null) return null;
+                return it.hello.world
+                }
+            </TextBox.Text>
+        </TextBox>
     </Grid>
 </Page>
