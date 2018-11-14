@@ -29,7 +29,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shiba.Forms.Sample.iOS", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shiba.Forms.Sample.UWP", "Sample\Forms\Shiba.Forms.Sample.UWP\Shiba.Forms.Sample.UWP.csproj", "{13E53C9A-DAE6-400A-8AAC-4983A7929476}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shiba.Forms.Sample", "Sample\Forms\Shiba.Forms.Sample\Shiba.Forms.Sample.csproj", "{1AD06004-FBE9-40BB-B74F-C52FE16AF179}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shiba.Forms.Sample", "Sample\Forms\Shiba.Forms.Sample\Shiba.Forms.Sample.csproj", "{1AD06004-FBE9-40BB-B74F-C52FE16AF179}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
