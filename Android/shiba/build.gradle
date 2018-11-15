@@ -40,7 +40,7 @@ dependencies {
     implementation 'org.antlr:antlr4:4.7.1'
     // use ANTLR version 4
     implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'com.eclipsesource.j2v8:j2v8_android:+@aar'
+    implementation 'com.github.LiquidPlayer:LiquidCore:0.5.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
