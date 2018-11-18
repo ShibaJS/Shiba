@@ -1,8 +1,11 @@
 package moe.tlaster.shiba
 
+import moe.tlaster.shiba.type.ShibaExtension
+import moe.tlaster.shiba.type.ShibaFunction
+
 open class ShibaFunctionExecutor {
     fun execute(function: ShibaFunction, dataContext: Any?) : Any? {
-        return Shiba.configuration.converterExecutor.execute(function.name, function.parameter.map { getParameterValue(it, dataContext) }.toTypedArray())
+        return Shiba.configuration.scriptRuntime.execute(function.name, function.parameter.map { getParameterValue(it, dataContext) }.toTypedArray())
     }
 
     private fun getParameterValue(parameter: Any, dataContext: Any?) : Any? {

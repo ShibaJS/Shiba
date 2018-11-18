@@ -2,7 +2,7 @@
 using ChakraCore.NET.API;
 using Newtonsoft.Json.Linq;
 
-namespace Shiba.Converter
+namespace Shiba.Scripting
 {
     internal class JTokenConversion : ITypeConversion
     {

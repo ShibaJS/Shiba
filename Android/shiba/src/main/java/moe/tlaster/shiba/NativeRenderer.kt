@@ -1,8 +1,9 @@
 package moe.tlaster.shiba
 
 import android.content.Context
-import android.util.ArrayMap
 import android.view.View
+import moe.tlaster.shiba.common.Singleton
+import moe.tlaster.shiba.dataBinding.ShibaBinding
 import moe.tlaster.shiba.parser.ShibaParserWrapper
 import moe.tlaster.shiba.visitors.ShibaValueVisitor
 
@@ -17,7 +18,7 @@ internal object NativeRenderer {
         return render(viewTree, shibaContext)
     }
 
-    fun render(view: moe.tlaster.shiba.View?, shibaContext: IShibaContext): NativeView {
+    fun render(view: moe.tlaster.shiba.type.View?, shibaContext: IShibaContext): NativeView {
         if (view != null) {
             return ShibaValueVisitor.getValue(view, shibaContext) as NativeView
         }

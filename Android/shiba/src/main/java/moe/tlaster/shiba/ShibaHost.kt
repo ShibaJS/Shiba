@@ -2,11 +2,10 @@ package moe.tlaster.shiba
 
 import android.content.Context
 import androidx.constraintlayout.widget.ConstraintLayout
-import android.util.ArrayMap
 import android.util.AttributeSet
-import android.widget.FrameLayout
 import android.view.View
 import android.view.ViewGroup
+import moe.tlaster.shiba.dataBinding.ShibaBinding
 
 fun <T : View> View.findName(name: String) : T? {
     return findView { it ->
@@ -49,7 +48,7 @@ class ShibaHost : ConstraintLayout, IShibaContext, INotifyPropertyChanged {
         }
 
 
-    public fun load(view: moe.tlaster.shiba.View?, dataContext: Any?) {
+    public fun load(view: moe.tlaster.shiba.type.View?, dataContext: Any?) {
         if (view != null) {
             removeAllViews()
             addView(NativeRenderer.render(view, this))

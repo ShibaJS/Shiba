@@ -1,6 +1,9 @@
-package moe.tlaster.shiba
+package moe.tlaster.shiba.dataBinding
 
 import android.util.ArrayMap
+import moe.tlaster.shiba.Binding
+import moe.tlaster.shiba.INotifyPropertyChanged
+import moe.tlaster.shiba.NativeView
 import moe.tlaster.shiba.converters.ShibaConverter
 import java.lang.reflect.Method
 

@@ -2,12 +2,15 @@ package moe.tlaster.shiba.visitors
 
 import android.view.ViewGroup
 import moe.tlaster.shiba.*
+import moe.tlaster.shiba.common.Singleton
 import moe.tlaster.shiba.common.sha1
 import moe.tlaster.shiba.converters.RawConverter
 import moe.tlaster.shiba.converters.ShibaConverterParameter
 import moe.tlaster.shiba.converters.SingleBindingFunctionConverter
+import moe.tlaster.shiba.dataBinding.ShibaBinding
+import moe.tlaster.shiba.extensionExecutor.IMutableExtensionExecutor
+import moe.tlaster.shiba.type.*
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentMap
 
 private interface IValueVisitor {
     val type: Class<*>

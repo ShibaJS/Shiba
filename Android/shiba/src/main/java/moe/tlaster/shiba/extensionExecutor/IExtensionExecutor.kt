@@ -1,4 +1,7 @@
-package moe.tlaster.shiba
+package moe.tlaster.shiba.extensionExecutor
+
+import moe.tlaster.shiba.IShibaContext
+import moe.tlaster.shiba.type.ShibaExtension
 
 interface IExtensionExecutor {
     val name: String

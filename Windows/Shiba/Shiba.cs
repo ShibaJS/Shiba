@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using ChakraCore.NET.API;
 using Shiba.Controls;
-using Shiba.Converter;
+using Shiba.Scripting;
 
 namespace Shiba
 {
@@ -24,13 +24,13 @@ namespace Shiba
 
         public void AddConverter(string converter)
         {
-            if (Configuration?.ConverterExecutor is DefaultConverterExecutor executor) executor.Register(converter);
+            Configuration.ScriptRuntime.Execute(converter);
         }
     }
 
     public class ShibaConfiguration
     {
-        public IConverterExecutor ConverterExecutor { get; set; } = new DefaultConverterExecutor();
+        public IScriptRuntime ScriptRuntime { get; set; } = new DefaultScriptRuntime();
         public string PlatformType { get; set; } = "Windows";
 
         public List<IExtensionExecutor> ExtensionExecutors { get; } =
@@ -46,10 +46,5 @@ namespace Shiba
                 .SelectMany(it => it.ExportedTypes)
                 .Where(it => it.IsClass && !it.IsAbstract && typeof(ICommonProperty).IsAssignableFrom(it))
                 .Select(it => Activator.CreateInstance(it) as ICommonProperty).ToList();
-    }
-
-    public interface IConverterExecutor
-    {
-        object Execute(string functionName, Type targetType, params object[] parameters);
     }
 }

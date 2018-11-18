@@ -1,10 +1,11 @@
 package moe.tlaster.shiba.mapper
 
 import android.content.Context
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import moe.tlaster.shiba.*
+import moe.tlaster.shiba.type.CollectionChangedEventArg
+import moe.tlaster.shiba.type.ShibaArray
+import moe.tlaster.shiba.type.View
 
 class ListMapper : ViewMapper<androidx.recyclerview.widget.RecyclerView>() {
     override fun getViewLayoutParams(): ViewGroup.LayoutParams {

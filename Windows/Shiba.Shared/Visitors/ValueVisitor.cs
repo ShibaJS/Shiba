@@ -210,8 +210,7 @@ namespace Shiba.Visitors
                     return new NativeBinding
                     {
                         ConverterParameter =
-                            Singleton<SingleBindingShibaFunctionExecutor>.Instance.Execute(func, item,
-                                typeof(object)),
+                            Singleton<SingleBindingShibaFunctionExecutor>.Instance.Execute(func, item),
                         Converter = Singleton<RawDataConverter>.Instance
                     };
                 }
@@ -232,7 +231,7 @@ namespace Shiba.Visitors
             {
                 return new NativeBinding
                 {
-                    ConverterParameter = Singleton<ShibaFunctionExecutor>.Instance.Execute(function, null, typeof(object)),
+                    ConverterParameter = Singleton<ShibaFunctionExecutor>.Instance.Execute(function, null),
                     Converter = Singleton<RawDataConverter>.Instance
                 };
             }
@@ -264,7 +263,7 @@ namespace Shiba.Visitors
                     default:
                         return new NativeBinding
                         {
-                            ConverterParameter = Singleton<SingleBindingShibaFunctionExecutor>.Instance.Execute(function, extensionValue, typeof(object)),
+                            ConverterParameter = Singleton<SingleBindingShibaFunctionExecutor>.Instance.Execute(function, extensionValue),
                             Converter = Singleton<RawDataConverter>.Instance
                         };
                 }
