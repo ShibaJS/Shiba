@@ -4,5 +4,6 @@ namespace Shiba.Scripting
     {
         object Execute(string functionName, params object[] parameters);
         object Execute(string script);
+        void AddObject(string name, object value);
     }
 }

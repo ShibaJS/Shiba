@@ -1,6 +1,7 @@
 package moe.tlaster.shiba
 
 import android.app.Application
+import android.content.Context
 import android.util.ArrayMap
 import moe.tlaster.shiba.commonProperty.GridProperty
 import moe.tlaster.shiba.commonProperty.ICommonProperty
@@ -25,7 +26,7 @@ object Shiba {
     val viewMapping = ArrayMap<String, IViewMapper<*>>()
     val configuration = ShibaConfiguration()
 
-    public fun init(application: Application) {
+    public fun init(application: Context) {
         addRenderer("stack", StackMapper())
         addRenderer("text", TextMapper())
         addRenderer("input", InputMapper())

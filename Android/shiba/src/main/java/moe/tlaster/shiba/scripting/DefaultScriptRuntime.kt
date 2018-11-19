@@ -44,7 +44,7 @@ class DefaultScriptRuntime : IScriptRuntime {
 
 }
 
-private fun JSValue.toNative(): Any? {
+fun JSValue.toNative(): Any? {
     return when {
         isString -> toString()
         isBoolean -> toBoolean()

@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using ChakraCore.NET;
 using ChakraCore.NET.API;
 
 namespace Shiba.Scripting
 {
-    public class DefaultScriptRuntime : IScriptRuntime
+    public class DefaultScriptRuntime : IScriptRuntime, IDisposable
     {
         private readonly ChakraContext _context;
 
@@ -34,26 +35,6 @@ namespace Shiba.Scripting
                     var result = func.CallFunction(param);
 
                     return ToNative(result);
-
-                    //ITypeConversion resultConverter = null;
-
-                    //foreach (var item in _conversions)
-                    //{
-                    //    if (item.JsType.Contains(result.ValueType))
-                    //    {
-                    //        if (item.ObjectType == targetType)
-                    //        {
-                    //            resultConverter = item;
-                    //            break;
-                    //        }
-
-                    //        if (targetType.IsAssignableFrom(item.ObjectType))
-                    //        {
-                    //            resultConverter = item;
-                    //        }
-                    //    }
-                    //}
-                    //return resultConverter?.FromJsValue(result);
                 }
 
                 return null;
@@ -64,9 +45,75 @@ namespace Shiba.Scripting
         {
             return _context.ServiceNode.WithContext(() =>
             {
+                var storage =
+                    _context.GlobalObject.ReferenceValue.GetProperty(JavaScriptPropertyId.FromString("storage"));
+                var save = storage.GetProperty(JavaScriptPropertyId.FromString("save"));
                 var debugService = _context.ServiceNode.GetService<IRuntimeDebuggingService>();
                 var result = JavaScriptContext.RunScript(script, debugService.GetScriptContext("Script", script));
                 return ToNative(result);
+            });
+        }
+
+        public void AddObject(string name, object value)
+        {
+            if (value == null || string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException();
+            }
+
+            _context.ServiceNode.WithContext(() =>
+            {
+                var obj = JavaScriptValue.CreateObject();
+                var type = value.GetType().GetTypeInfo();
+                var members = type.GetMembers()
+                    .Where(it => it.GetCustomAttribute<JsExportAttribute>() != null);
+
+                foreach (var item in members)
+                {
+                    switch (item)
+                    {
+                        case MethodInfo method:
+                            var functionId =
+                                JavaScriptPropertyId.FromString(method.GetCustomAttribute<JsExportAttribute>().Name);
+                            var parameter = method.GetParameters();
+
+                            JavaScriptValue Function(JavaScriptValue callee, bool call, JavaScriptValue[] arguments,
+                                ushort count, IntPtr data)
+                            {
+                                object[] param;
+                                var args = arguments.Skip(1).ToArray();
+                                if (count >= parameter.Length)
+                                {
+                                    param = Enumerable.Range(0, parameter.Length)
+                                        .Select(index => ToNative(args[index])).ToArray();
+                                }
+                                else
+                                {
+                                    param = args.Select(ToNative).Concat(Enumerable
+                                        .Range(count + 1, parameter.Length - count)
+                                        .Select(
+                                            index =>
+                                            {
+                                                var paramType = parameter[index].ParameterType;
+                                                return paramType.IsValueType
+                                                    ? Activator.CreateInstance(paramType)
+                                                    : null;
+                                            })).ToArray();
+                                }
+
+                                var result = method.Invoke(value, param);
+                                return FromNative(result);
+                            }
+
+                            var function = JavaScriptValue.CreateFunction(Function, IntPtr.Zero);
+                            obj.SetProperty(functionId, function, true);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                var objPropertyId = JavaScriptPropertyId.FromString(name);
+                _context.GlobalObject.ReferenceValue.SetProperty(objPropertyId, obj, true);
             });
         }
 
@@ -88,18 +135,18 @@ namespace Shiba.Scripting
         {
             switch (it)
             {
-                case bool bvalue:
-                    return JavaScriptValue.FromBoolean(bvalue);
-                case string svalue:
-                    return JavaScriptValue.FromString(svalue);
-                case int ivalue:
-                    return JavaScriptValue.FromInt32(ivalue);
-                case double dvalue:
-                    return JavaScriptValue.FromDouble(dvalue);
-                case float fvalue:
-                    return JavaScriptValue.FromDouble(fvalue);
-                case decimal dvalue:
-                    return JavaScriptValue.FromDouble(Convert.ToDouble(dvalue));
+                case bool value:
+                    return JavaScriptValue.FromBoolean(value);
+                case string value:
+                    return JavaScriptValue.FromString(value);
+                case int value:
+                    return JavaScriptValue.FromInt32(value);
+                case double value:
+                    return JavaScriptValue.FromDouble(value);
+                case float value:
+                    return JavaScriptValue.FromDouble(value);
+                case decimal value:
+                    return JavaScriptValue.FromDouble(Convert.ToDouble(value));
                 case null:
                     return JavaScriptValue.Null;
                 default:
@@ -116,7 +163,7 @@ namespace Shiba.Scripting
                         if (item.ObjectType.IsAssignableFrom(type)) converter = item;
                     }
 
-                    return converter?.ToJsValue?.Invoke(it) ?? JavaScriptValue.Undefined;
+                    return converter?.ToJsValue?.Invoke(it) ?? JavaScriptValue.Invalid;
             }
         }
 
@@ -133,7 +180,15 @@ namespace Shiba.Scripting
                 case JavaScriptValueType.Null:
                     return null;
                 case JavaScriptValueType.Number:
-                    return value.ToDouble();
+                {
+                    var target = value.ToDouble();
+                    if (Math.Abs(target % 1) <= double.Epsilon * 100)
+                    {
+                        return Convert.ToInt32(target);
+                    }
+
+                    return target;
+                }
                 case JavaScriptValueType.String:
                     return value.ToString();
                 case JavaScriptValueType.Boolean:
@@ -151,5 +206,16 @@ namespace Shiba.Scripting
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        public void Dispose()
+        {
+            _context?.Dispose();
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Method)]
+    public sealed class JsExportAttribute : Attribute
+    {
+        public string Name { get; set; }
     }
 }
