@@ -1,7 +1,6 @@
 package moe.tlaster.shiba.parser
 
-import moe.tlaster.shiba.*
-import moe.tlaster.shiba.ShibaFunction
+import moe.tlaster.shiba.type.*
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.tree.ParseTree

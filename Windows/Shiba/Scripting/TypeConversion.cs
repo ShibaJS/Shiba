@@ -1,7 +1,7 @@
 using System;
 using ChakraCore.NET.API;
 
-namespace Shiba.Converter
+namespace Shiba.Scripting
 {
     public interface ITypeConversion
     {

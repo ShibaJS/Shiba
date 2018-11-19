@@ -1,7 +1,7 @@
 ﻿using System;
-
 #if WINDOWS_UWP
 using Windows.UI.Xaml;
+using Shiba.Scripting.Runtime;
 #elif WPF
 using System.Windows;
 #elif FORMS
@@ -16,13 +16,6 @@ namespace Shiba.WPF
 namespace Shiba.Forms
 #endif
 {
-//    public class DefaultResourceValueResolver : IValueResolver
-//    {
-//        public object GetValue(object value)
-//        {
-//            return Application.Current.Resources[value + ""];
-//        }
-//    }
 
     public class ShibaApp : AbstractShiba
     {
@@ -30,7 +23,6 @@ namespace Shiba.Forms
         {
             Instance = new ShibaApp(c =>
             {
-//                c.ResourceValueResolver = new DefaultResourceValueResolver();
                 c.PlatformType =
 #if WINDOWS_UWP
                     "UWP"
@@ -40,6 +32,9 @@ namespace Shiba.Forms
                     "Forms"
 #endif
                     ;
+#if WINDOWS_UWP
+                c.ScriptRuntime.AddObject("storage", new Storage());
+#endif
                 action?.Invoke(c);
             });
         }

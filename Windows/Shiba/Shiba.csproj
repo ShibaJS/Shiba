@@ -8,4 +8,7 @@
     <PackageReference Include="ChakraCore.NET.Hosting" Version="1.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Scripting\Runtime\" />
+  </ItemGroup>
 </Project>

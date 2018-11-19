@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 using ChakraCore.NET.API;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Shiba.Converter
+namespace Shiba.Scripting
 {
     public class ObjectConversion : ITypeConversion
     {

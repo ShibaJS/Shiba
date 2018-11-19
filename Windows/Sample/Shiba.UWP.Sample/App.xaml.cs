@@ -48,6 +48,7 @@ namespace Shiba.UWP.Sample
                 AbstractShiba.Instance.AddConverter("function awesome(value) { return value + \" is awesome!\" }");
                 AbstractShiba.Instance.AddConverter("function reverse(value) { return value.split(\"\").reverse().join(\"\"); }");
                 AbstractShiba.Instance.AddConverter("function helloWorld(value) { if (value === null || value === undefined) return null; return value.hello.world; }");
+
                 // 将框架放在当前窗口中
                 Window.Current.Content = rootFrame;
             }

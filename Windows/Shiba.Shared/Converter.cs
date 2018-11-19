@@ -19,18 +19,18 @@ namespace Shiba
 {
     internal class ShibaFunctionExecutor
     {
-        public object Execute(ShibaFunction function, object dataContext, Type targetType)
+        public object Execute(ShibaFunction function, object dataContext)
         {
-            return AbstractShiba.Instance.Configuration.ConverterExecutor.Execute(function.Name, targetType, 
-                function.Parameters.Select(it => GetParameterValue(it, dataContext, targetType)).ToArray());                            
+            return AbstractShiba.Instance.Configuration.ScriptRuntime.Execute(function.Name, 
+                function.Parameters.Select(it => GetParameterValue(it, dataContext)).ToArray());                            
         }
         
-        private object GetParameterValue(object it, object dataContext, Type targetType)
+        private object GetParameterValue(object it, object dataContext)
         {
             switch (it)
             {
                 case ShibaFunction function:
-                    return Execute(function, dataContext, targetType);
+                    return Execute(function, dataContext);
                 case ShibaExtension extension:
                     return GetValueFromDataContext(extension, dataContext);
                 default:
@@ -65,7 +65,7 @@ namespace Shiba
             switch (parameter)
             {
                 case ShibaFunction function:
-                    return Executor.Execute(function, value, targetType);
+                    return Executor.Execute(function, value);
                 case ShibaConverterParameter converterParameter:
                     if (converterParameter.InnerConverter != null)
                     {
@@ -76,11 +76,11 @@ namespace Shiba
                         var innerResult = converterParameter.InnerConverter.Convert(value, targetType,
                             converterParameter.InnerParameter, CultureInfo.CurrentCulture);
 #endif
-                        return Executor.Execute(converterParameter.Function, innerResult, targetType);
+                        return Executor.Execute(converterParameter.Function, innerResult);
                     }
                     else
                     {
-                        return Executor.Execute(converterParameter.Function, value, targetType);
+                        return Executor.Execute(converterParameter.Function, value);
                     }
                 default:
                     throw new NotImplementedException();

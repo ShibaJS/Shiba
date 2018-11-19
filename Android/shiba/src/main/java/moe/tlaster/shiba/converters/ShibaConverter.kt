@@ -1,9 +1,9 @@
 package moe.tlaster.shiba.converters
 
-import moe.tlaster.shiba.ShibaFunction
+import moe.tlaster.shiba.type.ShibaFunction
 import moe.tlaster.shiba.ShibaFunctionExecutor
 import moe.tlaster.shiba.SingleBindingShibaFunctionExecutor
-import moe.tlaster.shiba.Singleton
+import moe.tlaster.shiba.common.Singleton
 
 abstract class ShibaConverter {
     abstract fun convert(value: Any?, parameter: Any?): Any?

@@ -1,10 +1,12 @@
 package moe.tlaster.shiba.mapper
 
 import android.content.res.Resources
-import android.util.Log
 import android.util.TypedValue
 import android.view.ViewGroup
 import moe.tlaster.shiba.*
+import moe.tlaster.shiba.dataBinding.ShibaBinding
+import moe.tlaster.shiba.type.ShibaMap
+import moe.tlaster.shiba.type.View
 import moe.tlaster.shiba.visitors.ShibaValueVisitor
 
 internal val Number.dp: Int

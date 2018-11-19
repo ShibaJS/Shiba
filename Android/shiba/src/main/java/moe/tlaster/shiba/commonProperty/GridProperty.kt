@@ -1,9 +1,8 @@
 package moe.tlaster.shiba.commonProperty
 
-import androidx.gridlayout.widget.GridLayout
 import android.view.ViewGroup
 import moe.tlaster.shiba.NativeView
-import moe.tlaster.shiba.ShibaMap
+import moe.tlaster.shiba.type.ShibaMap
 
 class GridProperty(override val name: String = "grid") : AbsCommonProperty<ShibaMap>() {
     override fun setValue(value: ShibaMap, nativeView: NativeView, parent: ViewGroup) {
