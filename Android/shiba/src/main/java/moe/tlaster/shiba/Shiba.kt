@@ -7,8 +7,10 @@ import moe.tlaster.shiba.commonProperty.GridProperty
 import moe.tlaster.shiba.commonProperty.ICommonProperty
 import moe.tlaster.shiba.extensionExecutor.BindingExecutor
 import moe.tlaster.shiba.extensionExecutor.IExtensionExecutor
+import moe.tlaster.shiba.extensionExecutor.JsonExecutor
 import moe.tlaster.shiba.mapper.*
 import moe.tlaster.shiba.scripting.*
+import moe.tlaster.shiba.scripting.conversion.JsonConversion
 import moe.tlaster.shiba.scripting.runtime.Storage
 import moe.tlaster.shiba.type.View
 
@@ -33,7 +35,9 @@ object Shiba {
         addRenderer("list", ListMapper())
         addRenderer("grid", GridMapper())
         addExtensionExecutor(BindingExecutor())
+        addExtensionExecutor(JsonExecutor())
         configuration.commonProperties.add(GridProperty())
+        configuration.scriptRuntime.addTypeConversion(JsonConversion())
         if (configuration.scriptRuntime is DefaultScriptRuntime) {
             (configuration.scriptRuntime as DefaultScriptRuntime).addObject("storage") {
                 Storage(application, it)

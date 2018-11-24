@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.item_list.view.*
 import moe.tlaster.shiba.BaseNotifyObject
@@ -35,8 +36,8 @@ class MainActivity : AppCompatActivity() {
 
 //        host.load("list { itemLayout = text -> \$bind items = \$bind androidList }", WithListModel())
 
-        val layout = "text -> awesome(\$bind androidText \${ if (it === null) return null; return it + \"  +1!\" }) "
-        host.load(layout, dataContext)
+        val layout = "text -> awesome(\$json hello.world \${ if (it === null) return null; return it + \"  +1!\" }) "
+        host.load(layout, dataContext.jsonNode)
         input.setText(layout)
         input.addTextChangedListener(object : TextWatcher{
             override fun afterTextChanged(s: Editable?) {
@@ -71,6 +72,13 @@ class WithListModel : BaseNotifyObject() {
             field = text
             notifyPropertyChanged("androidText")
         }
+
+
+    @get:Binding(name = "jsonNode")
+    val jsonNode = ObjectMapper().readTree("{\"hello\": {\"world\" : \"hello world\" }}")
+
+    @get:Binding(name = "jsonTree")
+    val jsonList = ObjectMapper().readTree("[{\"hello\": {\"world\" : \"hello world\" }}, {\"hello\": {\"world\" : \"hello world\" }},{\"hello\": {\"world\" : \"hello world\" }}]")
 
 
     @get:Binding(name = "androidList")

@@ -1,5 +1,7 @@
 package moe.tlaster.shiba.scripting
 
+import android.util.Log
+import moe.tlaster.shiba.scripting.conversion.ITypeConversion
 import org.liquidplayer.javascript.JSContext
 import org.liquidplayer.javascript.JSValue
 
@@ -22,22 +24,37 @@ class DefaultScriptRuntime : IScriptRuntime {
     override fun execute(name: String, parameters: Array<Any?>): Any? {
         val obj = runtime.property(name).toFunction()
         if (obj != null) {
-            val result = obj.call(null, parameters.map { parameter ->
-                if (parameter == null) {
-                    return@map parameter
-                }
-                val converter = conversions.firstOrNull { conversion -> conversion.objectType == parameter.javaClass }
-                if (converter != null) {
-                    return@map when (converter) {
-                        is IObjectConversion -> converter.convert(parameter)
-                        is IArrayConversion -> converter.convert(parameter)
-                        else -> throw IllegalArgumentException()
-                    }
-                }
-                return@map parameter
-            })
 
-            return result?.toNative()
+            try {
+                val result = obj.apply(null, parameters.map { parameter ->
+                    if (parameter == null) {
+                        return@map parameter
+                    }
+                    var converter: ITypeConversion? = null
+                    for (conversion in conversions) {
+                        if (conversion.objectType == parameter.javaClass) {
+                            converter = conversion
+                            break
+                        }
+                        if (conversion.objectType.isAssignableFrom(parameter.javaClass)) {
+                            converter = conversion
+                        }
+                    }
+                    if (converter != null) {
+                        return@map converter.convert(parameter)
+                    }
+                    return@map parameter
+                }.toTypedArray())
+
+                return result?.toNative()
+            } catch (e: Error) {
+                Log.e("script", e.message)
+                e.printStackTrace()
+            } catch (e: Exception) {
+                Log.e("script", e.message)
+                e.printStackTrace()
+            }
+
         }
         return null
     }
