@@ -1,6 +1,7 @@
 package moe.tlaster.shibasample
 
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.view.LayoutInflaterCompat
@@ -60,6 +61,10 @@ class MainActivity : AppCompatActivity() {
 //        list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 //        list.adapter = Adapter(this)
 //        host.load("stack { text { text = \$bind text } input { text = \$bind text} }", Model())
+
+        go_streaming.setOnClickListener {
+            startActivity(Intent(this, LiveActivity::class.java))
+        }
     }
 }
 

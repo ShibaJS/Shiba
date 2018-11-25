@@ -1,0 +1,8 @@
+stack {
+    text -> "hello world!"
+    text {
+        Android:text = "android!"
+        UWP:text = "UWP!"
+        Android:color = "red"
+    }
+}
