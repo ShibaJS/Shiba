@@ -119,12 +119,17 @@ namespace Shiba.ExtensionExecutors
                 return ParseValue(token, targetType);
             }
 
-            token = targetPath.Split('.').Aggregate(token, (current, path) => current[path]);
+            token = targetPath.Split('.').Aggregate(token, (current, path) => current?[path]);
             return ParseValue(token, targetType);
         }
 
         private object ParseValue(JToken token, Type targetType)
         {
+            if (token == null)
+            {
+                return null;
+            }
+
             if (!token.HasValues)
             {
                 if (token is JValue value)
