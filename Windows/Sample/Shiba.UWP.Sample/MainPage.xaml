@@ -27,5 +27,6 @@
                 }
             </TextBox.Text>
         </TextBox>
+        <Button Margin="8" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="ButtonBase_OnClick" Content="Go Streaming!"/>
     </Grid>
 </Page>

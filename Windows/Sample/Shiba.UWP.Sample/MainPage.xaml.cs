@@ -2,7 +2,9 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -55,6 +57,8 @@ namespace Shiba.UWP.Sample
         public MainPage()
         {
             InitializeComponent();
+            NavigationCacheMode = NavigationCacheMode.Required;
+
             //var items = Enumerable.Range(0, 1000).Select(it => new Model
             //{
             //    UWPText = $"UWP! {it}"
@@ -76,6 +80,11 @@ namespace Shiba.UWP.Sample
             {
                 
             }
+        }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(LivePage));
         }
     }
 }

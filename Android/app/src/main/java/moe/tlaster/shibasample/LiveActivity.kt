@@ -14,9 +14,6 @@ import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
-import com.here.oksse.ServerSentEvent
-import com.here.oksse.OkSse
-
 
 
 class LiveActivity : AppCompatActivity() {
@@ -29,7 +26,7 @@ class LiveActivity : AppCompatActivity() {
         onLayoutChanged(it)
     })
 
-    private var shutdown: ServerSentEvent? = null
+    private var shutdown: Shutdownable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,12 +35,14 @@ class LiveActivity : AppCompatActivity() {
         hostInput.setText(streaming.host)
 
         connectButton.setOnClickListener {
-            shutdown?.close()
+            shutdown?.shutdown()
             streaming.host = hostInput.text.toString()
-            shutdown = streaming.fetch()
+            thread {
+                shutdown = streaming.fetch()
+            }
         }
         disconnectButton.setOnClickListener {
-            shutdown?.close()
+            shutdown?.shutdown()
         }
     }
 
@@ -62,13 +61,19 @@ class LiveActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        shutdown?.close()
+        shutdown?.shutdown()
     }
 }
 
 class Client {
 
-    private val client: OkHttpClient = OkHttpClient.Builder().build()
+    private val client: OkHttpClient =
+            OkHttpClient
+                    .Builder()
+                    .connectTimeout(10, TimeUnit.SECONDS)
+                    .writeTimeout(1, TimeUnit.MINUTES)
+                    .readTimeout(30, TimeUnit.MINUTES)
+                    .build()
 
     fun get(url: String): Response {
         val call = client.newCall(
@@ -87,102 +92,102 @@ class Streaming(private val dataCallback: (JsonNode) -> Unit, private val layout
 
     var host = "http://10.0.2.2:5000/streaming"
 
-    fun fetch(): ServerSentEvent? {
-        val request = Request.Builder().url(host).build()
-        val okSse = OkSse()
-        return okSse.newServerSentEvent(request, object : ServerSentEvent.Listener {
-            override fun onOpen(sse: ServerSentEvent?, response: Response?) {
-            }
-
-            override fun onRetryTime(sse: ServerSentEvent?, milliseconds: Long): Boolean {
-                return true
-            }
-
-            override fun onComment(sse: ServerSentEvent?, comment: String?) {
-            }
-
-            override fun onRetryError(sse: ServerSentEvent?, throwable: Throwable?, response: Response?): Boolean {
-                return true
-            }
-
-            override fun onPreRetry(sse: ServerSentEvent?, originalRequest: Request?): Request {
-                return originalRequest ?: throw Error()
-            }
-
-            override fun onMessage(sse: ServerSentEvent?, id: String?, event: String?, message: String?) {
-                when (event) {
-                    "data_changed" -> {
-                        dataCallback.invoke(ObjectMapper().readTree(message?.trim('"')))
-                    }
-                    "layout_changed" -> {
-                        if (message != null) {
-                            layoutCallback.invoke(message.trim('"'))
-                        }
-                    }
-                }
-            }
-
-            override fun onClosed(sse: ServerSentEvent?) {
-            }
-
-        })
-    }
-
-
-//    fun fetch(): Shutdownable {
-//        val response = client.get(host)
-//        if (response.isSuccessful) {
-//            val reader = response.body()?.byteStream()?.bufferedReader() ?: throw Error()//.body().byteStream().bufferedReader()
-//            val dispatcher = Dispatcher()
-//            dispatcher.invokeLater(Runnable {
-//                while (true) {
-//                    try {
-//                        val line = reader.readLine()
-//                        if (line == null || line.isEmpty()) {
-//                            continue
-//                        }
-//                        val type = line.split(":")[0].trim()
-//                        if (type != "event") {
-//                            continue
-//                        }
-//                        val event = line.split(":")[1].trim()
-//                        val payload = reader.readLine()
-//                        val payloadType = payload.split(":")[0].trim()
-//                        if (payloadType != "data") {
-//                            continue
-//                        }
+//    fun fetch(): ServerSentEvent? {
+//        val request = Request.Builder().url(host).build()
+//        val okSse = OkSse()
+//        return okSse.newServerSentEvent(request, object : ServerSentEvent.Listener {
+//            override fun onOpen(sse: ServerSentEvent?, response: Response?) {
+//            }
 //
-//                        val start = payload.indexOf(":") + 1
-//                        val data = payload.substring(start).trim().trim('"')
-//                        when (event) {
-//                            "data_changed" -> {
-//                                dataCallback.invoke(ObjectMapper().readTree(data))
-//                            }
-//                            "layout_changed" -> {
-//                                layoutCallback.invoke(data)
-//                            }
-//                        }
+//            override fun onRetryTime(sse: ServerSentEvent?, milliseconds: Long): Boolean {
+//                return true
+//            }
 //
-////                        if (event == "update") {
-////                            val start = payload.indexOf(":") + 1
-////                            val json = payload.substring(start).trim()
-////                            val status = client.getSerializer().fromJson(
-////                                    json,
-////                                    Status::class.java
-////                            )
-////                            handler.onStatus(status)
-////                        }
-//                    } catch (e: java.io.InterruptedIOException) {
-//                        break
+//            override fun onComment(sse: ServerSentEvent?, comment: String?) {
+//            }
+//
+//            override fun onRetryError(sse: ServerSentEvent?, throwable: Throwable?, response: Response?): Boolean {
+//                return true
+//            }
+//
+//            override fun onPreRetry(sse: ServerSentEvent?, originalRequest: Request?): Request {
+//                return originalRequest ?: throw Error()
+//            }
+//
+//            override fun onMessage(sse: ServerSentEvent?, id: String?, event: String?, message: String?) {
+//                when (event) {
+//                    "data_changed" -> {
+//                        dataCallback.invoke(ObjectMapper().readTree(message?.trim('"')))
+//                    }
+//                    "layout_changed" -> {
+//                        if (message != null) {
+//                            layoutCallback.invoke(message.trim('"'))
+//                        }
 //                    }
 //                }
-//                reader.close()
-//            })
-//            return Shutdownable(dispatcher)
-//        } else {
-//            throw Error()
-//        }
+//            }
+//
+//            override fun onClosed(sse: ServerSentEvent?) {
+//            }
+//
+//        })
 //    }
+
+
+    fun fetch(): Shutdownable {
+        val response = client.get(host)
+        if (response.isSuccessful) {
+            val reader = response.body()?.byteStream()?.bufferedReader() ?: throw Error()//.body().byteStream().bufferedReader()
+            val dispatcher = Dispatcher()
+            dispatcher.invokeLater(Runnable {
+                while (true) {
+                    try {
+                        val line = reader.readLine()
+                        if (line == null || line.isEmpty()) {
+                            continue
+                        }
+                        val type = line.split(":")[0].trim()
+                        if (type != "event") {
+                            continue
+                        }
+                        val event = line.split(":")[1].trim()
+                        val payload = reader.readLine()
+                        val payloadType = payload.split(":")[0].trim()
+                        if (payloadType != "data") {
+                            continue
+                        }
+
+                        val start = payload.indexOf(":") + 1
+                        val data = payload.substring(start).trim().trim('"')
+                        when (event) {
+                            "data_changed" -> {
+                                dataCallback.invoke(ObjectMapper().readTree(data))
+                            }
+                            "layout_changed" -> {
+                                layoutCallback.invoke(data)
+                            }
+                        }
+
+//                        if (event == "update") {
+//                            val start = payload.indexOf(":") + 1
+//                            val json = payload.substring(start).trim()
+//                            val status = client.getSerializer().fromJson(
+//                                    json,
+//                                    Status::class.java
+//                            )
+//                            handler.onStatus(status)
+//                        }
+                    } catch (e: java.io.InterruptedIOException) {
+                        break
+                    }
+                }
+                reader.close()
+            })
+            return Shutdownable(dispatcher)
+        } else {
+            throw Error()
+        }
+    }
 }
 
 

@@ -3,6 +3,7 @@ import { readFile, watchFile } from 'fs';
 import Router from 'koa-router';
 import { promisify } from 'util';
 import EventEmitter from 'events'
+import { PassThrough } from 'stream';
 
 const layoutPath = './layout.sb';
 const dataPath = './data.json';
@@ -32,6 +33,7 @@ app.use(async (ctx, next) => {
 });
 
 router.get('/streaming', async (ctx, next) => {
+    const stream = new PassThrough();
     
     ctx.set('Content-Type', 'text/event-stream');
     ctx.set('Cache-Control', 'no-cache');
@@ -42,19 +44,22 @@ router.get('/streaming', async (ctx, next) => {
         console.log("layout_changed");
         console.log(event);
         console.log(data);
-        ctx.body = ("event: " + String(event) + "\n" + "data: " + data.replace(/(\r\n\t|\n|\r\t)/gm,"") + "\n\n");
+        stream.write("event: " + String(event) + "\n" + "data: " + data.replace(/\r?\n|\r/g,"") + "\n\n");
     });
 
     Stream.on("data_changed", function (event, data) {
         console.log("data_changed");
         console.log(event);
         console.log(data);
-        ctx.body = ("event: " + String(event) + "\n" + "data: " + data.replace(/(\r\n\t|\n|\r\t)/gm,"") + "\n\n");
+        stream.write("event: " + String(event) + "\n" + "data: " + data.replace(/\r?\n|\r/g,"") + "\n\n");
     });
 
+    ctx.type = 'text/event-stream';
+    ctx.body = stream;
     
     Stream.emit("data_changed", "data_changed", await readFileAsync(dataPath, "utf8"));
     Stream.emit("layout_changed", "layout_changed", await readFileAsync(layoutPath, "utf8"));
+
 })
 
 router.get('/layout', async (ctx, next) => {

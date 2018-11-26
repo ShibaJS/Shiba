@@ -1,6 +1,7 @@
 ﻿using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -12,7 +13,7 @@ namespace Shiba.UWP.Sample
     /// </summary>
     public sealed partial class App : Application
     {
-        /// <summary>
+        /// <summary>    
         ///     初始化单一实例应用程序对象。这是执行的创作代码的第一行，
         ///     已执行，逻辑上等同于 main() 或 WinMain()。
         /// </summary>
@@ -49,6 +50,10 @@ namespace Shiba.UWP.Sample
                 AbstractShiba.Instance.AddConverter("function reverse(value) { return value.split(\"\").reverse().join(\"\"); }");
                 AbstractShiba.Instance.AddConverter("function helloWorld(value) { if (value === null || value === undefined) return null; return value.hello.world; }");
 
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
+                    AppViewBackButtonVisibility.Visible;
+                SystemNavigationManager.GetForCurrentView().BackRequested += App_BackRequested;
+
                 // 将框架放在当前窗口中
                 Window.Current.Content = rootFrame;
             }
@@ -62,6 +67,15 @@ namespace Shiba.UWP.Sample
 
                 // 确保当前窗口处于活动状态
                 Window.Current.Activate();
+            }
+        }
+
+        private void App_BackRequested(object sender, BackRequestedEventArgs e)
+        {
+            var rootFrame = Window.Current.Content as Frame;
+            if (rootFrame != null && rootFrame.CanGoBack)
+            {
+                rootFrame.GoBack();
             }
         }
 
