@@ -1,3 +1,4 @@
+[English](GettingStart.md) | [中文](GettingStart.zh.md)  
 # Getting Start
 
 ## For WPF/UWP/Xamarin.Forms:
@@ -35,13 +36,13 @@ Add ```moe.tlaster.shiba.ShibaHost``` to where you want to use
     android:layout_width="match_parent"
     android:layout_height="wrap_content"/>
 ```
-Load your custom layout from your code (Kotlin is recommended)
+Load your layout from your code (Kotlin is recommended)
 ```
 val yourLayout: String = ...
 shibaHost.load(yourLayout, null)
 ```
 ```yourLayout``` can be fetch from anywhere, e.g. a web server  
-If you have a data context (a class extends from ```moe.tlaster.shiba.BaseNotifyObject``` or ```moe.tlaster.shiba.INotifyPropertyChanged```), you can set the dataContext to ShibaHost
+If you have a data context (a class extends from ```moe.tlaster.shiba.BaseNotifyObject```), you can set the dataContext to ShibaHost
 ```
 val dataContext = ...
 val yourLayout: String = ...
@@ -51,4 +52,30 @@ Or
 ```
 val dataContext = ...
 shibaHost.dataContext = dataContext 
+```
+
+## UWP/WPF
+Add ```ShibaHost`` to where you want to use
+```
+<shiba:ShibaHost Name="shibaHost" />
+```
+You can load your layout from code behind
+```
+var yourLayout = ...;
+shibaHost.Layout = yourLayout;
+```
+Or from xaml
+```
+<shiba:ShibaHost>
+    yourLayout...
+</shiba:ShibaHost>
+```
+You can set the DataContext of the ```ShibaHost``` just like a normal ```FrameworkElement```
+```
+var dataContext = ...;
+shibaHost.DataContext = dataContext;
+```
+Or from xaml
+```
+<shiba:ShibaHost DataContext="{x:Bind YourCustomDataContext}" />
 ```
