@@ -5,7 +5,7 @@
 | .Net |[![Build status](https://ci.appveyor.com/api/projects/status/2qp96xf35naduen7?svg=true)](https://ci.appveyor.com/project/Tlaster/shiba) | [![NuGet version](https://badge.fury.io/nu/Shiba.svg)](https://badge.fury.io/nu/Shiba)|
 | Android |[![Build Status](https://travis-ci.com/Tlaster/Shiba.svg?branch=master)](https://travis-ci.com/Tlaster/Shiba)|[![Download](https://api.bintray.com/packages/tlaster/Shiba/Shiba/images/download.svg)](https://bintray.com/tlaster/Shiba/Shiba/_latestVersion) |  
 
-**Shiba 仍处于并将长期处于开发初级阶段，不建议过早的将其引入生产环境中** 
+**Shiba 仍处于并将长期处于开发初级阶段,不建议过早的将其引入生产环境中** 
 
 # 预览
 ![showcase](image/showcase.gif)
@@ -32,15 +32,18 @@ Shiba.init(this)
 ```
 
 ## iOS 和其他平台:
-仍在开发中，你可以提起你的 PR 来帮助我
+仍在开发中,你可以提起你的 PR 来帮助我
 
 ## Notes
-初始化方法可在任意位置调用，比如你需要延迟初始化来提高你的程序启动速度，只要你在真正使用 Shiba 之前调用即可
+初始化方法可在任意位置调用,比如你需要延迟初始化来提高你的程序启动速度,只要你在真正使用 Shiba 之前调用即可
+
+## 更多
+[参见文档](doc/GettingStart.zh.md)
 
 # 目标
-不像其他跨平台框架， Shiba **不是**用于取代原生开发的框架， Shiba 将会让你同时获得跨平台和原生开发的优点。  
+不像其他跨平台框架, Shiba **不是**用于取代原生开发的框架, Shiba 将会让你同时获得跨平台和原生开发的优点。  
 Shiba 也会提供一个简单的方法自定义你自己的 Layout。  
-你可以在你现有项目中加入 Shiba 并于现有代码共存，也可以创建一个无需编写任何原生代码程序  
+你可以在你现有项目中加入 Shiba 并于现有代码共存,也可以创建一个无需编写任何原生代码程序  
 
 # LICENSE
 The MIT License (MIT)

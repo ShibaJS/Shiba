@@ -79,3 +79,5 @@ Or from xaml
 ```
 <shiba:ShibaHost DataContext="{x:Bind YourCustomDataContext}" />
 ```
+# What's Next?
+- [WritingShiba](WritingShiba.md)

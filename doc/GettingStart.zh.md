@@ -20,10 +20,10 @@ implementation 'moe.tlaster:shiba:0.0.+'
 Shiba.init(this)
 ```
 ## iOS 和其他平台:
-仍在开发中，你可以提起你的 PR 来帮助我
+仍在开发中,你可以提起你的 PR 来帮助我
 
 ## Notes
-初始化方法可在任意位置调用，比如你需要延迟初始化来提高你的程序启动速度，只要你在真正使用 Shiba 之前调用即可
+初始化方法可在任意位置调用,比如你需要延迟初始化来提高你的程序启动速度,只要你在真正使用 Shiba 之前调用即可
 
 # 基础使用
 
@@ -40,7 +40,7 @@ Shiba.init(this)
 val yourLayout: String = ...
 shibaHost.load(yourLayout, null)
 ```
-```yourLayout``` 可以从任意位置加载，比如你的服务器  
+```yourLayout``` 可以从任意位置加载,比如你的服务器  
 如果你有数据上下文 (继承自 ```moe.tlaster.shiba.BaseNotifyObject``` 的 class ), 你可以设置 shibaHost 的数据上下文
 ```
 val dataContext = ...
@@ -69,7 +69,7 @@ shibaHost.Layout = yourLayout;
     yourLayout...
 </shiba:ShibaHost>
 ```
-你可以设置 ```ShibaHost``` 的数据上下文，和普通的 ```FrameworkElement``` 一样  
+你可以设置 ```ShibaHost``` 的数据上下文,和普通的 ```FrameworkElement``` 一样  
 ```
 var dataContext = ...;
 shibaHost.DataContext = dataContext;
@@ -78,3 +78,6 @@ shibaHost.DataContext = dataContext;
 ```
 <shiba:ShibaHost DataContext="{x:Bind YourCustomDataContext}" />
 ```
+
+# 下一步
+- [编写Shiba](WritingShiba.zh.md)
