@@ -14,12 +14,12 @@
       <group targetFramework="UAP10.0.16299">
         <dependency id="ChakraCore.NET.Hosting" version="1.0.2" />
         <dependency id="Antlr4.Runtime.Standard" version="4.7.1.1" />
-        <dependency id="Newtonsoft.Json" version="11.0.2" />
+        <dependency id="Newtonsoft.Json" version="12.0.1" />
       </group>
       <group targetFramework=".NETFramework4.6.1">
         <dependency id="ChakraCore.NET.Hosting" version="1.0.2" />
         <dependency id="Antlr4.Runtime.Standard" version="4.7.1.1" />
-        <dependency id="Newtonsoft.Json" version="11.0.2" />
+        <dependency id="Newtonsoft.Json" version="12.0.1" />
       </group>
     </dependencies>
   </metadata>
