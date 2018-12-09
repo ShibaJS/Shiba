@@ -45,9 +45,6 @@ namespace Shiba.Scripting
         {
             return _context.ServiceNode.WithContext(() =>
             {
-                var storage =
-                    _context.GlobalObject.ReferenceValue.GetProperty(JavaScriptPropertyId.FromString("storage"));
-                var save = storage.GetProperty(JavaScriptPropertyId.FromString("save"));
                 var debugService = _context.ServiceNode.GetService<IRuntimeDebuggingService>();
                 var result = JavaScriptContext.RunScript(script, debugService.GetScriptContext("Script", script));
                 return ToNative(result);
