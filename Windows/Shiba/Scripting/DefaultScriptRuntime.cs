@@ -60,57 +60,77 @@ namespace Shiba.Scripting
 
             _context.ServiceNode.WithContext(() =>
             {
-                var obj = JavaScriptValue.CreateObject();
-                var type = value.GetType().GetTypeInfo();
-                var members = type.GetMembers()
-                    .Where(it => it.GetCustomAttribute<JsExportAttribute>() != null);
-
-                foreach (var item in members)
-                {
-                    switch (item)
-                    {
-                        case MethodInfo method:
-                            var functionId =
-                                JavaScriptPropertyId.FromString(method.GetCustomAttribute<JsExportAttribute>().Name);
-                            var parameter = method.GetParameters();
-
-                            JavaScriptValue Function(JavaScriptValue callee, bool call, JavaScriptValue[] arguments,
-                                ushort count, IntPtr data)
-                            {
-                                object[] param;
-                                var args = arguments.Skip(1).ToArray();
-                                if (count >= parameter.Length)
-                                {
-                                    param = Enumerable.Range(0, parameter.Length)
-                                        .Select(index => ToNative(args[index])).ToArray();
-                                }
-                                else
-                                {
-                                    param = args.Select(ToNative).Concat(Enumerable
-                                        .Range(count + 1, parameter.Length - count)
-                                        .Select(
-                                            index =>
-                                            {
-                                                var paramType = parameter[index].ParameterType;
-                                                return paramType.IsValueType
-                                                    ? Activator.CreateInstance(paramType)
-                                                    : null;
-                                            })).ToArray();
-                                }
-
-                                var result = method.Invoke(value, param);
-                                return FromNative(result);
-                            }
-
-                            var function = JavaScriptValue.CreateFunction(Function, IntPtr.Zero);
-                            obj.SetProperty(functionId, function, true);
-                            break;
-                        default:
-                            break;
-                    }
-                }
                 var objPropertyId = JavaScriptPropertyId.FromString(name);
-                _context.GlobalObject.ReferenceValue.SetProperty(objPropertyId, obj, true);
+                switch (value)
+                {
+                    case string _:
+                    case bool _:
+                    case int _:
+                    case decimal _:
+                    case float _:
+                    case double _:
+                    case null:
+                        _context.GlobalObject.ReferenceValue.SetProperty(objPropertyId, FromNative(value), true);
+                        break;
+                    default:
+                        var obj = JavaScriptValue.CreateObject();
+                        var type = value.GetType().GetTypeInfo();
+                        var members = type.GetMembers()
+                            .Where(it => it.GetCustomAttribute<JsExportAttribute>() != null);
+
+                        foreach (var item in members)
+                        {
+                            switch (item)
+                            {
+                                case MethodInfo method:
+                                    var functionId =
+                                        JavaScriptPropertyId.FromString(method.GetCustomAttribute<JsExportAttribute>().Name);
+                                    var parameter = method.GetParameters();
+
+                                    JavaScriptValue Function(JavaScriptValue callee, bool call, JavaScriptValue[] arguments,
+                                        ushort count, IntPtr data)
+                                    {
+                                        object[] param;
+                                        var args = arguments.Skip(1).ToArray();
+                                        if (count >= parameter.Length)
+                                        {
+                                            param = Enumerable.Range(0, parameter.Length)
+                                                .Select(index => ToNative(args[index])).ToArray();
+                                        }
+                                        else
+                                        {
+                                            param = args.Select(ToNative).Concat(Enumerable
+                                                .Range(count + 1, parameter.Length - count)
+                                                .Select(
+                                                    index =>
+                                                    {
+                                                        var paramType = parameter[index].ParameterType;
+                                                        return paramType.IsValueType
+                                                            ? Activator.CreateInstance(paramType)
+                                                            : null;
+                                                    })).ToArray();
+                                        }
+
+                                        var result = method.Invoke(value, param);
+                                        return FromNative(result);
+                                    }
+
+                                    var function = JavaScriptValue.CreateFunction(Function, IntPtr.Zero);
+                                    obj.SetProperty(functionId, function, true);
+                                    break;
+                                case PropertyInfo property:
+                                    var propertyId =
+                                        JavaScriptPropertyId.FromString(property.GetCustomAttribute<JsExportAttribute>().Name);
+                                    obj.SetProperty(propertyId, FromNative(property.GetValue(value)), false);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        _context.GlobalObject.ReferenceValue.SetProperty(objPropertyId, obj, true);
+                        break;
+                }
+
             });
         }
 
@@ -210,7 +230,7 @@ namespace Shiba.Scripting
         }
     }
 
-    [AttributeUsage(AttributeTargets.Method)]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Property)]
     public sealed class JsExportAttribute : Attribute
     {
         public string Name { get; set; }
