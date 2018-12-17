@@ -2,7 +2,7 @@
 using ChakraCore.NET.API;
 using Newtonsoft.Json.Linq;
 
-namespace Shiba.Scripting
+namespace Shiba.Scripting.Conversion
 {
     internal class JTokenConversion : ITypeConversion
     {
@@ -22,14 +22,13 @@ namespace Shiba.Scripting
 
         public Type ObjectType { get; } = typeof(JToken);
 
-        public JavaScriptValueType[] JsType { get; } = new[]
-        {
-            JavaScriptValueType.Object,
-            JavaScriptValueType.Array
-        };
 
         public Func<object, JavaScriptValue> ToJsValue { get; }
         public Func<JavaScriptValue, object> FromJsValue { get; }
+        public bool CanConvert(JavaScriptValue value)
+        {
+            return false;
+        }
     }
     internal sealed class JsValueToJson
     {
