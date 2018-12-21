@@ -2,7 +2,7 @@ package moe.tlaster.shiba.scripting.runtime
 
 import android.app.Application
 import android.content.Context
-import moe.tlaster.shiba.scripting.toNative
+import moe.tlaster.shiba.scripting.conversion.toNative
 import org.liquidplayer.javascript.JSContext
 import org.liquidplayer.javascript.JSObject
 import org.liquidplayer.javascript.JSValue
