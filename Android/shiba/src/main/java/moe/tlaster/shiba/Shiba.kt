@@ -37,7 +37,6 @@ object Shiba {
         addExtensionExecutor(BindingExecutor())
         addExtensionExecutor(JsonExecutor())
         configuration.commonProperties.add(GridProperty())
-        configuration.scriptRuntime.addTypeConversion(JsonConversion())
         if (configuration.scriptRuntime is DefaultScriptRuntime) {
             (configuration.scriptRuntime as DefaultScriptRuntime).addObject("storage") {
                 Storage(application, it)

@@ -37,21 +37,28 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.+"
 
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.gridlayout:gridlayout:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.+'
+    implementation 'androidx.gridlayout:gridlayout:1.+'
+    implementation 'androidx.recyclerview:recyclerview:1.+'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
 
     implementation 'org.antlr:antlr4:4.7.1'
 
-    implementation 'com.github.LiquidPlayer:LiquidCore:0.5.0'
+    implementation 'com.github.LiquidPlayer:LiquidCore:0.5.+'
 
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.7'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.+'
+
+    implementation 'com.github.kittinunf.fuel:fuel:1.+'
+    implementation 'com.github.kittinunf.fuel:fuel-android:1.+'
+    implementation 'com.github.kittinunf.fuel:fuel-coroutines:1.+'
+    implementation 'com.github.kittinunf.fuel:fuel-jackson:1.+'
+
 
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation "androidx.test.ext:junit:1.0.0"
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+    androidTestImplementation "androidx.test.ext:junit:1.1.0"
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 }
 
 task sourcesJar(type: Jar) {
