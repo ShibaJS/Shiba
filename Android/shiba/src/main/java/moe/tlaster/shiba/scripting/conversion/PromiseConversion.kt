@@ -68,7 +68,11 @@ class PromiseConversion(override val objectType: Class<*> = Deferred::class.java
         if (!value.isObject) {
             return false
         }
-        val obj = value.toObject().prototype().toObject()
+        val prototype = value.toObject().prototype()
+        if (!prototype.isObject) {
+            return false
+        }
+        val obj = prototype.toObject()
         if (!obj.hasProperty("constructor")) {
             return false
         }
