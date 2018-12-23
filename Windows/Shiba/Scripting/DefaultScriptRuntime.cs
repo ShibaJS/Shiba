@@ -1,8 +1,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using ChakraCore.NET;
-using ChakraCore.NET.API;
+using ChakraHosting;
 using Shiba.Scripting.Conversion;
 using Shiba.Scripting.Runtime;
 
@@ -12,27 +11,27 @@ namespace Shiba.Scripting
     {
         private JavaScriptValue[] _prefix;
 
-        public DefaultScriptRuntime(ChakraContext context = null)
+        public DefaultScriptRuntime()
         {
-            Context = context ?? ChakraRuntime.Create().CreateContext(false);
-            Context.ServiceNode.WithContext(() => { _prefix = new[] {JavaScriptValue.FromBoolean(false)}; });
+            ChakraHost = new ChakraHost();
+            ChakraHost.WithContext(() => { _prefix = new[] {JavaScriptValue.FromBoolean(false)}; });
             InitConversion();
             InitRuntimeObject();
         }
 
-        public ChakraContext Context { get; private set; }
+        public ChakraHost ChakraHost { get; private set; }
 
         public void Dispose()
         {
-            Context?.Dispose();
-            Context = null;
+            ChakraHost?.Dispose();
+            ChakraHost = null;
         }
 
         public object Execute(string functionName, params object[] parameters)
         {
-            return Context.ServiceNode.WithContext(() =>
+            return ChakraHost.WithContext(() =>
             {
-                var func = Context.GlobalObject.ReferenceValue.GetProperty(
+                var func = ChakraHost.GlobalObject.GetProperty(
                     JavaScriptPropertyId.FromString(functionName));
 
                 switch (func.ValueType)
@@ -53,20 +52,19 @@ namespace Shiba.Scripting
 
         public object Execute(string script)
         {
-            return Context.ServiceNode.WithContext(() =>
+            return ChakraHost.WithContext(() =>
             {
-                var debugService = Context.ServiceNode.GetService<IRuntimeDebuggingService>();
-                var result = JavaScriptContext.RunScript(script, debugService.GetScriptContext("Script", script));
+                var result = ChakraHost.RunScript(script);
                 return result.ToNative();
             });
         }
 
         public void AddObject(string name, object value)
         {
-            if (value == null || string.IsNullOrEmpty(name)) throw new ArgumentException();
-
-            Context.ServiceNode.WithContext(() =>
+            ChakraHost.WithContext(() =>
             {
+                if (value == null || string.IsNullOrEmpty(name)) throw new ArgumentException();
+
                 var objPropertyId = JavaScriptPropertyId.FromString(name);
                 switch (value)
                 {
@@ -77,7 +75,7 @@ namespace Shiba.Scripting
                     case float _:
                     case double _:
                     case null:
-                        Context.GlobalObject.ReferenceValue.SetProperty(objPropertyId, value.ToJavaScriptValue(),
+                        ChakraHost.GlobalObject.SetProperty(objPropertyId, value.ToJavaScriptValue(),
                             true);
                         break;
                     default:
@@ -130,7 +128,7 @@ namespace Shiba.Scripting
                                     obj.SetProperty(propertyId, property.GetValue(value).ToJavaScriptValue(), false);
                                     break;
                             }
-                        Context.GlobalObject.ReferenceValue.SetProperty(objPropertyId, obj, true);
+                        ChakraHost.GlobalObject.SetProperty(objPropertyId, obj, true);
                         break;
                 }
             });

@@ -33,32 +33,27 @@ namespace Shiba.Parser
         public abstract Type HandleType { get; }
         public abstract object Visit(IParseTree tree);
 
+        protected internal static object GetValue(IParseTree tree)
+        {
+            if (tree == null) return null;
+            var visitor = Visitors.FirstOrDefault(it => it.HandleType == tree.GetType());
+            if (visitor == null)
+            {
+                if (tree is ParserRuleContext parserRuleContext)
+                    return GetValue(parserRuleContext.children.FirstOrDefault(it => it is ParserRuleContext));
+
+                return null;
+            }
+
+            return visitor.Visit(tree);
+        }
+
         protected static T GetValue<T>(IParseTree tree)
         {
             var value = GetValue(tree);
             if (value is T result) return result;
 
             return default;
-        }
-
-        protected internal static object GetValue(IParseTree tree)
-        {
-            if (tree == null)
-            {
-                return null;
-            }
-            var visitor = Visitors.FirstOrDefault(it => it.HandleType == tree.GetType());
-            if (visitor == null)
-            {
-                if (tree is ParserRuleContext parserRuleContext)
-                {
-                    return GetValue(parserRuleContext.children.FirstOrDefault(it => it is ParserRuleContext));
-                }
-
-                return null;
-            }
-
-            return visitor.Visit(tree);
         }
     }
 
@@ -82,15 +77,16 @@ namespace Shiba.Parser
         {
             var viewName = GetValue<ShibaToken>(tree.identifier());
             var view = new View(viewName, GetValue(tree.value()));
-            
+
             if (tree.property() != null) view.Properties.AddRange(tree.property().Select(GetValue<Property>));
 
-            if (tree.view() != null) view.Children.AddRange(tree.view().Select(it =>
-            {
-                var child = GetValue<View>(it);
-                child.Parent = view;
-                return child;
-            }));
+            if (tree.view() != null)
+                view.Children.AddRange(tree.view().Select(it =>
+                {
+                    var child = GetValue<View>(it);
+                    child.Parent = view;
+                    return child;
+                }));
 
             return view;
         }
@@ -217,6 +213,12 @@ namespace Shiba.Parser
 
     public class ShibaParserWrapper
     {
+        public object Parse(string input)
+        {
+            var tree = ParseGrammarTree(input);
+            return ShibaVisitor.GetValue(tree);
+        }
+
         private IParseTree ParseGrammarTree(string input)
         {
             var stream = CharStreams.fromstring(input);
@@ -225,12 +227,6 @@ namespace Shiba.Parser
             var parser = new ShibaParser(tokens) {BuildParseTree = true};
 
             return parser.view();
-        }
-
-        public object Parse(string input)
-        {
-            var tree = ParseGrammarTree(input);
-            return ShibaVisitor.GetValue(tree);
         }
     }
 }

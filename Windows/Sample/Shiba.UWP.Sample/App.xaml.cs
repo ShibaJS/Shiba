@@ -46,9 +46,11 @@ namespace Shiba.UWP.Sample
                     //TODO: 从之前挂起的应用程序加载状态
                 }
                 ShibaApp.Init();
-                AbstractShiba.Instance.AddConverter("function awesome(value) { return value + \" is awesome!\" }");
-                AbstractShiba.Instance.AddConverter("function reverse(value) { return value.split(\"\").reverse().join(\"\"); }");
-                AbstractShiba.Instance.AddConverter("function helloWorld(value) { if (value === null || value === undefined) return null; return value.hello.world; }");
+                ShibaApp.Instance.AddConverter("function awesome(value) { return value + \" is awesome!\" }");
+                ShibaApp.Instance.AddConverter("function reverse(value) { return value.split(\"\").reverse().join(\"\"); }");
+                ShibaApp.Instance.AddConverter("function helloWorld(value) { if (value === null || value === undefined) return null; return value.hello.world; }");
+                var script = "const nhentai = {\r\n    home: async (page) => {\r\n        const link = `https://nhentai.net/api/galleries/all?page=${page}`;\r\n        const result = JSON.parse(await http.get(link));\r\n        return JSON.stringify(result.result)\r\n    }\r\n}";
+                ShibaApp.Instance.Configuration.ScriptRuntime.Execute(script);
 
                 SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
                     AppViewBackButtonVisibility.Visible;

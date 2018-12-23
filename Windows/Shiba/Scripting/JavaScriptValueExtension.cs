@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ChakraCore.NET.API;
+using ChakraHosting;
 using Shiba.Scripting.Conversion;
 
 namespace Shiba.Scripting
@@ -9,7 +9,7 @@ namespace Shiba.Scripting
     internal static class JavaScriptValueExtension
     {
         internal static readonly List<ITypeConversion> Conversions = new List<ITypeConversion>();
-        
+
         public static JavaScriptValue ToJavaScriptValue(this object it)
         {
             switch (it)
@@ -56,10 +56,7 @@ namespace Shiba.Scripting
                 case JavaScriptValueType.Number:
                 {
                     var target = value.ToDouble();
-                    if (Math.Abs(target % 1) <= double.Epsilon * 100)
-                    {
-                        return Convert.ToInt32(target);
-                    }
+                    if (Math.Abs(target % 1) <= double.Epsilon * 100) return Convert.ToInt32(target);
 
                     return target;
                 }

@@ -20,10 +20,10 @@
     {
         object Map(View view, IShibaContext context);
     }
-    
+
     public interface IViewMapper<T> : IViewMapper
     {
-        new T Map(View view, IShibaContext context);
         T CreateNativeView();
+        new T Map(View view, IShibaContext context);
     }
 }

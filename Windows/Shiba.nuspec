@@ -12,27 +12,17 @@
     <description>Shiba</description>
     <dependencies>
       <group targetFramework="UAP10.0.16299">
-        <dependency id="ChakraCore.NET.Hosting" version="1.0.2" />
-        <dependency id="Antlr4.Runtime.Standard" version="4.7.1.1" />
-        <dependency id="Newtonsoft.Json" version="12.0.1" />
-      </group>
-      <group targetFramework=".NETFramework4.6.1">
-        <dependency id="ChakraCore.NET.Hosting" version="1.0.2" />
-        <dependency id="Antlr4.Runtime.Standard" version="4.7.1.1" />
+        <dependency id="Antlr4.Runtime.Standard" version="4.7.2" />
         <dependency id="Newtonsoft.Json" version="12.0.1" />
       </group>
     </dependencies>
   </metadata>
   <files>
-    <file src="Shiba.WPF\bin\Release\Shiba.dll" target="lib\net461\Shiba.dll" />
-    <file src="Shiba.WPF\bin\Release\Shiba.pdb" target="lib\net461\Shiba.pdb" />
-    <file src="Shiba.WPF\bin\Release\Shiba.WPF.dll" target="lib\net461\Shiba.WPF.dll" />
-    <file src="Shiba.WPF\bin\Release\Shiba.WPF.pdb" target="lib\net461\Shiba.WPF.pdb" />
-
-    <file src="Shiba.UWP\bin\Release\Shiba.dll" target="lib\uap10.0.16299\Shiba.dll" />
-    <file src="Shiba.UWP\bin\Release\Shiba.pdb" target="lib\uap10.0.16299\Shiba.pdb" />
-    <file src="Shiba.UWP\bin\Release\Shiba.UWP.dll" target="lib\uap10.0.16299\Shiba.UWP.dll" />
-    <file src="Shiba.UWP\bin\Release\Shiba.UWP.pdb" target="lib\uap10.0.16299\Shiba.UWP.pdb" />
-    <file src="Shiba.UWP\bin\Release\Shiba.UWP.pri" target="lib\uap10.0.16299\Shiba.UWP.pri" />
+    <file src="Shiba\bin\Release\Shiba.dll" target="lib\uap10.0.16299\Shiba.dll" />
+    <file src="Shiba\bin\Release\Shiba.pdb" target="lib\uap10.0.16299\Shiba.pdb" />
+    <file src="Shiba\bin\Release\Shiba.pri" target="lib\uap10.0.16299\Shiba.pri" />
+    <file src="Shiba\bin\Release\ChakraHosting.dll" target="lib\uap10.0.16299\ChakraHosting.dll" />
+    <file src="Shiba\bin\Release\ChakraHosting.pdb" target="lib\uap10.0.16299\ChakraHosting.pdb" />
+    <file src="Shiba\bin\Release\ChakraHosting.pri" target="lib\uap10.0.16299\ChakraHosting.pri" />
   </files>
 </package>

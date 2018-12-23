@@ -1,16 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using ChakraCore.NET.API;
+using Shiba.CommonProperty;
 using Shiba.Controls;
+using Shiba.ExtensionExecutors;
 using Shiba.Scripting;
+using Shiba.Scripting.Runtime;
 
 namespace Shiba
 {
-    public abstract class AbstractShiba
+    public class ShibaApp
     {
-        protected AbstractShiba(Action<ShibaConfiguration> action)
+        private ShibaApp(Action<ShibaConfiguration> action)
         {
             action?.Invoke(Configuration);
             ViewMapping.Init();
@@ -20,11 +21,21 @@ namespace Shiba
 
         public ShibaConfiguration Configuration { get; } = new ShibaConfiguration();
 
-        public static AbstractShiba Instance { get; protected set; }
+        public static ShibaApp Instance { get; protected set; }
 
         public void AddConverter(string converter)
         {
             Configuration.ScriptRuntime.Execute(converter);
+        }
+
+        public static void Init(Action<ShibaConfiguration> action = null)
+        {
+            Instance = new ShibaApp(c =>
+            {
+                c.PlatformType = "UWP";
+                c.ScriptRuntime.AddObject("storage", new Storage());
+                action?.Invoke(c);
+            });
         }
     }
 

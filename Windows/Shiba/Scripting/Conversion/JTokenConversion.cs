@@ -1,5 +1,5 @@
 ﻿using System;
-using ChakraCore.NET.API;
+using ChakraHosting;
 using Newtonsoft.Json.Linq;
 
 namespace Shiba.Scripting.Conversion
@@ -10,10 +10,7 @@ namespace Shiba.Scripting.Conversion
         {
             ToJsValue = value =>
             {
-                if (value is JToken token)
-                {
-                    return JsonToJsValue.Convert(token);
-                }
+                if (value is JToken token) return JsonToJsValue.Convert(token);
 
                 return JavaScriptValue.Undefined;
             };
@@ -25,11 +22,13 @@ namespace Shiba.Scripting.Conversion
 
         public Func<object, JavaScriptValue> ToJsValue { get; }
         public Func<JavaScriptValue, object> FromJsValue { get; }
+
         public bool CanConvert(JavaScriptValue value)
         {
             return false;
         }
     }
+
     internal sealed class JsValueToJson
     {
         private static readonly JToken TrueValue = new JValue(true);
@@ -40,7 +39,9 @@ namespace Shiba.Scripting.Conversion
         private static readonly JsValueToJson Instance =
             new JsValueToJson();
 
-        private JsValueToJson() { }
+        private JsValueToJson()
+        {
+        }
 
         public static JToken Convert(JavaScriptValue value)
         {
@@ -77,7 +78,7 @@ namespace Shiba.Scripting.Conversion
         {
             var array = new JArray();
             var propertyId = JavaScriptPropertyId.FromString("length");
-            var length = (int)value.GetProperty(propertyId).ToDouble();
+            var length = (int) value.GetProperty(propertyId).ToDouble();
             for (var i = 0; i < length; ++i)
             {
                 var index = JavaScriptValue.FromInt32(i);
@@ -97,9 +98,9 @@ namespace Shiba.Scripting.Conversion
         {
             return new JObject
             {
-                { "message", Visit(value.GetProperty(JavaScriptPropertyId.FromString("message"))) },
-                { "description", Visit(value.GetProperty(JavaScriptPropertyId.FromString("description"))) },
-                { "stack", Visit(value.GetProperty(JavaScriptPropertyId.FromString("stack"))) },
+                {"message", Visit(value.GetProperty(JavaScriptPropertyId.FromString("message")))},
+                {"description", Visit(value.GetProperty(JavaScriptPropertyId.FromString("description")))},
+                {"stack", Visit(value.GetProperty(JavaScriptPropertyId.FromString("stack")))}
             };
         }
 
@@ -113,7 +114,7 @@ namespace Shiba.Scripting.Conversion
             var number = value.ToDouble();
 
             return number % 1 == 0
-                ? new JValue((long)number)
+                ? new JValue((long) number)
                 : new JValue(number);
         }
 
@@ -147,7 +148,9 @@ namespace Shiba.Scripting.Conversion
         private static readonly JsonToJsValue Instance =
             new JsonToJsValue();
 
-        private JsonToJsValue() { }
+        private JsonToJsValue()
+        {
+        }
 
         public static JavaScriptValue Convert(JToken token)
         {
@@ -162,19 +165,19 @@ namespace Shiba.Scripting.Conversion
             switch (token.Type)
             {
                 case JTokenType.Array:
-                    return VisitArray((JArray)token);
+                    return VisitArray((JArray) token);
                 case JTokenType.Boolean:
-                    return VisitBoolean((JValue)token);
+                    return VisitBoolean((JValue) token);
                 case JTokenType.Float:
-                    return VisitFloat((JValue)token);
+                    return VisitFloat((JValue) token);
                 case JTokenType.Integer:
-                    return VisitInteger((JValue)token);
+                    return VisitInteger((JValue) token);
                 case JTokenType.Null:
                     return VisitNull(token);
                 case JTokenType.Object:
-                    return VisitObject((JObject)token);
+                    return VisitObject((JObject) token);
                 case JTokenType.String:
-                    return VisitString((JValue)token);
+                    return VisitString((JValue) token);
                 case JTokenType.Undefined:
                     return VisitUndefined(token);
                 case JTokenType.Constructor:
@@ -195,7 +198,7 @@ namespace Shiba.Scripting.Conversion
         private JavaScriptValue VisitArray(JArray token)
         {
             var n = token.Count;
-            var array = JavaScriptValue.CreateArray((uint)n);
+            var array = JavaScriptValue.CreateArray((uint) n);
             for (var i = 0; i < n; ++i)
             {
                 var element = Visit(token[i]);
@@ -248,5 +251,4 @@ namespace Shiba.Scripting.Conversion
             return JavaScriptValue.Undefined;
         }
     }
-
 }

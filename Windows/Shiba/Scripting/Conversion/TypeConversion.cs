@@ -1,6 +1,5 @@
 using System;
-using System.Threading.Tasks;
-using ChakraCore.NET.API;
+using ChakraHosting;
 
 namespace Shiba.Scripting.Conversion
 {
@@ -14,7 +13,8 @@ namespace Shiba.Scripting.Conversion
 
     public class TypeConversion : ITypeConversion
     {
-        public TypeConversion(Type objectType, Func<object, JavaScriptValue> toJsValue, Func<JavaScriptValue, object> fromJsValue)
+        public TypeConversion(Type objectType, Func<object, JavaScriptValue> toJsValue,
+            Func<JavaScriptValue, object> fromJsValue)
         {
             ObjectType = objectType;
             ToJsValue = toJsValue;
@@ -24,6 +24,7 @@ namespace Shiba.Scripting.Conversion
         public Type ObjectType { get; }
         public Func<object, JavaScriptValue> ToJsValue { get; }
         public Func<JavaScriptValue, object> FromJsValue { get; }
+
         public bool CanConvert(JavaScriptValue value)
         {
             return false;

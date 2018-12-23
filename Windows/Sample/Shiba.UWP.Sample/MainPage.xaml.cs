@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -82,9 +83,16 @@ namespace Shiba.UWP.Sample
             }
         }
 
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(LivePage));
+
+            var script = $"nhentai.home(1)";
+            var task = ShibaApp.Instance.Configuration.ScriptRuntime.Execute(script) as Task<object>;
+            var result = await task as string;
+            var list = JsonConvert.DeserializeObject<JArray>(result);
+
+
+            //Frame.Navigate(typeof(LivePage));
         }
     }
 }
