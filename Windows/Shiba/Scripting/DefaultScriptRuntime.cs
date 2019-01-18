@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ChakraHosting;
@@ -9,14 +10,16 @@ namespace Shiba.Scripting
 {
     public class DefaultScriptRuntime : IScriptRuntime, IDisposable
     {
-        private JavaScriptValue[] _prefix;
-
+        private readonly JavaScriptValue[] _prefix;
+        private readonly List<JavaScriptNativeFunction> _functions = new List<JavaScriptNativeFunction>();
         public DefaultScriptRuntime()
         {
             ChakraHost = new ChakraHost();
-            ChakraHost.WithContext(() => { _prefix = new[] {JavaScriptValue.FromBoolean(false)}; });
+            ChakraHost.EnterContext();
+            _prefix = new[] { JavaScriptValue.FromBoolean(false) };
             InitConversion();
             InitRuntimeObject();
+            ChakraHost.LeaveContext();
         }
 
         public ChakraHost ChakraHost { get; private set; }
@@ -29,109 +32,112 @@ namespace Shiba.Scripting
 
         public object Execute(string functionName, params object[] parameters)
         {
-            return ChakraHost.WithContext(() =>
+            ChakraHost.EnterContext();
+            var func = ChakraHost.GlobalObject.GetProperty(
+                JavaScriptPropertyId.FromString(functionName));
+            object result = null;
+            switch (func.ValueType)
             {
-                var func = ChakraHost.GlobalObject.GetProperty(
-                    JavaScriptPropertyId.FromString(functionName));
-
-                switch (func.ValueType)
+                case JavaScriptValueType.Function:
                 {
-                    case JavaScriptValueType.Function:
-                    {
-                        var param = _prefix.Concat(parameters.Select(it => it.ToJavaScriptValue())).ToArray();
+                    var param = _prefix.Concat(parameters.Select(it => it.ToJavaScriptValue())).ToArray();
 
-                        var result = func.CallFunction(param);
+                    result = func.CallFunction(param).ToNative();
 
-                        return result.ToNative();
-                    }
-                    default:
-                        return null;
                 }
-            });
+                    break;
+                default:
+                    break;
+            }
+            ChakraHost.LeaveContext();
+            return result;
         }
 
         public object Execute(string script)
         {
-            return ChakraHost.WithContext(() =>
-            {
-                var result = ChakraHost.RunScript(script);
-                return result.ToNative();
-            });
+            ChakraHost.EnterContext();
+            var result = ChakraHost.RunScript(script).ToNative();
+            ChakraHost.LeaveContext();
+            return result;
         }
-
+        
         public void AddObject(string name, object value)
         {
-            ChakraHost.WithContext(() =>
+            if (value == null || string.IsNullOrEmpty(name)) throw new ArgumentException();
+
+            ChakraHost.EnterContext();
+            var objPropertyId = JavaScriptPropertyId.FromString(name);
+            switch (value)
             {
-                if (value == null || string.IsNullOrEmpty(name)) throw new ArgumentException();
+                case string _:
+                case bool _:
+                case int _:
+                case decimal _:
+                case float _:
+                case double _:
+                case null:
+                    ChakraHost.GlobalObject.SetProperty(objPropertyId, value.ToJavaScriptValue(),
+                        true);
+                    break;
+                default:
+                    var obj = JavaScriptValue.CreateObject();
+                    var type = value.GetType().GetTypeInfo();
+                    var members = type.GetMembers()
+                        .Where(it => it.GetCustomAttribute<JsExportAttribute>() != null);
 
-                var objPropertyId = JavaScriptPropertyId.FromString(name);
-                switch (value)
-                {
-                    case string _:
-                    case bool _:
-                    case int _:
-                    case decimal _:
-                    case float _:
-                    case double _:
-                    case null:
-                        ChakraHost.GlobalObject.SetProperty(objPropertyId, value.ToJavaScriptValue(),
-                            true);
-                        break;
-                    default:
-                        var obj = JavaScriptValue.CreateObject();
-                        var type = value.GetType().GetTypeInfo();
-                        var members = type.GetMembers()
-                            .Where(it => it.GetCustomAttribute<JsExportAttribute>() != null);
+                    foreach (var item in members)
+                        switch (item)
+                        {
+                            case MethodInfo method:
+                                var functionId =
+                                    JavaScriptPropertyId.FromString(method.GetCustomAttribute<JsExportAttribute>()
+                                        .Name);
+                                var parameter = method.GetParameters();
 
-                        foreach (var item in members)
-                            switch (item)
-                            {
-                                case MethodInfo method:
-                                    var functionId =
-                                        JavaScriptPropertyId.FromString(method.GetCustomAttribute<JsExportAttribute>()
-                                            .Name);
-                                    var parameter = method.GetParameters();
-
-                                    JavaScriptValue Function(JavaScriptValue callee, bool call,
-                                        JavaScriptValue[] arguments,
-                                        ushort count, IntPtr data)
+                                JavaScriptValue Function(JavaScriptValue callee, bool call,
+                                    JavaScriptValue[] arguments,
+                                    ushort count, IntPtr data)
+                                {
+                                    object[] param;
+                                    var args = arguments.Skip(1).ToArray();
+                                    if (!args.Any() && parameter.Length > 0)
                                     {
-                                        object[] param;
-                                        var args = arguments.Skip(1).ToArray();
-                                        if (count >= parameter.Length)
-                                            param = Enumerable.Range(0, parameter.Length)
-                                                .Select(index => args[index].ToNative()).ToArray();
-                                        else
-                                            param = args.Select(it => it.ToNative()).Concat(Enumerable
-                                                .Range(count + 1, parameter.Length - count)
-                                                .Select(
-                                                    index =>
-                                                    {
-                                                        var paramType = parameter[index].ParameterType;
-                                                        return paramType.IsValueType
-                                                            ? Activator.CreateInstance(paramType)
-                                                            : null;
-                                                    })).ToArray();
-
-                                        var result = method.Invoke(value, param);
-                                        return result.ToJavaScriptValue();
+                                        return JavaScriptValue.Invalid;
                                     }
+                                    if (count >= parameter.Length)
+                                        param = Enumerable.Range(0, parameter.Length)
+                                            .Select(index => args.ElementAtOrDefault(index).ToNative()).ToArray();
+                                    else
+                                        param = args.Select(it => it.ToNative()).Concat(Enumerable
+                                            .Range(count + 1, parameter.Length - count)
+                                            .Select(
+                                                index =>
+                                                {
+                                                    var paramType = parameter[index].ParameterType;
+                                                    return paramType.IsValueType
+                                                        ? Activator.CreateInstance(paramType)
+                                                        : null;
+                                                })).ToArray();
 
-                                    var function = JavaScriptValue.CreateFunction(Function, IntPtr.Zero);
-                                    obj.SetProperty(functionId, function, true);
-                                    break;
-                                case PropertyInfo property:
-                                    var propertyId =
-                                        JavaScriptPropertyId.FromString(property.GetCustomAttribute<JsExportAttribute>()
-                                            .Name);
-                                    obj.SetProperty(propertyId, property.GetValue(value).ToJavaScriptValue(), false);
-                                    break;
-                            }
-                        ChakraHost.GlobalObject.SetProperty(objPropertyId, obj, true);
-                        break;
-                }
-            });
+                                    var result = method.Invoke(value, param);
+                                    return result.ToJavaScriptValue();
+                                }
+                                _functions.Add(Function);
+                                var function = JavaScriptValue.CreateFunction(Function, IntPtr.Zero);
+                                obj.SetProperty(functionId, function, true);
+                                break;
+                            case PropertyInfo property:
+                                var propertyId =
+                                    JavaScriptPropertyId.FromString(property.GetCustomAttribute<JsExportAttribute>()
+                                        .Name);
+
+                                obj.SetProperty(propertyId, property.GetValue(value).ToJavaScriptValue(), false);
+                                break;
+                        }
+                    ChakraHost.GlobalObject.SetProperty(objPropertyId, obj, true);
+                    break;
+            }
+            ChakraHost.LeaveContext();
         }
 
         public void AddConversion(ITypeConversion conversion)
