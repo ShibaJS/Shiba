@@ -40,13 +40,13 @@ namespace ChakraHosting
         /// <summary>
         ///     Using Eval or Function constructor will throw an exception.
         /// </summary>
-        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Eval is a valid function name.")]
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly",
+            Justification = "Eval is a valid function name.")]
         DisableEval = 0x00000010,
 
         /// <summary>
         ///     Runtime will enable all experimental features.
         /// </summary>
-        /// 
         EnableExperimentalFeatures = 0x00000020,
 
         /// <summary>

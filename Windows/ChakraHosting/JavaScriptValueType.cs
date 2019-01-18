@@ -68,6 +68,6 @@
         /// <summary>
         ///     The value is a JavaScript DataView object value.
         /// </summary>
-        DataView = 12,
+        DataView = 12
     }
 }

@@ -12,12 +12,12 @@ namespace ChakraHosting
     public struct JavaScriptPropertyId : IEquatable<JavaScriptPropertyId>
     {
         /// <summary>
-        /// The id.
+        ///     The id.
         /// </summary>
         private readonly IntPtr id;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="JavaScriptPropertyId"/> struct. 
+        ///     Initializes a new instance of the <see cref="JavaScriptPropertyId" /> struct.
         /// </summary>
         /// <param name="id">The ID.</param>
         internal JavaScriptPropertyId(IntPtr id)
@@ -28,38 +28,34 @@ namespace ChakraHosting
         /// <summary>
         ///     Gets an invalid ID.
         /// </summary>
-        public static JavaScriptPropertyId Invalid
-        {
-            get { return new JavaScriptPropertyId(IntPtr.Zero); }
-        }
+        public static JavaScriptPropertyId Invalid => new JavaScriptPropertyId(IntPtr.Zero);
 
         /// <summary>
         ///     Gets the name associated with the property ID.
         /// </summary>
         /// <remarks>
         ///     <para>
-        ///     Requires an active script context.
+        ///         Requires an active script context.
         ///     </para>
         /// </remarks>
         public string Name
         {
             get
             {
-                string name;
-                Native.ThrowIfError(Native.JsGetPropertyNameFromId(this, out name));
+                Native.ThrowIfError(Native.JsGetPropertyNameFromId(this, out var name));
                 return name;
             }
         }
 
         /// <summary>
-        ///     Gets the property ID associated with the name. 
+        ///     Gets the property ID associated with the name.
         /// </summary>
         /// <remarks>
         ///     <para>
-        ///     Property IDs are specific to a context and cannot be used across contexts.
+        ///         Property IDs are specific to a context and cannot be used across contexts.
         ///     </para>
         ///     <para>
-        ///     Requires an active script context.
+        ///         Requires an active script context.
         ///     </para>
         /// </remarks>
         /// <param name="name">
@@ -68,8 +64,7 @@ namespace ChakraHosting
         /// <returns>The property ID in this runtime for the given name.</returns>
         public static JavaScriptPropertyId FromString(string name)
         {
-            JavaScriptPropertyId id;
-            Native.ThrowIfError(Native.JsGetPropertyIdFromName(name, out id));
+            Native.ThrowIfError(Native.JsGetPropertyIdFromName(name, out var id));
             return id;
         }
 
@@ -112,12 +107,9 @@ namespace ChakraHosting
         /// <returns>Whether the two property IDs are the same.</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
-            {
-                return false;
-            }
+            if (ReferenceEquals(null, obj)) return false;
 
-            return obj is JavaScriptPropertyId && Equals((JavaScriptPropertyId)obj);
+            return obj is JavaScriptPropertyId && Equals((JavaScriptPropertyId) obj);
         }
 
         /// <summary>

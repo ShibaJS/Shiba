@@ -8,12 +8,12 @@ namespace ChakraHosting
     public sealed class JavaScriptScriptException : JavaScriptException
     {
         /// <summary>
-        /// The error.
+        ///     The error.
         /// </summary>
         private readonly JavaScriptValue error;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="JavaScriptScriptException"/> class. 
+        ///     Initializes a new instance of the <see cref="JavaScriptScriptException" /> class.
         /// </summary>
         /// <param name="code">The error code returned.</param>
         /// <param name="error">The JavaScript error object.</param>
@@ -23,7 +23,7 @@ namespace ChakraHosting
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="JavaScriptScriptException"/> class. 
+        ///     Initializes a new instance of the <see cref="JavaScriptScriptException" /> class.
         /// </summary>
         /// <param name="code">The error code returned.</param>
         /// <param name="error">The JavaScript error object.</param>
@@ -35,7 +35,7 @@ namespace ChakraHosting
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="JavaScriptScriptException"/> class.
+        ///     Initializes a new instance of the <see cref="JavaScriptScriptException" /> class.
         /// </summary>
         /// <param name="info">The serialization info.</param>
         /// <param name="context">The streaming context.</param>
@@ -47,12 +47,6 @@ namespace ChakraHosting
         /// <summary>
         ///     Gets a JavaScript object representing the script error.
         /// </summary>
-        public JavaScriptValue Error
-        {
-            get
-            {
-                return error;
-            }
-        }
+        public JavaScriptValue Error => error;
     }
 }

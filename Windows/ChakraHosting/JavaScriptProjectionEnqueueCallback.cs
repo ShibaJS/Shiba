@@ -13,7 +13,7 @@ namespace ChakraHosting
     public struct JavaScriptProjectionCallbackContext
     {
         /// <summary>
-        /// The reference.
+        ///     The reference.
         /// </summary>
         private readonly IntPtr reference;
     }
@@ -38,5 +38,6 @@ namespace ChakraHosting
     /// <param name="jsCallbck">The callback to be invoked on the original thread.</param>
     /// <param name="callbackState">The applications context.</param>
     /// <param name="jsContext">The Jsrt context that must be passed into jsCallback.</param>
-    public delegate void JavaScriptProjectionEnqueueCallback(JavaScriptProjectionCallback jsCallback, JavaScriptProjectionCallbackContext jsContext, IntPtr callbackState);
+    public delegate void JavaScriptProjectionEnqueueCallback(JavaScriptProjectionCallback jsCallback,
+        JavaScriptProjectionCallbackContext jsContext, IntPtr callbackState);
 }

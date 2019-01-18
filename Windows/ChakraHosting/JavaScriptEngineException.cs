@@ -8,7 +8,7 @@ namespace ChakraHosting
     public sealed class JavaScriptEngineException : JavaScriptException
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="JavaScriptEngineException"/> class. 
+        ///     Initializes a new instance of the <see cref="JavaScriptEngineException" /> class.
         /// </summary>
         /// <param name="code">The error code returned.</param>
         public JavaScriptEngineException(JavaScriptErrorCode code) :
@@ -17,7 +17,7 @@ namespace ChakraHosting
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="JavaScriptEngineException"/> class. 
+        ///     Initializes a new instance of the <see cref="JavaScriptEngineException" /> class.
         /// </summary>
         /// <param name="code">The error code returned.</param>
         /// <param name="message">The error message.</param>
@@ -27,7 +27,7 @@ namespace ChakraHosting
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="JavaScriptEngineException"/> class.
+        ///     Initializes a new instance of the <see cref="JavaScriptEngineException" /> class.
         /// </summary>
         /// <param name="info">The serialization info.</param>
         /// <param name="context">The streaming context.</param>

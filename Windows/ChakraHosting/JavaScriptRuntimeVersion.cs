@@ -18,6 +18,6 @@
         /// <summary>
         ///     Create runtime with highest version present on the machine at runtime.
         /// </summary>
-        VersionEdge = -1,
+        VersionEdge = -1
     }
 }

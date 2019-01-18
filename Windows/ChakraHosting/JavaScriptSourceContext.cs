@@ -8,12 +8,12 @@ namespace ChakraHosting
     public struct JavaScriptSourceContext : IEquatable<JavaScriptSourceContext>
     {
         /// <summary>
-        /// The context.
+        ///     The context.
         /// </summary>
         private readonly IntPtr context;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="JavaScriptSourceContext"/> struct.
+        ///     Initializes a new instance of the <see cref="JavaScriptSourceContext" /> struct.
         /// </summary>
         /// <param name="context">The context.</param>
         private JavaScriptSourceContext(IntPtr context)
@@ -24,10 +24,7 @@ namespace ChakraHosting
         /// <summary>
         ///     Gets an empty source context.
         /// </summary>
-        public static JavaScriptSourceContext None
-        {
-            get { return new JavaScriptSourceContext(new IntPtr(-1)); }
-        }
+        public static JavaScriptSourceContext None => new JavaScriptSourceContext(new IntPtr(-1));
 
         /// <summary>
         ///     The equality operator for source contexts.
@@ -136,7 +133,7 @@ namespace ChakraHosting
         }
 
         /// <summary>
-        ///     Creates a new source context. 
+        ///     Creates a new source context.
         /// </summary>
         /// <param name="cookie">
         ///     The cookie for the source context.
@@ -164,12 +161,9 @@ namespace ChakraHosting
         /// <returns>Whether the two source contexts are the same.</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
-            {
-                return false;
-            }
+            if (ReferenceEquals(null, obj)) return false;
 
-            return obj is JavaScriptSourceContext && Equals((JavaScriptSourceContext)obj);
+            return obj is JavaScriptSourceContext && Equals((JavaScriptSourceContext) obj);
         }
 
         /// <summary>

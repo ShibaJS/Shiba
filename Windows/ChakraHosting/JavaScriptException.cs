@@ -8,12 +8,12 @@ namespace ChakraHosting
     public class JavaScriptException : Exception
     {
         /// <summary>
-        /// The error code.
+        ///     The error code.
         /// </summary>
         private readonly JavaScriptErrorCode code;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="JavaScriptException"/> class. 
+        ///     Initializes a new instance of the <see cref="JavaScriptException" /> class.
         /// </summary>
         /// <param name="code">The error code returned.</param>
         public JavaScriptException(JavaScriptErrorCode code) :
@@ -22,7 +22,7 @@ namespace ChakraHosting
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="JavaScriptException"/> class. 
+        ///     Initializes a new instance of the <see cref="JavaScriptException" /> class.
         /// </summary>
         /// <param name="code">The error code returned.</param>
         /// <param name="message">The error message.</param>
@@ -33,17 +33,14 @@ namespace ChakraHosting
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="JavaScriptException"/> class. 
+        ///     Initializes a new instance of the <see cref="JavaScriptException" /> class.
         /// </summary>
         /// <param name="info">The serialization info.</param>
         /// <param name="context">The streaming context.</param>
         protected JavaScriptException(string message, Exception innerException) :
             base(message, innerException)
         {
-            if (message != null)
-            {
-                code = (JavaScriptErrorCode) base.HResult;
-            }
+            if (message != null) code = (JavaScriptErrorCode) HResult;
         }
 
         /*
@@ -61,9 +58,6 @@ namespace ChakraHosting
         /// <summary>
         ///     Gets the error code.
         /// </summary>
-        public JavaScriptErrorCode ErrorCode
-        {
-            get { return code; }
-        }
+        public JavaScriptErrorCode ErrorCode => code;
     }
 }
