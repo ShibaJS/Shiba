@@ -1,8 +1,12 @@
 package moe.tlaster.shiba.mapper
 
+import android.content.Context
 import android.graphics.Color
 import android.widget.TextView
 import moe.tlaster.shiba.IShibaContext
+import android.util.TypedValue
+
+
 
 class TextMapper : ViewMapper<TextView>() {
     override var hasDefaultProperty = true
@@ -18,6 +22,15 @@ class TextMapper : ViewMapper<TextView>() {
                     view.setTextColor(Color.parseColor(it))
                 }
             }))
+            add(PropertyMap("size", { view, it ->
+                if (view is TextView && it is Number) {
+                    view.textSize = spToPx(it.toFloat(), view.context).toFloat()
+                }
+            }))
         }
     }
+}
+
+fun spToPx(sp: Float, context: Context): Int {
+    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, context.resources.displayMetrics).toInt()
 }
