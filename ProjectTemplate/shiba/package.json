@@ -1,0 +1,20 @@
+{
+  "name": "shiba",
+  "version": "1.0.0",
+  "description": "Shiba core package",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [
+    "Shiba"
+  ],
+  "author": "Tlaster",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^10.12.18",
+    "tslint": "^5.12.1",
+    "typescript": "^3.2.4"
+  }
+}
