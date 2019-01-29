@@ -85,14 +85,7 @@ namespace Shiba.UWP.Sample
 
         private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-
-            var script = $"nhentai.home(1)";
-            var task = ShibaApp.Instance.Configuration.ScriptRuntime.Execute(script) as Task<object>;
-            var result = await task as string;
-            var list = JsonConvert.DeserializeObject<JArray>(result);
-
-
-            //Frame.Navigate(typeof(LivePage));
+            Frame.Navigate(typeof(LivePage));
         }
     }
 }

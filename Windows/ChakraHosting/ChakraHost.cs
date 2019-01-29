@@ -34,7 +34,7 @@ namespace ChakraHosting
 
         public void Init()
         {
-            Native.ThrowIfError(Native.JsCreateRuntime(JavaScriptRuntimeAttributes.None, null, out _runtime));
+            Native.ThrowIfError(Native.JsCreateRuntime(JavaScriptRuntimeAttributes.EnableExperimentalFeatures, null, out _runtime));
             Native.ThrowIfError(Native.JsCreateContext(_runtime, out _context));
             EnterContext();
             Native.ThrowIfError(Native.JsSetPromiseContinuationCallback(PromiseContinuationDelegate, IntPtr.Zero));

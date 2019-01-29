@@ -41,9 +41,7 @@ namespace Shiba.Scripting
                 case JavaScriptValueType.Function:
                 {
                     var param = _prefix.Concat(parameters.Select(it => it.ToJavaScriptValue())).ToArray();
-
                     result = func.CallFunction(param).ToNative();
-
                 }
                     break;
                 default:
@@ -73,7 +71,7 @@ namespace Shiba.Scripting
                 case bool _:
                 case int _:
                 case decimal _:
-                case float _:
+                case float _:   
                 case double _:
                 case null:
                     ChakraHost.GlobalObject.SetProperty(objPropertyId, value.ToJavaScriptValue(),
