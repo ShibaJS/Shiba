@@ -8,4 +8,7 @@ export default class ShibaApp {
             name,
         });
     }
+    public getComponent(name: string): ShibaInlineComponent {
+        return this.components.filter((it) => it.name === name)[0].component;
+    }
 }

@@ -1,4 +1,3 @@
-import "./globals";
 import ShibaApp from "./ShibaApp";
-const Shiba = new ShibaApp();
-export default Shiba;
+declare var Shiba: ShibaApp;
+Shiba = new ShibaApp();
