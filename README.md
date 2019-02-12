@@ -2,8 +2,8 @@
 # Status  
 | Platform |  Build Status |  Download |
 |:---:|:---:|:---:|
-| .Net |[![Build status](https://ci.appveyor.com/api/projects/status/2qp96xf35naduen7?svg=true)](https://ci.appveyor.com/project/Tlaster/shiba) | [![NuGet version](https://badge.fury.io/nu/Shiba.svg)](https://badge.fury.io/nu/Shiba)|
-| Android |[![Build Status](https://travis-ci.com/Tlaster/Shiba.svg?branch=master)](https://travis-ci.com/Tlaster/Shiba)|[![Download](https://api.bintray.com/packages/tlaster/Shiba/Shiba/images/download.svg)](https://bintray.com/tlaster/Shiba/Shiba/_latestVersion) |  
+| .Net |[![Build status](https://ci.appveyor.com/api/projects/status/b0tdrkd15y8ufaq1/branch/master?svg=true)](https://ci.appveyor.com/project/ShibaJS/shiba/branch/master) | [![NuGet version](https://badge.fury.io/nu/Shiba.svg)](https://badge.fury.io/nu/Shiba)|
+| Android |[![Build Status](https://travis-ci.com/ShibaJS/Shiba.svg?branch=master)](https://travis-ci.com/ShibaJS/Shiba)|[![Download](https://api.bintray.com/packages/tlaster/Shiba/Shiba/images/download.svg)](https://bintray.com/tlaster/Shiba/Shiba/_latestVersion) |  
 
 **Shiba is still in development and is not production-ready** 
 
