@@ -145,10 +145,6 @@
     <Compile Include="CommonProperty\ICommonProperty.cs" />
     <Compile Include="ExtensionExecutors\IShibaExtension.cs" />
     <Compile Include="NativeRenderer.cs" />
-    <Compile Include="Parser\ShibaBaseListener.cs" />
-    <Compile Include="Parser\ShibaLexer.cs" />
-    <Compile Include="Parser\ShibaListener.cs" />
-    <Compile Include="Parser\ShibaParser.cs" />
     <Compile Include="Parser\ShibaParserWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripting\Conversion\JTokenConversion.cs" />
@@ -173,21 +169,12 @@
     <EmbeddedResource Include="Properties\Shiba.rd.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Antlr4.Runtime.Standard">
-      <Version>4.7.2</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.3</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.1</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Parser\Shiba.interp" />
-    <None Include="Parser\Shiba.tokens" />
-    <None Include="Parser\ShibaLexer.interp" />
-    <None Include="Parser\ShibaLexer.tokens" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ChakraHosting\ChakraHosting.csproj">

@@ -13,7 +13,7 @@ namespace Shiba.CommonProperty
     {
         public override string Name { get; } = "grid";
 
-        public override void SetValue(ShibaMap map, NativeView element, NativeViewGroup parent)
+        public override void SetValue(ShibaMap map, View targetShibaView, NativeView element, NativeViewGroup parent)
         {
             var row = map.Get<int>("row");
             var column = map.Get<int>("column");

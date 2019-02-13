@@ -31,14 +31,16 @@ namespace Shiba
     {
         public static T Get<T>(this ShibaMap map, string name)
         {
-            var value = map.Properties.FirstOrDefault(it => it.Name.IsCurrentPlatform(name))?.Value;
+            var value = map.Properties.FirstOrDefault(it => it.Key == name).Value;
             if (value == null) return default;
 
             var result = ShibaValueVisitor.GetValue(value, null);
             if (result is T targetResult) return targetResult;
 
-            if (typeof(IConvertible).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()))
-                return (T) Convert.ChangeType(result, typeof(T));
+            if (result.TryChangeType(typeof(T), out var castResult))
+            {
+                return (T) castResult;
+            }
 
             return default;
         }

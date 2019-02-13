@@ -11,7 +11,7 @@ namespace Shiba.CommonProperty
     {
         public override string Name { get; } = "relative";
 
-        public override void SetValue(ShibaMap map, NativeView element, NativeViewGroup parent)
+        public override void SetValue(ShibaMap map, View targetShibaView, NativeView element, NativeViewGroup parent)
         {
         }
     }

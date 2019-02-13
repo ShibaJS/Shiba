@@ -77,7 +77,7 @@ namespace Shiba.Visitors
         {
             var attribute =
                 ShibaApp.Instance.ViewMapping.Mappers.LastOrDefault(it =>
-                    view.ViewName.IsCurrentPlatform(it.ViewName));
+                    view.ViewName.IsCurrentPlatformAndCheckValue(it.ViewName));
             if (attribute == null) return null;
 
             var renderer = Renderer.GetOrAdd(attribute.ViewName, type => CreateRenderer(attribute));
@@ -104,7 +104,7 @@ namespace Shiba.Visitors
                     {
                         ShibaApp.Instance.Configuration.CommonProperties
                             .Where(cp => cp.Name == prop.Name.Value).ToList()
-                            .ForEach(cp => cp.Handle(prop.Value, it.native, target));
+                            .ForEach(cp => cp.Handle(prop.Value, it.view, it.native, target));
                     });
                 });
             }
@@ -276,21 +276,21 @@ namespace Shiba.Visitors
 //        }
 //    }
 
-    internal sealed class ShibaArrayVisitor : GenericVisitor<ShibaArray, IEnumerable<object>>
-    {
-        protected override IEnumerable<object> Parse(ShibaArray item, IShibaContext context)
-        {
-            var shibaArray = new ShibaArray();
-            shibaArray.AddRange(item.Select(it => GetValue(it, context)));
-            return shibaArray;
-        }
-    }
+    //internal sealed class ShibaArrayVisitor : GenericVisitor<ShibaArray, IEnumerable<object>>
+    //{
+    //    protected override IEnumerable<object> Parse(ShibaArray item, IShibaContext context)
+    //    {
+    //        var shibaArray = new ShibaArray();
+    //        shibaArray.AddRange(item.Select(it => GetValue(it, context)));
+    //        return shibaArray;
+    //    }
+    //}
 
-    internal sealed class BacisValueVisitor : GenericVisitor<BasicValue, object>
-    {
-        protected override object Parse(BasicValue item, IShibaContext context)
-        {
-            return item.Value;
-        }
-    }
+    //internal sealed class BacisValueVisitor : GenericVisitor<BasicValue, object>
+    //{
+    //    protected override object Parse(BasicValue item, IShibaContext context)
+    //    {
+    //        return item.Value;
+    //    }
+    //}
 }

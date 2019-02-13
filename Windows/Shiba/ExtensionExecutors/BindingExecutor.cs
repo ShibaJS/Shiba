@@ -27,9 +27,7 @@ namespace Shiba.ExtensionExecutors
         {
             var dataContextPath =
                 "DataContext";
-            var targetPath = value.Value != null && value.Value.TypeCode == ShibaValueType.Token
-                ? value.Value.Value as string
-                : null;
+            var targetPath = value.Value;
             var path = string.IsNullOrEmpty(targetPath)
                 ? dataContextPath
                 : $"{dataContextPath}.{targetPath}";
@@ -51,9 +49,7 @@ namespace Shiba.ExtensionExecutors
         {
             var dataContextPath =
                 "DataContext";
-            var targetPath = value.Value != null && value.Value.TypeCode == ShibaValueType.Token
-                ? value.Value.Value as string
-                : null;
+            var targetPath = value.Value;
             var path = dataContextPath;
 
             return new NativeBinding

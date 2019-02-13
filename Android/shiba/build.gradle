@@ -44,8 +44,6 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.+'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
 
-    implementation 'org.antlr:antlr4:4.7.+'
-
     implementation 'com.github.LiquidPlayer:LiquidCore:0.6.+'
 
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.+'

@@ -112,8 +112,7 @@ namespace Shiba.ViewMappers
 
             foreach (var property in view.Properties)
             {
-                if (!string.IsNullOrEmpty(property.Name.Prefix) &&
-                    property.Name.Prefix != ShibaApp.Instance.Configuration.PlatformType)
+                if (!property.Name.IsCurrentPlatform())
                     continue;
 
                 var cache = _propertyCache.FirstOrDefault(it => it.Name == property.Name.Value);

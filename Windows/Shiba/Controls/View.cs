@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 using System.Linq;
+using Shiba.Visitors;
 
 namespace Shiba.Controls
 {
@@ -30,11 +33,6 @@ namespace Shiba.Controls
             }
         }
 
-        public override string ToString()
-        {
-            return $"{Name} = {Value}";
-        }
-
         private bool Equals(Property other)
         {
             return Equals(Name, other.Name) && Equals(Value, other.Value);
@@ -43,7 +41,7 @@ namespace Shiba.Controls
 
     public sealed class ShibaExtension
     {
-        public ShibaExtension(string type, BasicValue value, string script)
+        public ShibaExtension(string type, string value, string script)
         {
             Type = type;
             Value = value;
@@ -51,7 +49,7 @@ namespace Shiba.Controls
         }
 
         public string Type { get; }
-        public BasicValue Value { get; }
+        public string Value { get; }
         public string Script { get; }
 
         public override bool Equals(object obj)
@@ -69,11 +67,6 @@ namespace Shiba.Controls
             }
         }
 
-        public override string ToString()
-        {
-            return $"${Type} {Value}";
-        }
-
         private bool Equals(ShibaExtension other)
         {
             return string.Equals(Type, other.Type) && Equals(Value, other.Value);
@@ -82,17 +75,25 @@ namespace Shiba.Controls
 
     public sealed class View
     {
-        public View(ShibaToken viewName, object defaultValue = null)
+        public View(ShibaToken viewName, string rawString, object defaultValue = null)
         {
+            RawString = rawString;
             ViewName = viewName;
             DefaultValue = defaultValue;
         }
+
+        public string RawString { get; }
 
         public ShibaToken ViewName { get; }
         public object DefaultValue { get; }
         public List<View> Children { get; } = new List<View>();
         public List<Property> Properties { get; } = new List<Property>();
         public View Parent { get; internal set; }
+
+        public object GetProperty(string name)
+        {
+            return ShibaValueVisitor.GetValue(Properties.FirstOrDefault(it => it.Name.IsCurrentPlatformAndCheckValue(name)).Value, null);
+        }
 
         public override bool Equals(object obj)
         {
@@ -116,10 +117,7 @@ namespace Shiba.Controls
 
         public override string ToString()
         {
-            if (DefaultValue != null) return $"{ViewName} -> {DefaultValue}";
-
-            return
-                $"{ViewName} {{ {string.Join(" ", Properties.Select(it => it.ToString()))} {string.Join(" ", Children.Select(it => it.ToString()))} }}";
+            return RawString;
         }
 
         private bool Equals(View other)
@@ -129,88 +127,93 @@ namespace Shiba.Controls
         }
     }
 
-    public sealed class ShibaArray : List<object>
-    {
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj is ShibaArray array && Equals(array);
-        }
+    //public sealed class ShibaArray : List<object>
+    //{
+    //    public override bool Equals(object obj)
+    //    {
+    //        if (ReferenceEquals(null, obj)) return false;
+    //        if (ReferenceEquals(this, obj)) return true;
+    //        return obj is ShibaArray array && Equals(array);
+    //    }
 
-        public override string ToString()
-        {
-            return $"[{string.Join(",", this.Select(it => it.ToString()))}]";
-        }
+    //    public override string ToString()
+    //    {
+    //        return $"[{string.Join(",", this.Select(it => it.ToString()))}]";
+    //    }
 
-        private bool Equals(ShibaArray other)
-        {
-            return this.SequenceEqual(other);
-        }
-    }
+    //    private bool Equals(ShibaArray other)
+    //    {
+    //        return this.SequenceEqual(other);
+    //    }
+    //}
 
-    public enum ShibaValueType
-    {
-        String,
-        Token,
-        Number,
-        Null,
-        Boolean
-    }
+    //public enum ShibaValueType
+    //{
+    //    String,
+    //    Token,
+    //    Number,
+    //    Null,
+    //    Boolean
+    //}
 
-    public sealed class BasicValue
-    {
-        public BasicValue(ShibaValueType typeCode, object value)
-        {
-            TypeCode = typeCode;
-            Value = value;
-        }
+    //public sealed class BasicValue
+    //{
+    //    public BasicValue(ShibaValueType typeCode, object value)
+    //    {
+    //        TypeCode = typeCode;
+    //        Value = value;
+    //    }
 
-        public ShibaValueType TypeCode { get; }
-        public object Value { get; }
+    //    public ShibaValueType TypeCode { get; }
+    //    public object Value { get; }
 
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj is BasicValue value && Equals(value);
-        }
+    //    public override bool Equals(object obj)
+    //    {
+    //        if (ReferenceEquals(null, obj)) return false;
+    //        if (ReferenceEquals(this, obj)) return true;
+    //        return obj is BasicValue value && Equals(value);
+    //    }
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return ((int) TypeCode * 397) ^ (Value != null ? Value.GetHashCode() : 0);
-            }
-        }
+    //    public override int GetHashCode()
+    //    {
+    //        unchecked
+    //        {
+    //            return ((int) TypeCode * 397) ^ (Value != null ? Value.GetHashCode() : 0);
+    //        }
+    //    }
 
-        public override string ToString()
-        {
-            switch (TypeCode)
-            {
-                case ShibaValueType.String:
-                    return $"\"{Value}\"";
-                case ShibaValueType.Token:
-                case ShibaValueType.Number:
-                    return $"{Value}";
-                case ShibaValueType.Null:
-                    return "null";
-                case ShibaValueType.Boolean:
-                    return $"{Value.ToString().ToLower()}";
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
+    //    public override string ToString()
+    //    {
+    //        switch (TypeCode)
+    //        {
+    //            case ShibaValueType.String:
+    //                return $"\"{Value}\"";
+    //            case ShibaValueType.Token:
+    //            case ShibaValueType.Number:
+    //                return $"{Value}";
+    //            case ShibaValueType.Null:
+    //                return "null";
+    //            case ShibaValueType.Boolean:
+    //                return $"{Value.ToString().ToLower()}";
+    //            default:
+    //                throw new ArgumentOutOfRangeException();
+    //        }
+    //    }
 
-        private bool Equals(BasicValue other)
-        {
-            return TypeCode == other.TypeCode && Equals(Value, other.Value);
-        }
-    }
+    //    private bool Equals(BasicValue other)
+    //    {
+    //        return TypeCode == other.TypeCode && Equals(Value, other.Value);
+    //    }
+    //}
 
     public sealed class ShibaMap
     {
-        public List<Property> Properties { get; } = new List<Property>();
+        public ShibaMap(IDictionary<string, string> properties)
+        {
+            Properties = new ReadOnlyDictionary<string, string>(properties);
+        }
+
+        public ReadOnlyDictionary<string, string> Properties { get; }
 
         public override bool Equals(object obj)
         {
@@ -224,24 +227,10 @@ namespace Shiba.Controls
             return Properties != null ? Properties.GetHashCode() : 0;
         }
 
-        public override string ToString()
-        {
-            return $"[ {string.Join(" ", Properties.Select(it => it.ToString()))} ]";
-        }
-
         private bool Equals(ShibaMap other)
         {
             return Properties.SequenceEqual(other.Properties);
         }
-
-        //public object this[string name]
-        //{
-        //    get
-        //    {
-        //        var value = Properties.FirstOrDefault(it => it.Name.IsCurrentPlatform(name))?.Value;
-
-        //    }
-        //}
     }
 
     public sealed class ShibaToken
@@ -274,7 +263,7 @@ namespace Shiba.Controls
             }
         }
 
-        public bool IsCurrentPlatform(string value)
+        public bool IsCurrentPlatformAndCheckValue(string value)
         {
             if (ReferenceEquals(value, null)) return false;
             return IsCurrentPlatform() && string.Equals(value, Value);
@@ -310,11 +299,6 @@ namespace Shiba.Controls
             return !(c1 == c2);
         }
 
-        public override string ToString()
-        {
-            return string.IsNullOrEmpty(Prefix) ? Value : $"{Prefix}:{Value}";
-        }
-
         private bool Equals(ShibaToken other)
         {
             return string.Equals(Prefix, other.Prefix) && string.Equals(Value, other.Value);
@@ -346,11 +330,6 @@ namespace Shiba.Controls
                 return ((Name != null ? Name.GetHashCode() : 0) * 397) ^
                        (Parameters != null ? Parameters.GetHashCode() : 0);
             }
-        }
-
-        public override string ToString()
-        {
-            return $"{Name}({string.Join(",", Parameters.Select(it => it.ToString()))})";
         }
 
         private bool Equals(ShibaFunction other)
