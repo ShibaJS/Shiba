@@ -117,37 +117,57 @@ namespace Shiba.Parser
         }
     }
 
-    internal abstract class PropertyBaseVisitor<T> : GenericVisitor<T, Property>
+    internal sealed class ValueParser
     {
         private const char OpenCurly = '{';
         private const char CloseCurly = '}';
         private const char OpenBracket = '[';
         private const char CloseBracket = ']';
-
-        protected object GetPropertyValue(string value)
+        private const char ExtensionStart = '$';
+        public object Parse(string value)
         {
             value = value.Trim();
-            var subValue = value.Substring(1, value.Length - 2);
             if (value.StartsWith(OpenCurly) && value.EndsWith(CloseCurly))
             {
-                // TODO: Find a better way
-                var function = GetValue<ShibaFunction>(subValue);
+                var subValue = value.Substring(1, value.Length - 2);
+                var function = ShibaVisitor.GetValue<ShibaFunction>(subValue);
                 if (function != null)
                 {
                     return function;
                 }
-                var extension = GetValue<ShibaExtension>(subValue);
+            }
+            else if (value.StartsWith(OpenBracket) && value.EndsWith(CloseBracket))
+            {
+                var subValue = value.Substring(1, value.Length - 2);
+                return ShibaVisitor.GetValue<ShibaMap>(subValue);
+            }
+            else if (value.StartsWith(ExtensionStart))
+            {
+                var extension = ShibaVisitor.GetValue<ShibaExtension>(value);
                 if (extension != null)
                 {
                     return extension;
                 }
             }
-            else if (value.StartsWith(OpenBracket) && value.EndsWith(CloseBracket))
-            {
-                return GetValue<ShibaMap>(subValue);
-            }
 
+            if (value.TryChangeType(typeof(bool), out var boolValue))
+            {
+                return boolValue;
+            }
+            if (value.TryChangeType(typeof(decimal), out var numberValue))
+            {
+                return numberValue;
+            }
             return value;
+        }
+    }
+
+    internal abstract class PropertyBaseVisitor<T> : GenericVisitor<T, Property>
+    {
+
+        protected object GetPropertyValue(string value)
+        {
+            return Singleton<ValueParser>.Instance.Parse(value);
         }
     }
 
@@ -192,21 +212,24 @@ namespace Shiba.Parser
 
     internal sealed class FunctionVisitor : GenericVisitor<string, ShibaFunction>
     {
-        protected override ShibaFunction Parse(string tree)
+        private const char Comma = ',';
+        protected override ShibaFunction Parse(string value)
         {
-            var name = tree.Identifier().GetText();
-            var function = new ShibaFunction(name);
-            if (tree.value() != null) function.Parameters.AddRange(tree.value().Select(GetValue));
-
+            var index = value.IndexOf('(');
+            var name = value.Substring(0, index);
+            var function = new ShibaFunction(name.Trim());
+            value = value.Substring(index + 1, value.Length - index - 2);
+            var param = value.Split(Comma).Select(it => Singleton<ValueParser>.Instance.Parse(it.Trim()));
+            function.Parameters.AddRange(param);
             return function;
         }
     }
 
     internal sealed class ShibaExtensionVisitor : GenericVisitor<string, ShibaExtension>
     {
-        private const char ExtensionStart = '$';
         private const char Comma = ',';
         private const char EqualSign = '=';
+        private const char ExtensionStart = '$';
 
         protected override ShibaExtension Parse(string tree)
         {
@@ -222,13 +245,16 @@ namespace Shiba.Parser
             // Checking for extension value
             value = value.Substring(index + 1, value.Length - index - 1);
             index = value.IndexOf(Comma);
-            if (index == -1)// value only contains binding like {$bind path}
+            if (index == -1)// value only contains binding like `$bind path`
             {
                 return new ShibaExtension(name.Trim(), value.Trim(), string.Empty);
             }
-            // or value contains some other stuff link {$bind path, script={hello}}
+
+            var bindingValue = value.Substring(0, index).Trim();
+            // or value contains script like `$bind path, {return hello}`
             value = value.Substring(index + 1, value.Length - index - 1).Trim();
-            var attrs = value.Split(Comma).Select(it => it.Split(EqualSign))
+            var script = value.Substring(1, value.Length - 2);
+            return new ShibaExtension(name.Trim(), bindingValue, script);
         }
     }
 

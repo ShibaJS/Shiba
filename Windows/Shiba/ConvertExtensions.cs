@@ -133,8 +133,16 @@ namespace Shiba
 
             if (value.CanChangeType(type))
             {
-                result = Convert.ChangeType(value, type);
-                return true;
+                try
+                {
+                    result = Convert.ChangeType(value, type);
+                    return true;
+                }
+                catch
+                {
+                    result = value;
+                    return false;
+                }
             }
 
             result = value;

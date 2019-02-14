@@ -14,17 +14,11 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <shiba:ShibaHost Name="host" DataContext="{x:Bind Json}">
-            text -> $bind ${
-                if (it === null) return null;
-                return it.hello.world
-            }
+            &lt;text text="$bind ,{ if (it === null) return null; return it.hello.world }" /&gt;
         </shiba:ShibaHost>
         <TextBox Grid.Row="1" Name="text" TextChanged="TextBox_OnTextChanged" AcceptsReturn="True">
             <TextBox.Text>
-                text -> $bind ${
-                if (it === null) return null;
-                return it.hello.world
-                }
+                &lt;text text="$bind ,{ if (it === null) return null; return it.hello.world }" /&gt;
             </TextBox.Text>
         </TextBox>
         <Button Margin="8" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="ButtonBase_OnClick" Content="Go Streaming!"/>
