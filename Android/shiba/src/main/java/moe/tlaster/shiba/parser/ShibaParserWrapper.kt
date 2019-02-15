@@ -1,177 +1,250 @@
 package moe.tlaster.shiba.parser
 
 import moe.tlaster.shiba.type.*
-import org.antlr.v4.runtime.CharStreams
-import org.antlr.v4.runtime.CommonTokenStream
-import org.antlr.v4.runtime.tree.ParseTree
-import org.antlr.v4.runtime.tree.TerminalNode
+import org.w3c.dom.Attr
+import org.w3c.dom.Element
+import org.w3c.dom.Node
+import org.xml.sax.InputSource
+import java.io.StringReader
+import javax.xml.parsers.*
+
+private val Node.name
+    get() = this.localName
+private val Node.namespaceName
+    get() = this.namespaceURI
+
+private fun Node.hasChildElement(): Boolean {
+    if (!this.hasChildNodes()) {
+        return false
+    }
+    for (index in 0 until this.childNodes.length) {
+        val item = this.childNodes.item(index)
+        if (item is Element) {
+            return true
+        }
+    }
+    return false
+}
+
+private fun Node.childElements(): List<Element> {
+    if (!this.hasChildElement()) {
+        return listOf()
+    }
+    return (0 until childNodes.length).map { index ->
+        childNodes.item(index)
+                ?.takeIf {
+                    it is Element
+                }?.let {
+                    it as Element
+                }
+    }.filter {
+        it != null
+    }.map {
+        it!!
+    }
+}
 
 interface IShibaVisitor {
     val type: Class<*>
-    fun visit(tree: ParseTree): Any
+    val returnType: Class<*>
+    fun visit(tree: Any): Any
 }
 
 private val visitors = ArrayList<IShibaVisitor>().apply {
     add(ViewVisitor())
+    add(ElementPropertyVisitor())
     add(PropertyVisitor())
-    add(ValueVisitor())
     add(ShibaTokenVisitor())
     add(ShibaMapVisitor())
-    add(BasicValueVisitor())
     add(FunctionVisitor())
-    add(ArrayVisitor())
     add(ShibaExtensionVisitor())
 }
 
-private fun <T> ParseTree.visit(): T? {
-    return visitors.find { it.type == this.javaClass }?.visit(this) as T?
+private inline fun <reified T> Any.visit(): T? {
+    return visitors.find { it.type == this.javaClass && it.returnType == T::class.java }?.visit(this) as T?
 }
 
-private abstract class AbsVisitor<T : ParseTree, K : Any> : IShibaVisitor {
-    override fun visit(tree: ParseTree): Any {
+private abstract class AbsVisitor<T : Any, K : Any> : IShibaVisitor {
+    override fun visit(tree: Any): Any {
         return parse(tree as T)
     }
 
     abstract fun parse(tree: T): K
 }
 
-private final class ViewVisitor(override val type: Class<*> = ShibaParser.ViewContext::class.java) : AbsVisitor<ShibaParser.ViewContext, View>() {
-    override fun parse(tree: ShibaParser.ViewContext): View {
-        val viewName = tree.identifier().visit<ShibaToken>()
-                ?: throw IllegalArgumentException("view name can not be null at line:${tree.start.line} column:${tree.start.startIndex}")
+private final class ViewVisitor(override val type: Class<*> = Element::class.java, override val returnType: Class<*> = View::class.java) : AbsVisitor<Element, View>() {
+    override fun parse(tree: Element): View {
+        val viewName = (tree as Node).visit<ShibaToken>()
+                ?: throw IllegalArgumentException("view name can not be null at $tree")
         val view = View(viewName)
-        val defaultValue = tree.value()?.visit<Any>()
-        if (defaultValue != null) {
-            view.defaultValue = defaultValue
+        for (index in 0 until tree.attributes.length) {
+            tree.attributes.item(index)?.let {
+                it as Attr
+            }?.let {
+                it.visit<Property>()
+            }?.let {
+                view.properties += it
+            }
         }
-        if (tree.property() != null) {
-            view.properties += tree.property().map { it.visit<Property>() }.filter { it != null }.map { it!! }
+        if (!tree.hasChildElement()) {
+            // TODO: default property
+        } else {
+            tree.childElements().forEach { element ->
+                if (element.localName.contains('.')
+                        && element.localName.split('.').firstOrNull() == viewName.value
+                        && element.namespaceName == viewName.prefix) {
+                    element.visit<Property>()?.let {
+                        view.properties += it
+                    }
+                } else {
+                    element.visit<View>()?.let {
+                        view.children += it
+                    }
+                }
+            }
         }
-        if (tree.view() != null) {
-            view.children += tree.view()
-                    .map { it.visit<View>() }
-                    .filter { it != null }
-                    .map { it!! }
-                    .map { it.apply { it.parent = view } }
-        }
+
         return view
     }
 }
 
-private final class PropertyVisitor(override val type: Class<*> = ShibaParser.PropertyContext::class.java) : AbsVisitor<ShibaParser.PropertyContext, Property>() {
-    override fun parse(tree: ShibaParser.PropertyContext): Property {
-        val tokenName = tree.identifier().visit<ShibaToken>()
-        val value = tree.value().visit<Any>()
-        if (tokenName != null && value != null) {
-            return Property(tokenName, value)
+private fun parsePropertyValue(propertyValue: String): Any {
+    val OpenCurly = '{'
+    val CloseCurly = '}'
+    val OpenBracket = '['
+    val CloseBracket = ']'
+    val ExtensionStart = '$'
+    val value = propertyValue.trim()
+    when {
+        value.startsWith(OpenCurly) && value.endsWith(CloseCurly) -> {
+            val subValue = value.substring(1, value.length - 2)
+            val function = subValue.visit<ShibaFunction>()
+            if (function != null) {
+                return function
+            }
         }
-        throw IllegalArgumentException("propertyPath can not contain null at line:${tree.start.line} column: ${tree.start.startIndex}")
+        value.startsWith(OpenBracket) && value.endsWith(CloseBracket) -> {
+            val subValue = value.substring(1, value.length - 2)
+            val map = subValue.visit<ShibaMap>()
+            if (map != null) {
+                return map
+            }
+        }
+        value.startsWith(ExtensionStart) -> {
+            val extension = value.visit<ShibaExtension>()
+            if (extension != null) {
+                return extension
+            }
+        }
+    }
+
+    if (value == "true" || value == "false") {
+        return value.toBoolean()
+    }
+
+
+    val numberValue = value.toBigDecimalOrNull()
+    if (numberValue != null) {
+        return numberValue
+    }
+    return value
+}
+
+private final class ElementPropertyVisitor(override val type: Class<*> = Element::class.java, override val returnType: Class<*> = Property::class.java) : AbsVisitor<Element, Property>() {
+    override fun parse(tree: Element): Property {
+        val name = (tree as Node).visit<ShibaToken>()
+                ?: throw IllegalArgumentException("view name can not be null at $tree")
+        if (tree.hasChildElement()) {
+            tree.childElements().firstOrNull()?.visit<View>()?.let {
+                return Property(name, it)
+            }
+        }
+        return Property(name, parsePropertyValue(tree.textContent))
     }
 }
 
-private final class ValueVisitor(override val type: Class<*> = ShibaParser.ValueContext::class.java) : AbsVisitor<ShibaParser.ValueContext, Any>() {
-    override fun parse(tree: ShibaParser.ValueContext): Any {
-        val result = tree.children.first().visit<Any>()
-        if (result == null){
-            throw NotImplementedError("${tree.children.first().text} is not implement")
+private final class PropertyVisitor(override val type: Class<*> = Attr::class.java, override val returnType: Class<*> = Property::class.java) : AbsVisitor<Attr, Property>() {
+    override fun parse(tree: Attr): Property {
+        val tokenName = (tree as Node).visit<ShibaToken>()
+                ?: throw IllegalArgumentException("view name can not be null at $tree")
+        val value = parsePropertyValue(tree.value)
+        return Property(tokenName, value)
+    }
+}
+
+
+private final class ShibaExtensionVisitor(override val type: Class<*> = String::class.java, override val returnType: Class<*> = ShibaExtension::class.java) : AbsVisitor<String, ShibaExtension>() {
+    private val ScriptStart = '{'
+    private val ExtensionStart = '$'
+    override fun parse(tree: String): ShibaExtension {
+        if (!tree.startsWith(ExtensionStart)) {
+            throw IllegalArgumentException("wrong shiba extension at $tree")
+        }
+        var value = tree.trimStart(ExtensionStart)
+        var index = tree.indexOf(' ')
+        val name = value.substring(0, index)
+        value = value.substring(index + 1, value.length - index - 1)
+        index = value.indexOf(ScriptStart)
+        if (index == -1) {
+            return ShibaExtension(name.trim(), value.trim(), null)
+        }
+        val bindingValue = value.substring(0, index).trim()
+        value = value.substring(index + 1, value.length - index - 1).trim()
+        val script = value.substring(1, value.length - 2)
+        return ShibaExtension(name.trim(), bindingValue, script)
+    }
+
+}
+
+private final class ShibaTokenVisitor(override val type: Class<*> = Node::class.java, override val returnType: Class<*> = ShibaToken::class.java) : AbsVisitor<Node, ShibaToken>() {
+    override fun parse(tree: Node): ShibaToken {
+        return if (tree.prefix.isNullOrEmpty()) {
+            ShibaToken("", tree.name)
         } else {
-            return result
+            ShibaToken(tree.namespaceName, tree.name)
         }
     }
 }
 
-private final class ShibaExtensionVisitor(override val type: Class<*> = ShibaParser.ShibaExtensionContext::class.java) : AbsVisitor<ShibaParser.ShibaExtensionContext, ShibaExtension>() {
-    override fun parse(tree: ShibaParser.ShibaExtensionContext): ShibaExtension {
-        val name = tree.Identifier().text
-        val value = tree.basicValue()?.visit<BasicValue>()
-        val script = tree.Script()?.text
-        return ShibaExtension(name, value, script)
+private final class ShibaMapVisitor(override val type: Class<*> = String::class.java, override val returnType: Class<*> = ShibaMap::class.java) : AbsVisitor<String, ShibaMap>() {
+    private val EqualSign = '='
+    private val Comma = ','
+    override fun parse(tree: String): ShibaMap {
+        return ShibaMap(tree
+                .split(Comma)
+                .map { it.trim() }
+                .map { it.split(EqualSign) }
+                .map { it.first() to it.last() }
+                .toMap())
     }
-
 }
 
-private final class ShibaTokenVisitor(override val type: Class<*> = ShibaParser.IdentifierContext::class.java) : AbsVisitor<ShibaParser.IdentifierContext, ShibaToken>() {
-    override fun parse(tree: ShibaParser.IdentifierContext): ShibaToken {
-        when(tree.Identifier().size) {
-            1 -> return ShibaToken("", tree.Identifier().first().text)
-            2 -> return ShibaToken(tree.Identifier().first().text, tree.Identifier().last().text)
+private final class FunctionVisitor(override val type: Class<*> = String::class.java, override val returnType: Class<*> = ShibaFunction::class.java) : AbsVisitor<String, ShibaFunction>() {
+    private val Comma = ','
+    override fun parse(tree: String): ShibaFunction {
+        val index = tree.indexOf('(')
+        val name = tree.substring(0, index)
+        val function = ShibaFunction(name.trim())
+        val value = tree.substring(index + 1, tree.length - index - 2)
+        val param = value.split(Comma).map {
+            parsePropertyValue(it)
         }
-        throw IllegalArgumentException("ShibaToken can not be null at line ${tree.start.line} column: ${tree.start.startIndex}")
+        function.parameter += param
+        return function
     }
 }
 
-private final class ShibaMapVisitor(override val type: Class<*> = ShibaParser.MapContext::class.java) : AbsVisitor<ShibaParser.MapContext, ShibaMap>() {
-    override fun parse(tree: ShibaParser.MapContext): ShibaMap {
-        return ShibaMap(tree.property().map { it.visit<Property>() }.filter { it != null }.map { it!! })
-    }
-}
-
-private final class BasicValueVisitor(override val type: Class<*> = ShibaParser.BasicValueContext::class.java) : AbsVisitor<ShibaParser.BasicValueContext, BasicValue>() {
-    override fun parse(tree: ShibaParser.BasicValueContext): BasicValue {
-        var type = ShibaValueType.Token
-        var targetValue: Any? = null
-        val token = tree.getChild(0) as TerminalNode
-        when (token.symbol.type) {
-            ShibaParser.String -> {
-                type = ShibaValueType.String
-                targetValue = token.text.trim('"')
-            }
-            ShibaParser.Number -> {
-                type = ShibaValueType.Number
-                targetValue = token.text.toBigDecimal()
-            }
-            ShibaParser.Boolean -> {
-                type = ShibaValueType.Boolean
-                targetValue = token.text?.toBoolean()
-            }
-            ShibaParser.Null -> {
-                type = ShibaValueType.Null
-                targetValue = null
-            }
-            ShibaParser.Identifier -> {
-                type = ShibaValueType.Token
-                targetValue = token.text
-            }
-        }
-        if (targetValue == null && type != ShibaValueType.Null) {
-            throw IllegalArgumentException("basic value can not be null at line ${tree.start.line} column: ${tree.start.startIndex}")
-        }
-        return BasicValue(type, targetValue)
-    }
-}
-
-private final class FunctionVisitor(override val type: Class<*> = ShibaParser.FunctionCallContext::class.java) : AbsVisitor<ShibaParser.FunctionCallContext, ShibaFunction>() {
-    override fun parse(tree: ShibaParser.FunctionCallContext): ShibaFunction {
-        val name = tree.Identifier().text
-        if (tree.value() != null && tree.value().any()) {
-            return ShibaFunction(name).apply {
-                parameter = tree.value().map { it.visit<Any>() }.filter { it != null }.map { it!! }
-            }
-        }
-        return ShibaFunction(name)
-    }
-}
-
-private final class ArrayVisitor(override val type: Class<*> = ShibaParser.ArrayContext::class.java) : AbsVisitor<ShibaParser.ArrayContext, ShibaArray>() {
-    override fun parse(tree: ShibaParser.ArrayContext): ShibaArray {
-        return ShibaArray().apply {
-            addAll(tree.value().map { it.visit<Any>() }.filter { it != null }.map { it!! })
-        }
-    }
-}
 
 class ShibaParserWrapper {
-    private fun parseGrammarTree(input: String): ParseTree {
-        val stream = CharStreams.fromString(input)
-        val lexer = ShibaLexer(stream)
-        val tokens = CommonTokenStream(lexer)
-        val parser = ShibaParser(tokens).apply {
-            buildParseTree = true
-        }
-        return parser.view()
+    private fun parseGrammarTree(input: String): Element? {
+        val dom = DocumentBuilderFactory.newInstance().apply {
+            isNamespaceAware = true
+        }.newDocumentBuilder().parse(InputSource(StringReader(input)))
+        return dom.documentElement
     }
+
     fun parse(input: String): View? {
         val tree = parseGrammarTree(input)
-        return tree.visit<View>()
+        return tree?.visit<View>()
     }
 }

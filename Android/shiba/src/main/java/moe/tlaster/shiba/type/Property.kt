@@ -5,8 +5,8 @@ package moe.tlaster.shiba.type
  */
 
 data class Property(val name: ShibaToken, val value: Any) {
-    override fun toString(): String {
-        return "$name = $value"
-    }
+//    override fun toString(): String {
+//        return "$name = $value"
+//    }
 
 }
