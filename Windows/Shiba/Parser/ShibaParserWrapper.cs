@@ -80,7 +80,7 @@ namespace Shiba.Parser
         {
             var viewName = GetValue<ShibaToken>(tree.Name);
             var view = new View(viewName, tree.ToString());
-
+            
             view.Properties.AddRange(tree.Attributes().Select(GetValue<Property>));
             var propertyElement = tree.Elements()
                 .Where(it =>
@@ -139,7 +139,11 @@ namespace Shiba.Parser
             else if (value.StartsWith(OpenBracket) && value.EndsWith(CloseBracket))
             {
                 var subValue = value.Substring(1, value.Length - 2);
-                return ShibaVisitor.GetValue<ShibaMap>(subValue);
+                var map = ShibaVisitor.GetValue<ShibaMap>(subValue);
+                if (map != null)
+                {
+                    return map;
+                }
             }
             else if (value.StartsWith(ExtensionStart))
             {
@@ -227,8 +231,7 @@ namespace Shiba.Parser
 
     internal sealed class ShibaExtensionVisitor : GenericVisitor<string, ShibaExtension>
     {
-        private const char Comma = ',';
-        private const char EqualSign = '=';
+        private const char ScriptStart = '{';
         private const char ExtensionStart = '$';
 
         protected override ShibaExtension Parse(string tree)
@@ -244,7 +247,7 @@ namespace Shiba.Parser
             var name = value.Substring(0, index);
             // Checking for extension value
             value = value.Substring(index + 1, value.Length - index - 1);
-            index = value.IndexOf(Comma);
+            index = value.IndexOf(ScriptStart);
             if (index == -1)// value only contains binding like `$bind path`
             {
                 return new ShibaExtension(name.Trim(), value.Trim(), string.Empty);

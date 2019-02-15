@@ -61,7 +61,7 @@ private val visitors = ArrayList<IShibaVisitor>().apply {
 }
 
 private inline fun <reified T> Any.visit(): T? {
-    return visitors.find { it.type == this.javaClass && it.returnType == T::class.java }?.visit(this) as T?
+    return visitors.find { (it.type == this.javaClass || it.type.isAssignableFrom(this.javaClass)) && it.returnType == T::class.java }?.visit(this) as T?
 }
 
 private abstract class AbsVisitor<T : Any, K : Any> : IShibaVisitor {
@@ -181,7 +181,7 @@ private final class ShibaExtensionVisitor(override val type: Class<*> = String::
             throw IllegalArgumentException("wrong shiba extension at $tree")
         }
         var value = tree.trimStart(ExtensionStart)
-        var index = tree.indexOf(' ')
+        var index = value.indexOfFirst { it == ' ' }
         val name = value.substring(0, index)
         value = value.substring(index + 1, value.length - index - 1)
         index = value.indexOf(ScriptStart)
@@ -222,10 +222,11 @@ private final class ShibaMapVisitor(override val type: Class<*> = String::class.
 private final class FunctionVisitor(override val type: Class<*> = String::class.java, override val returnType: Class<*> = ShibaFunction::class.java) : AbsVisitor<String, ShibaFunction>() {
     private val Comma = ','
     override fun parse(tree: String): ShibaFunction {
-        val index = tree.indexOf('(')
-        val name = tree.substring(0, index)
+        var value = tree
+        val index = value.indexOf('(')
+        val name = value.substring(0, index)
         val function = ShibaFunction(name.trim())
-        val value = tree.substring(index + 1, tree.length - index - 2)
+        value = value.substring(index + 1, value.length - index - 2)
         val param = value.split(Comma).map {
             parsePropertyValue(it)
         }
@@ -245,6 +246,8 @@ class ShibaParserWrapper {
 
     fun parse(input: String): View? {
         val tree = parseGrammarTree(input)
-        return tree?.visit<View>()
+        return tree?.let {
+            it.visit<View>()
+        }
     }
 }
