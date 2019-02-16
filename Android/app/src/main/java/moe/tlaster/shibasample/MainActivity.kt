@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         input.addTextChangedListener(object : TextWatcher{
             override fun afterTextChanged(s: Editable?) {
                 try {
-                    host.load(s.toString(), dataContext)
+                    host.load(s.toString(), dataContext.jsonNode)
                 } catch (e: Exception) {
 
                 } catch (e: Error) {

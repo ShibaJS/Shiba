@@ -183,14 +183,14 @@ private final class ShibaExtensionVisitor(override val type: Class<*> = String::
         var value = tree.trimStart(ExtensionStart)
         var index = value.indexOfFirst { it == ' ' }
         val name = value.substring(0, index)
-        value = value.substring(index + 1, value.length - index - 1)
+        value = value.substring(index + 1)
         index = value.indexOf(ScriptStart)
         if (index == -1) {
             return ShibaExtension(name.trim(), value.trim(), null)
         }
         val bindingValue = value.substring(0, index).trim()
-        value = value.substring(index + 1, value.length - index - 1).trim()
-        val script = value.substring(1, value.length - 2)
+        value = value.substring(index).trim()
+        val script = value.substring(1, value.length - 1)
         return ShibaExtension(name.trim(), bindingValue, script)
     }
 
@@ -226,7 +226,7 @@ private final class FunctionVisitor(override val type: Class<*> = String::class.
         val index = value.indexOf('(')
         val name = value.substring(0, index)
         val function = ShibaFunction(name.trim())
-        value = value.substring(index + 1, value.length - index - 2)
+        value = value.substring(index + 1)
         val param = value.split(Comma).map {
             parsePropertyValue(it)
         }
