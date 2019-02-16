@@ -47,7 +47,7 @@ namespace Shiba.Parser
         {
             if (tree == null) return default;
             var visitor = Visitors.FirstOrDefault(it => it.HandleType == tree.GetType() && it.ReturnType == typeof(T));
-
+            if (visitor == null) return default;
             var value = visitor.Visit(tree);
 
             if (value is T result) return result;
