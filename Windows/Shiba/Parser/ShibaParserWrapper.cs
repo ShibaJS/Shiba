@@ -82,6 +82,12 @@ namespace Shiba.Parser
             var view = new View(viewName, tree.ToString());
             
             view.Properties.AddRange(tree.Attributes().Select(GetValue<Property>));
+
+            if (!tree.HasElements && !string.IsNullOrEmpty(tree.Value))
+            {
+                view.DefaultValue = Singleton<ValueParser>.Instance.Parse(tree.Value);
+            }
+
             var propertyElement = tree.Elements()
                 .Where(it =>
                     it.Name.LocalName.Contains(".") &&

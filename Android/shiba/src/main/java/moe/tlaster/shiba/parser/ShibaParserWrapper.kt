@@ -87,7 +87,9 @@ private final class ViewVisitor(override val type: Class<*> = Element::class.jav
             }
         }
         if (!tree.hasChildElement()) {
-            // TODO: default property
+            if (!tree.textContent.isEmpty()) {
+                view.defaultValue = parsePropertyValue(tree.textContent)
+            }
         } else {
             tree.childElements().forEach { element ->
                 if (element.localName.contains('.')

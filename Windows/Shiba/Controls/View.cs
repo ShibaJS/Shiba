@@ -85,7 +85,7 @@ namespace Shiba.Controls
         public string RawString { get; }
 
         public ShibaToken ViewName { get; }
-        public object DefaultValue { get; }
+        public object DefaultValue { get; internal set; }
         public List<View> Children { get; } = new List<View>();
         public List<Property> Properties { get; } = new List<Property>();
         public View Parent { get; internal set; }
