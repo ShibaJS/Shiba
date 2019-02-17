@@ -2,9 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:AntlrRuntime/Antlr4.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:ShibaSample/ShibaSample.xcodeproj">
    </FileRef>
    <FileRef
