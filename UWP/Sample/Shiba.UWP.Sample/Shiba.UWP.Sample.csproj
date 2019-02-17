@@ -137,10 +137,6 @@
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.3" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ChakraHosting\ChakraHosting.csproj">
-      <Project>{c5d6ed6a-c8b9-4bed-a226-d1acfaa763e0}</Project>
-      <Name>ChakraHosting</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Shiba\Shiba.csproj">
       <Project>{3ff5cc7b-a8ed-4d59-a13a-e4e42714c798}</Project>
       <Name>Shiba</Name>

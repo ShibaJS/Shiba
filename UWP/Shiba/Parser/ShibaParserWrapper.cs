@@ -261,7 +261,7 @@ namespace Shiba.Parser
 
             var bindingValue = value.Substring(0, index).Trim();
             // or value contains script like `$bind path, {return hello}`
-            value = value.Substring(index + 1, value.Length - index - 1).Trim();
+            value = value.Substring(index, value.Length - index - 1).Trim();
             var script = value.Substring(1, value.Length - 2);
             return new ShibaExtension(name.Trim(), bindingValue, script);
         }
