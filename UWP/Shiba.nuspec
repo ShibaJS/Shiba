@@ -11,18 +11,15 @@
     <projectUrl>https://github.com/Tlaster/Shiba</projectUrl>
     <description>Shiba</description>
     <dependencies>
-      <group targetFramework="UAP10.0.16299">
-        <dependency id="Antlr4.Runtime.Standard" version="4.7.2" />
+      <group>
         <dependency id="Newtonsoft.Json" version="12.0.1" />
+        <dependency id="ChakraHosting" version="1.0.1" />
       </group>
     </dependencies>
   </metadata>
   <files>
-    <file src="Shiba\bin\Release\Shiba.dll" target="lib\uap10.0.16299\Shiba.dll" />
-    <file src="Shiba\bin\Release\Shiba.pdb" target="lib\uap10.0.16299\Shiba.pdb" />
-    <file src="Shiba\bin\Release\Shiba.pri" target="lib\uap10.0.16299\Shiba.pri" />
-    <file src="Shiba\bin\Release\ChakraHosting.dll" target="lib\uap10.0.16299\ChakraHosting.dll" />
-    <file src="Shiba\bin\Release\ChakraHosting.pdb" target="lib\uap10.0.16299\ChakraHosting.pdb" />
-    <file src="Shiba\bin\Release\ChakraHosting.pri" target="lib\uap10.0.16299\ChakraHosting.pri" />
+    <file src="Shiba\bin\Release\Shiba.dll" target="lib\uap10.0\Shiba.dll" />
+    <file src="Shiba\bin\Release\Shiba.pdb" target="lib\uap10.0\Shiba.pdb" />
+    <file src="Shiba\bin\Release\Shiba.pri" target="lib\uap10.0\Shiba.pri" />
   </files>
 </package>
