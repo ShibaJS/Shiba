@@ -21,12 +21,6 @@ class ExampleInstrumentedTest {
     @Test
     @Throws(Exception::class)
     fun useAppContext() {
-        Shiba.init(InstrumentationRegistry.getInstrumentation().targetContext.applicationContext)
-        val result = Shiba.configuration.scriptRuntime.execute("storage.save(\"sample\", \"hello\"); storage.load(\"sample\", \"world\")")
-
-        assert(result == "hello")
-
-
 //        val runtime = JSContext()
 //
 //        runtime.evaluateScript("function resolveAfter2Seconds() {\n" +

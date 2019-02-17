@@ -7,7 +7,7 @@ data class ShibaToken(val prefix: String, val value: String) {
         return if (prefix.isEmpty()) value else "$prefix:$value"
     }
 
-    fun isCurrentPlatform(value: String): Boolean {
+    fun isCurrentPlatformAndCheckValue(value: String): Boolean {
         return isCurrentPlatform() && value == this.value
     }
 

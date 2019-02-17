@@ -21,7 +21,6 @@ private val visitors = ArrayList<IValueVisitor>().apply {
     add(ViewVisitor())
     add(ShibaExtensionVisitor())
     add(ShibaFunctionVisitor())
-    add(BasicValueVisitor())
     add(ShibaArrayVisitor())
 }
 
@@ -46,7 +45,7 @@ object ShibaValueVisitor {
 
 private class ViewVisitor(override val type: Class<*> = View::class.java) : AbsValueVisitor<View, NativeView>() {
     override fun parse(tree: View, context: IShibaContext?): NativeView {
-        val mapper = Shiba.viewMapping.filter { tree.viewName.isCurrentPlatform(it.key) }.values.firstOrNull() ?:
+        val mapper = Shiba.viewMapping.filter { tree.viewName.isCurrentPlatformAndCheckValue(it.key) }.values.firstOrNull() ?:
         throw IllegalArgumentException("can not find mapper for ${tree.viewName}")
         if (context == null) {
             throw IllegalArgumentException()
@@ -201,11 +200,5 @@ private class ShibaFunctionVisitor(override val type: Class<*> = ShibaFunction::
 private class ShibaArrayVisitor(override val type: Class<*> = ShibaArray::class.java) : AbsValueVisitor<ShibaArray, List<Any?>>() {
     override fun parse(tree: ShibaArray, context: IShibaContext?): List<Any?> {
         return tree.map { it?.visit<Any>(context) }
-    }
-}
-
-private class BasicValueVisitor(override val type: Class<*> = BasicValue::class.java) : AbsValueVisitor<BasicValue, Any?>() {
-    override fun parse(tree: BasicValue, context: IShibaContext?): Any? {
-        return tree.value
     }
 }

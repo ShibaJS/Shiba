@@ -14,7 +14,7 @@ class ListMapper : ViewMapper<androidx.recyclerview.widget.RecyclerView>() {
 
     override fun createNativeView(context: IShibaContext): androidx.recyclerview.widget.RecyclerView {
         return androidx.recyclerview.widget.RecyclerView(context.getContext()).apply {
-            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context.getContext(), androidx.recyclerview.widget.LinearLayoutManager.VERTICAL, false)
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context.getContext(), androidx.recyclerview.widget.RecyclerView.VERTICAL, false)
             adapter = ShibaRecyclerAdapter(context.getContext())
         }
     }

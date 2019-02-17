@@ -4,7 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import moe.tlaster.shiba.Event
 import java.util.function.Predicate
-
+//
 class ShibaArray : ArrayList<Any?>() {
     var collectionChanged: Event<CollectionChangedEventArg> = Event()
 

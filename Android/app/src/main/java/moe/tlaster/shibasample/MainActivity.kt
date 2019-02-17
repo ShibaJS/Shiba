@@ -37,13 +37,13 @@ class MainActivity : AppCompatActivity() {
 
 //        host.load("list { itemLayout = text -> \$bind items = \$bind androidList }", WithListModel())
 
-        val layout = "text -> awesome(\$json hello.world \${ if (it === null) return null; return it + \"  +1!\" }) "
+        val layout = "<text text=\"{awesome(\$json hello.world { if(it === null) return null; return it + ' +1!'; })}\"/>"
         host.load(layout, dataContext.jsonNode)
         input.setText(layout)
         input.addTextChangedListener(object : TextWatcher{
             override fun afterTextChanged(s: Editable?) {
                 try {
-                    host.load(s.toString(), dataContext)
+                    host.load(s.toString(), dataContext.jsonNode)
                 } catch (e: Exception) {
 
                 } catch (e: Error) {
