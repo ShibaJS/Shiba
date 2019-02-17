@@ -14,17 +14,6 @@ class ExampleUnitTest {
     @Test
     @Throws(Exception::class)
     fun test() {
-        val input = "<stack xmlns:uwp=\"UWP\">\n" +
-                "    <text uwp:text=\"UWPText\" other=\"other\" />\n" +
-                "    <uwp:text uwp:text=\"UWPText\" other=\"other\"/>\n" +
-                "</stack>"
-        val dom = DocumentBuilderFactory.newInstance().apply {
-            isNamespaceAware = true
-        }.newDocumentBuilder().parse(input)
-        val nodeName = dom.documentElement.childNodes.item(1).nodeName
-        val localName = dom.documentElement.childNodes.item(1).localName
-        val namespaceURI = dom.documentElement.childNodes.item(1).namespaceURI
-        assertNotNull(namespaceURI)
     }
 
 }

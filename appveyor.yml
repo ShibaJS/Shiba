@@ -2,11 +2,11 @@ version: 0.0.{build}
 image: Visual Studio 2017
 build_script:
 - ps: >-
-    nuget restore "Windows\\Shiba.sln"
+    nuget restore "UWP\\Shiba.sln"
 
-    msbuild "Windows\\Shiba.sln" /m /verbosity:minimal /p:Configuration=Release
+    msbuild "UWP\\Shiba.sln" /m /verbosity:minimal /p:Configuration=Release
 
-    nuget pack "Windows\\Shiba.nuspec" -Version $env:appveyor_build_version
+    nuget pack "UWP\\Shiba.nuspec" -Version $env:appveyor_build_version
     
 artifacts:
 - path: '*.nupkg'
