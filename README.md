@@ -10,7 +10,7 @@
 # Show Case
 ![showcase](image/showcase.gif)
 
-# [Getting Start](doc/GettingStart.md)
+# Getting Start
 
 ## For WPF/UWP/Xamarin.Forms:
 You can install from nuget
@@ -38,7 +38,7 @@ Still working on it, you can add your PR to help me
 All the initialization can be called from anywhere, e.g. you want delay initialization, just call it before actually using Shiba
 
 ## More
-[Document](doc/GettingStart.md)
+WIP
 
 # Goal
 Not like other cross-platform frameworks, Shiba is **NOT** a framework to replace the native development, Shiba will let you take both of the advantages of cross-platform and native.  
