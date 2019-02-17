@@ -1,4 +1,4 @@
-version: 0.0.{build}
+version: 0.1.{build}
 image: Visual Studio 2017
 build_script:
 - ps: >-
@@ -11,4 +11,9 @@ build_script:
 artifacts:
 - path: '*.nupkg'
   name: nuget
+deploy:
+- provider: Environment
+  name: nuget
+  on:
+    branch: master
 

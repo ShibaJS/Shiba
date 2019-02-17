@@ -81,7 +81,7 @@ def issueUrl = 'https://github.com/Tlaster/Shiba/issues'
 def buildNum = System.getenv('TRAVIS_BUILD_NUMBER')
 
 group = "moe.tlaster"
-version = "0.0.$buildNum"
+version = "0.1.$buildNum"
 
 install {
     repositories.mavenInstaller {

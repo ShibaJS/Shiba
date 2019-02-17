@@ -24,7 +24,7 @@ ShibaApp.Init();
 
 ## For Android:
 ```
-implementation 'moe.tlaster:shiba:0.0.+'
+implementation 'moe.tlaster:shiba:0.1.+'
 ```
 And call the initialization (Better from your App's onCreate):  
 ```
