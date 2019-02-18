@@ -157,7 +157,18 @@ namespace Shiba.ViewMappers
                     return new NativeThickness();
                 });
             yield return new PropertyMap("margin", NativeView.MarginProperty, typeof(ShibaMap), typeof(NativeThickness),
-                value => ((ShibaMap) value).ToNativeThickness());
+                value =>
+                {
+                    switch (value)
+                    {
+                        case decimal numberValue:
+                            var dvalue = Convert.ToDouble(numberValue);
+                            return new NativeThickness(dvalue, dvalue, dvalue, dvalue);
+                        case ShibaMap shibaMap:
+                            return shibaMap.ToNativeThickness();
+                    }
+                    return new NativeThickness();
+                });
             yield return new PropertyMap("alpha", UIElement.OpacityProperty, typeof(double));
             yield return new PropertyMap("style", NativeView.StyleProperty, typeof(string), typeof(Style));
             if (DefaultPropertyMap != null) yield return DefaultPropertyMap;
