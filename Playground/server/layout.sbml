@@ -1,0 +1,15 @@
+<stack 
+    xmlns:a="Android" 
+    xmlns:u="UWP">
+    <text 
+        text="hello world!"/>
+    <text 
+        a:text="Android is awesome!" 
+        u:text="UWP is awesome!"
+        size="20"
+        a:color="red"
+        u:color="blue"/>
+    <text
+        text="$json hello.world { return it + ' is awesome!'; }"
+        color="green"/>
+</stack>

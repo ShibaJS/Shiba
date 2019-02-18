@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Shiba.Controls;
 using Shiba.ViewMappers;
@@ -21,6 +22,20 @@ namespace Shiba.ViewMappers
         {
             yield return new PropertyMap("orientation", NativeView.OrientationProperty, typeof(string),
                 OrientationConverter);
+            yield return new PropertyMap("padding", NativeView.PaddingProperty, typeof(ShibaMap), typeof(Thickness),
+                value =>
+                {
+                    switch (value)
+                    {
+                        case decimal numberValue:
+                            var dvalue = Convert.ToDouble(numberValue);
+                            return new Thickness(dvalue, dvalue, dvalue, dvalue);
+                        case ShibaMap shibaMap:
+                            return shibaMap.ToNativeThickness();
+                    }
+
+                    return new Thickness();
+                });
         }
 
         private object OrientationConverter(object arg)

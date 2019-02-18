@@ -14,7 +14,7 @@ namespace Shiba
 
             if (value == null) return false;
 
-            return value is IConvertible;
+            return value is IConvertible && typeof(IConvertible).IsAssignableFrom(conversionType);
         }
 
         public static Color ToNativeColor(this string colorString)
