@@ -92,48 +92,6 @@ class Streaming(private val dataCallback: (JsonNode) -> Unit, private val layout
 
     var host = "http://10.0.2.2:5000/streaming"
 
-//    fun fetch(): ServerSentEvent? {
-//        val request = Request.Builder().url(host).build()
-//        val okSse = OkSse()
-//        return okSse.newServerSentEvent(request, object : ServerSentEvent.Listener {
-//            override fun onOpen(sse: ServerSentEvent?, response: Response?) {
-//            }
-//
-//            override fun onRetryTime(sse: ServerSentEvent?, milliseconds: Long): Boolean {
-//                return true
-//            }
-//
-//            override fun onComment(sse: ServerSentEvent?, comment: String?) {
-//            }
-//
-//            override fun onRetryError(sse: ServerSentEvent?, throwable: Throwable?, response: Response?): Boolean {
-//                return true
-//            }
-//
-//            override fun onPreRetry(sse: ServerSentEvent?, originalRequest: Request?): Request {
-//                return originalRequest ?: throw Error()
-//            }
-//
-//            override fun onMessage(sse: ServerSentEvent?, id: String?, event: String?, message: String?) {
-//                when (event) {
-//                    "data_changed" -> {
-//                        dataCallback.invoke(ObjectMapper().readTree(message?.trim('"')))
-//                    }
-//                    "layout_changed" -> {
-//                        if (message != null) {
-//                            layoutCallback.invoke(message.trim('"'))
-//                        }
-//                    }
-//                }
-//            }
-//
-//            override fun onClosed(sse: ServerSentEvent?) {
-//            }
-//
-//        })
-//    }
-
-
     fun fetch(): Shutdownable {
         val response = client.get(host)
         if (response.isSuccessful) {
@@ -177,7 +135,7 @@ class Streaming(private val dataCallback: (JsonNode) -> Unit, private val layout
 //                            )
 //                            handler.onStatus(status)
 //                        }
-                    } catch (e: java.io.InterruptedIOException) {
+                    } catch (e: Throwable) {
                         break
                     }
                 }

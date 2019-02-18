@@ -7,12 +7,11 @@ import moe.tlaster.shiba.common.Singleton
 import moe.tlaster.shiba.converters.ShibaConverter
 import moe.tlaster.shiba.dataBinding.ShibaBinding
 import moe.tlaster.shiba.type.ShibaExtension
-import moe.tlaster.shiba.type.ShibaValueType
 
 private const val dataContextPath = "dataContext"
 class JsonExecutor(override val name: String = "json") : IExtensionExecutor {
     override fun provideValue(context: IShibaContext?, extension: ShibaExtension): Any? {
-        val path = if (extension.value != null && extension.value.typeCode == ShibaValueType.Token) extension.value.value as String else null
+        val path = extension.value
         val bindingPath = dataContextPath
         return ShibaBinding(bindingPath).apply {
             source = context

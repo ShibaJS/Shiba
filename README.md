@@ -2,15 +2,15 @@
 # Status  
 | Platform |  Build Status |  Download |
 |:---:|:---:|:---:|
-| .Net |[![Build status](https://ci.appveyor.com/api/projects/status/2qp96xf35naduen7?svg=true)](https://ci.appveyor.com/project/Tlaster/shiba) | [![NuGet version](https://badge.fury.io/nu/Shiba.svg)](https://badge.fury.io/nu/Shiba)|
-| Android |[![Build Status](https://travis-ci.com/Tlaster/Shiba.svg?branch=master)](https://travis-ci.com/Tlaster/Shiba)|[![Download](https://api.bintray.com/packages/tlaster/Shiba/Shiba/images/download.svg)](https://bintray.com/tlaster/Shiba/Shiba/_latestVersion) |  
+| .Net |[![Build status](https://ci.appveyor.com/api/projects/status/b0tdrkd15y8ufaq1/branch/master?svg=true)](https://ci.appveyor.com/project/ShibaJS/shiba/branch/master) | [![NuGet version](https://badge.fury.io/nu/Shiba.svg)](https://badge.fury.io/nu/Shiba)|
+| Android |[![Build Status](https://travis-ci.com/ShibaJS/Shiba.svg?branch=master)](https://travis-ci.com/ShibaJS/Shiba)|[![Download](https://api.bintray.com/packages/tlaster/Shiba/Shiba/images/download.svg)](https://bintray.com/tlaster/Shiba/Shiba/_latestVersion) |  
 
 **Shiba is still in development and is not production-ready** 
 
 # Show Case
 ![showcase](image/showcase.gif)
 
-# [Getting Start](doc/GettingStart.md)
+# Getting Start
 
 ## For WPF/UWP/Xamarin.Forms:
 You can install from nuget
@@ -24,7 +24,7 @@ ShibaApp.Init();
 
 ## For Android:
 ```
-implementation 'moe.tlaster:shiba:0.0.+'
+implementation 'moe.tlaster:shiba:0.1.+'
 ```
 And call the initialization (Better from your App's onCreate):  
 ```
@@ -38,7 +38,7 @@ Still working on it, you can add your PR to help me
 All the initialization can be called from anywhere, e.g. you want delay initialization, just call it before actually using Shiba
 
 ## More
-[Document](doc/GettingStart.md)
+WIP
 
 # Goal
 Not like other cross-platform frameworks, Shiba is **NOT** a framework to replace the native development, Shiba will let you take both of the advantages of cross-platform and native.  

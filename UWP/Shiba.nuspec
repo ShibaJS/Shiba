@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>Shiba</id>
+    <version>1.0.0-alpha</version>
+    <title></title>
+    <authors>Tlaster</authors>
+    <owners>Tlaster</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/Tlaster/Shiba/blob/master/LICENSE.md</licenseUrl>
+    <projectUrl>https://github.com/Tlaster/Shiba</projectUrl>
+    <description>Shiba</description>
+    <dependencies>
+      <group>
+        <dependency id="Newtonsoft.Json" version="12.0.1" />
+        <dependency id="ChakraHosting" version="1.0.1" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="Shiba\bin\Release\Shiba.dll" target="lib\uap10.0\Shiba.dll" />
+    <file src="Shiba\bin\Release\Shiba.pdb" target="lib\uap10.0\Shiba.pdb" />
+    <file src="Shiba\bin\Release\Shiba.pri" target="lib\uap10.0\Shiba.pri" />
+  </files>
+</package>

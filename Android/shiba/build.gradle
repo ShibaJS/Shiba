@@ -44,9 +44,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.+'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
 
-    implementation 'org.antlr:antlr4:4.7.+'
-
-    implementation 'com.github.LiquidPlayer:LiquidCore:0.5.+'
+    implementation 'com.github.LiquidPlayer:LiquidCore:0.6.+'
 
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.+'
 
@@ -83,7 +81,7 @@ def issueUrl = 'https://github.com/Tlaster/Shiba/issues'
 def buildNum = System.getenv('TRAVIS_BUILD_NUMBER')
 
 group = "moe.tlaster"
-version = "0.0.$buildNum"
+version = "0.1.$buildNum"
 
 install {
     repositories.mavenInstaller {

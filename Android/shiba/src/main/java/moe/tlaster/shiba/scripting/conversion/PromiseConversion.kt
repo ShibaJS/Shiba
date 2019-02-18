@@ -22,7 +22,7 @@ class PromiseConversion(override val objectType: Class<*> = Deferred::class.java
             return null
         }
         val obj = value.toObject()
-        val deferred = GlobalScope.async {
+        return GlobalScope.async {
             suspendCoroutine<Any?> { cont ->
                 obj.property("then").toFunction().call(obj,
                         object : JSFunction(obj.context, "then") {
@@ -38,7 +38,6 @@ class PromiseConversion(override val objectType: Class<*> = Deferred::class.java
 
             }
         }
-        return deferred
     }
 
     override fun toJSValue(context: JSContext, value: Any): JSValue {
