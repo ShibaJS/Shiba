@@ -42,7 +42,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.+'
     implementation 'androidx.gridlayout:gridlayout:1.+'
     implementation 'androidx.recyclerview:recyclerview:1.+'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha5'
 
     implementation 'com.github.LiquidPlayer:LiquidCore:0.6.+'
 

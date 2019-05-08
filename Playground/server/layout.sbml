@@ -2,7 +2,7 @@
     xmlns:a="Android" 
     xmlns:u="UWP">
     <text 
-        text="hello world!"/>
+        text="gyigyugiuyg!"/>
     <text 
         a:text="Android is awesome!" 
         u:text="UWP is awesome!"

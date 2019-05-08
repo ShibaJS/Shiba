@@ -3,7 +3,7 @@ import express from "express";
 import { readFile, watchFile } from "fs";
 import { promisify } from "util";
 
-const layoutPath = "./layout.xml";
+const layoutPath = "./layout.sbml";
 const dataPath = "./data.json";
 const readFileAsync = promisify(readFile);
 const Stream = new EventEmitter();
