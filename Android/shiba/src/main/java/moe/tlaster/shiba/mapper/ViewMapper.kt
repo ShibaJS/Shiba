@@ -50,7 +50,7 @@ open class ViewMapper<TNativeView : NativeView> : IViewMapper<TNativeView> {
 
         view.properties.forEach { property ->
             if (property.name.isCurrentPlatform()) {
-                val cache = _propertyCache.firstOrNull { it.name == property.name.value }
+                val cache = _propertyCache.lastOrNull { it.name == property.name.value }
                 if (cache != null) {
                     setValue(context, property.value, cache, target)
                 }
@@ -117,21 +117,42 @@ open class ViewMapper<TNativeView : NativeView> : IViewMapper<TNativeView> {
                     view.layoutParams = param
                 }),
                 PropertyMap("margin", { view, it ->
-                    if (it is ShibaMap && view.layoutParams is ViewGroup.MarginLayoutParams) {
-                        (view.layoutParams as ViewGroup.MarginLayoutParams).setMargins(
-                                it["left"]?.toString()?.toInt()?.dp ?: 0,
-                                it["top"]?.toString()?.toInt()?.dp ?: 0,
-                                it["right"]?.toString()?.toInt()?.dp ?: 0,
-                                it["bottom"]?.toString()?.toInt()?.dp ?: 0)
+                    val lp = view.layoutParams
+                    if (lp is ViewGroup.MarginLayoutParams) {
+                        when (it) {
+                            is ShibaMap -> {
+                                lp.setMargins(
+                                        it["left"]?.toInt()?.dp ?: 0,
+                                        it["top"]?.toInt()?.dp ?: 0,
+                                        it["right"]?.toInt()?.dp ?: 0,
+                                        it["bottom"]?.toInt()?.dp ?: 0)
+                            }
+                            is Number -> {
+                                lp.setMargins(
+                                        it.toInt().dp,
+                                        it.toInt().dp,
+                                        it.toInt().dp,
+                                        it.toInt().dp)
+                            }
+                        }
                     }
                 }),
                 PropertyMap("padding", { view, it ->
-                    if (it is ShibaMap) {
-                        view.setPaddingRelative(
-                                it["left"]?.toString()?.toInt()?.dp ?: 0,
-                                it["top"]?.toString()?.toInt()?.dp ?: 0,
-                                it["right"]?.toString()?.toInt()?.dp ?: 0,
-                                it["bottom"]?.toString()?.toInt()?.dp ?: 0)
+                    when (it) {
+                        is ShibaMap -> {
+                            view.setPaddingRelative(
+                                    it["left"]?.toString()?.toInt()?.dp ?: 0,
+                                    it["top"]?.toString()?.toInt()?.dp ?: 0,
+                                    it["right"]?.toString()?.toInt()?.dp ?: 0,
+                                    it["bottom"]?.toString()?.toInt()?.dp ?: 0)
+                        }
+                        is Number -> {
+                            view.setPaddingRelative(
+                                    it.toInt().dp,
+                                    it.toInt().dp,
+                                    it.toInt().dp,
+                                    it.toInt().dp)
+                        }
                     }
                 }),
                 PropertyMap("alpha", { view, it -> if (it is Number) view.alpha = it.toFloat() }),

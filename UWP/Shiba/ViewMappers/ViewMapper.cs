@@ -104,7 +104,6 @@ namespace Shiba.ViewMappers
         public TNativeView Map(ShibaView view, IShibaContext context)
         {
             var target = CreateNativeView();
-
             if (_propertyCache == null) _propertyCache = PropertyMaps().ToList();
 
             if (view.DefaultValue != null && DefaultPropertyMap != null && HasDefaultProperty)
@@ -115,7 +114,7 @@ namespace Shiba.ViewMappers
                 if (!property.Name.IsCurrentPlatform())
                     continue;
 
-                var cache = _propertyCache.FirstOrDefault(it => it.Name == property.Name.Value);
+                var cache = _propertyCache.LastOrDefault(it => it.Name == property.Name.Value);
                 if (cache != null) SetValue(context, property.Value, cache, target);
             }
 
@@ -144,9 +143,32 @@ namespace Shiba.ViewMappers
             yield return new PropertyMap("background", Control.BackgroundProperty, typeof(string),
                 ColorConverter);
             yield return new PropertyMap("padding", Control.PaddingProperty, typeof(ShibaMap), typeof(NativeThickness),
-                value => ((ShibaMap) value).ToNativeThickness());
+                value =>
+                {
+                    switch (value)
+                    {
+                        case decimal numberValue:
+                            var dvalue = Convert.ToDouble(numberValue);
+                            return new NativeThickness(dvalue, dvalue, dvalue, dvalue);
+                        case ShibaMap shibaMap:
+                            return shibaMap.ToNativeThickness();
+                    }
+
+                    return new NativeThickness();
+                });
             yield return new PropertyMap("margin", NativeView.MarginProperty, typeof(ShibaMap), typeof(NativeThickness),
-                value => ((ShibaMap) value).ToNativeThickness());
+                value =>
+                {
+                    switch (value)
+                    {
+                        case decimal numberValue:
+                            var dvalue = Convert.ToDouble(numberValue);
+                            return new NativeThickness(dvalue, dvalue, dvalue, dvalue);
+                        case ShibaMap shibaMap:
+                            return shibaMap.ToNativeThickness();
+                    }
+                    return new NativeThickness();
+                });
             yield return new PropertyMap("alpha", UIElement.OpacityProperty, typeof(double));
             yield return new PropertyMap("style", NativeView.StyleProperty, typeof(string), typeof(Style));
             if (DefaultPropertyMap != null) yield return DefaultPropertyMap;
