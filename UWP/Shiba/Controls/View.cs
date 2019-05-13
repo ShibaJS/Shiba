@@ -41,16 +41,16 @@ namespace Shiba.Controls
 
     public sealed class ShibaExtension
     {
-        public ShibaExtension(string type, string value, string script)
+        public ShibaExtension(string type, string value, string scriptName)
         {
             Type = type;
             Value = value;
-            Script = script;
+            ScriptName = scriptName;
         }
 
         public string Type { get; }
         public string Value { get; }
-        public string Script { get; }
+        public string ScriptName { get; }
 
         public override bool Equals(object obj)
         {

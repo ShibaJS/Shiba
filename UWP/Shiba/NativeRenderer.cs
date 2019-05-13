@@ -9,19 +9,6 @@ namespace Shiba
 {
     internal static class NativeRenderer
     {
-        public static View Parse(string layout)
-        {
-            // TODO
-            throw new NotImplementedException();
-            //return Singleton<ShibaParserWrapper>.Instance.Parse(layout) as View;
-        }
-
-        public static NativeView Render(string layout, IShibaContext context)
-        {
-            var tree = Parse(layout);
-            return ShibaValueVisitor.GetValue(tree, context) as NativeView;
-        }
-
         public static NativeView Render(View view, IShibaContext context)
         {
             return ShibaValueVisitor.GetValue(view, context) as NativeView;

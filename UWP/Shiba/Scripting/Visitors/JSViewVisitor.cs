@@ -8,8 +8,6 @@ namespace Shiba.Scripting.Visitors
     internal class JSViewVisitor
     {
         private const string ViewType = "IView";
-        private const string PropertyType = "IProperty";
-        private const string ExtensionType = "IShibaExtension";
 
         public object Visit(JavaScriptValue value)
         {
@@ -43,7 +41,7 @@ namespace Shiba.Scripting.Visitors
                 var currentIndex = 0;
                 while (properties.HasIndexedProperty(currentIndex.ToJavaScriptValue()))
                 {
-                    view.Properties.Add(VisityProperty(properties.GetIndexedProperty(currentIndex.ToJavaScriptValue())));
+                    view.Properties.Add(VisitProperty(properties.GetIndexedProperty(currentIndex.ToJavaScriptValue())));
                     currentIndex++;
                 }
             }
@@ -69,7 +67,7 @@ namespace Shiba.Scripting.Visitors
             return view;
         }
 
-        private Property VisityProperty(JavaScriptValue value)
+        private Property VisitProperty(JavaScriptValue value)
         {
             Enum.TryParse<ValueType>(value.GetProperty("valueType".ToJavaScriptPropertyId()).ToNative() + "", out var valueType);
             var name = value.GetProperty("name".ToJavaScriptPropertyId()).ToNative<string>();
@@ -79,8 +77,12 @@ namespace Shiba.Scripting.Visitors
                 case ValueType.Extension:
                     var target = propertyValue.GetProperty("target".ToJavaScriptPropertyId()).ToNative<string>();
                     var type = propertyValue.GetProperty("type".ToJavaScriptPropertyId()).ToNative<string>();
-                    //return new Property();
-                    break;
+                    var scriptName = string.Empty;
+                    if (propertyValue.HasProperty("scriptName".ToJavaScriptPropertyId()))
+                    {
+                        scriptName = propertyValue.GetProperty("scriptName".ToJavaScriptPropertyId()).ToNative<string>();
+                    }
+                    return new Property(name, new ShibaExtension(type, target, scriptName));
                 case ValueType.Custom:
                     throw new NotImplementedException();
                 case ValueType.Boolean:
@@ -91,7 +93,6 @@ namespace Shiba.Scripting.Visitors
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            throw new NotImplementedException();
         }
 
         private enum ValueType

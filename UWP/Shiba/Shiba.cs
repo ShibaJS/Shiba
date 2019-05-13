@@ -17,6 +17,8 @@ namespace Shiba
             ViewMapping.Init();
         }
 
+        internal Dictionary<string, View> Components { get; } = new Dictionary<string, View>();
+
         public ViewMapping ViewMapping { get; } = new ViewMapping();
 
         public ShibaConfiguration Configuration { get; } = new ShibaConfiguration();

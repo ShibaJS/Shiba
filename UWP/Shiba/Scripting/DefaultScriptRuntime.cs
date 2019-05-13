@@ -3,20 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ChakraHosting;
+using Shiba.Controls;
+using Shiba.Internal;
 using Shiba.Scripting.Conversion;
 using Shiba.Scripting.Runtime;
+using Shiba.Scripting.Visitors;
 
 namespace Shiba.Scripting
 {
     public class DefaultScriptRuntime : IScriptRuntime, IDisposable
     {
-        private readonly JavaScriptValue[] _prefix;
         private readonly List<JavaScriptNativeFunction> _functions = new List<JavaScriptNativeFunction>();
+        private readonly JavaScriptValue[] _prefix;
+
         public DefaultScriptRuntime()
         {
             ChakraHost = new ChakraHost();
             ChakraHost.EnterContext();
-            _prefix = new[] { JavaScriptValue.FromBoolean(false) };
+            _prefix = new[] {JavaScriptValue.FromBoolean(false)};
             InitConversion();
             InitRuntimeObject();
             ChakraHost.LeaveContext();
@@ -28,43 +32,6 @@ namespace Shiba.Scripting
         {
             ChakraHost?.Dispose();
             ChakraHost = null;
-        }
-
-        public void Initialization()
-        {
-            ChakraHost.EnterContext();
-
-            CreateRegisterComponentFunction();
-
-            ChakraHost.LeaveContext();
-        }
-
-        private void CreateRegisterComponentFunction()
-        {
-            var id = JavaScriptPropertyId.FromString("registerComponent");
-            var function = JavaScriptValue.CreateFunction(RegisterComponent, IntPtr.Zero);
-            ChakraHost.GlobalObject.SetProperty(id, function, true);
-
-        }
-
-        
-        private static JavaScriptValue RegisterComponent(JavaScriptValue callee, bool call,
-            JavaScriptValue[] arguments,
-            ushort count, IntPtr data)
-        {
-            if (count < 2)
-            {
-                return false.ToJavaScriptValue();
-            }
-
-            var name = arguments[0].ToNative<string>();
-            var view = arguments[1];
-            if (string.IsNullOrEmpty(name))
-            {
-                return false.ToJavaScriptValue();
-            }
-
-            return true.ToJavaScriptValue();
         }
 
         public object Execute(string functionName, params object[] parameters)
@@ -81,9 +48,8 @@ namespace Shiba.Scripting
                     result = func.CallFunction(param).ToNative();
                 }
                     break;
-                default:
-                    break;
             }
+
             ChakraHost.LeaveContext();
             return result;
         }
@@ -95,7 +61,7 @@ namespace Shiba.Scripting
             ChakraHost.LeaveContext();
             return result;
         }
-        
+
         public void AddObject(string name, object value)
         {
             if (value == null || string.IsNullOrEmpty(name)) throw new ArgumentException();
@@ -108,7 +74,7 @@ namespace Shiba.Scripting
                 case bool _:
                 case int _:
                 case decimal _:
-                case float _:   
+                case float _:
                 case double _:
                 case null:
                     ChakraHost.GlobalObject.SetProperty(objPropertyId, value.ToJavaScriptValue(),
@@ -135,10 +101,7 @@ namespace Shiba.Scripting
                                 {
                                     object[] param;
                                     var args = arguments.Skip(1).ToArray();
-                                    if (!args.Any() && parameter.Length > 0)
-                                    {
-                                        return JavaScriptValue.Invalid;
-                                    }
+                                    if (!args.Any() && parameter.Length > 0) return JavaScriptValue.Invalid;
                                     if (count >= parameter.Length)
                                         param = Enumerable.Range(0, parameter.Length)
                                             .Select(index => args.ElementAtOrDefault(index).ToNative()).ToArray();
@@ -157,6 +120,7 @@ namespace Shiba.Scripting
                                     var result = method.Invoke(value, param);
                                     return result.ToJavaScriptValue();
                                 }
+
                                 _functions.Add(Function);
                                 var function = JavaScriptValue.CreateFunction(Function, IntPtr.Zero);
                                 obj.SetProperty(functionId, function, true);
@@ -169,10 +133,47 @@ namespace Shiba.Scripting
                                 obj.SetProperty(propertyId, property.GetValue(value).ToJavaScriptValue(), false);
                                 break;
                         }
+
                     ChakraHost.GlobalObject.SetProperty(objPropertyId, obj, true);
                     break;
             }
+
             ChakraHost.LeaveContext();
+        }
+
+        private void CreateRegisterComponentFunction()
+        {
+            var id = JavaScriptPropertyId.FromString("registerComponent");
+            var function = JavaScriptValue.CreateFunction(RegisterComponent, IntPtr.Zero);
+            ChakraHost.GlobalObject.SetProperty(id, function, true);
+        }
+
+
+        private static JavaScriptValue RegisterComponent(JavaScriptValue callee, bool call,
+            JavaScriptValue[] arguments,
+            ushort count, IntPtr data)
+        {
+            var args = arguments.Skip(1).ToArray();
+            if (count < 2)
+            {
+                return false.ToJavaScriptValue();
+            }
+
+            var name = args[0].ToNative<string>();
+            var view = args[1];
+            
+
+            if (string.IsNullOrEmpty(name))
+            {
+                return false.ToJavaScriptValue();
+            }
+
+            var component = Singleton<JSViewVisitor>.Instance.Visit(view);
+            if (component is View shibaView && ShibaApp.Instance.Components.TryAdd(name, shibaView))
+            {
+                return true.ToJavaScriptValue();
+            }
+            return false.ToJavaScriptValue();
         }
 
         public void AddConversion(ITypeConversion conversion)
@@ -197,7 +198,8 @@ namespace Shiba.Scripting
 
         private void InitRuntimeObject()
         {
-            AddObject("http", new Http());
+            //AddObject("http", new Http());
+            CreateRegisterComponentFunction();
         }
     }
 

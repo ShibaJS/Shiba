@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using Windows.UI.Xaml;
 using Shiba.Controls;
 using Shiba.ExtensionExecutors;
 using Shiba.Internal;
@@ -78,7 +79,24 @@ namespace Shiba.Visitors
             var attribute =
                 ShibaApp.Instance.ViewMapping.Mappers.LastOrDefault(it =>
                     view.ViewName == it.ViewName);
-            if (attribute == null) return null;
+            if (attribute == null)
+            {
+                if (ShibaApp.Instance.Components.ContainsKey(view.ViewName))
+                {
+                    // TODO:
+                    return new ShibaHost
+                    {
+                        Component = view.ViewName,
+                        DataContext = new NativeBinding
+                        {
+                            Source = context.ShibaHost,
+                            Path = new PropertyPath("DataContext")
+                        }
+                    };
+                }
+
+                return null;
+            }
 
             var renderer = Renderer.GetOrAdd(attribute.ViewName, type => CreateRenderer(attribute));
             if (context == null) throw new ArgumentNullException($"{nameof(context)} can not be null");
@@ -99,11 +117,12 @@ namespace Shiba.Visitors
 
                 commonprops.ForEach(it =>
                 {
-                    it.properties.ForEach(prop =>
+                    var (view1, native, properties) = it;
+                    properties.ForEach(prop =>
                     {
                         ShibaApp.Instance.Configuration.CommonProperties
                             .Where(cp => cp.Name == prop.Name).ToList()
-                            .ForEach(cp => cp.Handle(prop.Value, it.view, it.native, target));
+                            .ForEach(cp => cp.Handle(prop.Value, view1, native, target));
                     });
                 });
             }
@@ -119,9 +138,6 @@ namespace Shiba.Visitors
 
     internal sealed class ShibaExtensionVisitor : GenericVisitor<ShibaExtension, object>
     {
-        public ConcurrentDictionary<string, string> ScriptsCache { get; } = new ConcurrentDictionary<string, string>();
-
-
         protected override object Parse(ShibaExtension item, IShibaContext context)
         {
             var executor =
@@ -129,17 +145,9 @@ namespace Shiba.Visitors
             if (executor != null)
             {
                 var value = executor.ProvideValue(context, item);
-                if (string.IsNullOrEmpty(item.Script)) return value;
+                if (string.IsNullOrEmpty(item.ScriptName)) return value;
 
-                var funcName = ScriptsCache.GetOrAdd(item.Script, script =>
-                {
-                    var hash = $"_{Hash(script)}";
-                    //TODO: function parameter name
-                    ShibaApp.Instance.AddConverter(
-                        $"function {hash}(it){{ {script.TrimStart('$').TrimStart('{').TrimEnd('}')} }}");
-                    return hash;
-                });
-                var func = new ShibaFunction(funcName) {Parameters = {item}};
+                var func = new ShibaFunction(item.ScriptName) {Parameters = {item}};
                 if (value is NativeBinding binding)
                 {
                     if (binding.Converter != null)
@@ -164,12 +172,6 @@ namespace Shiba.Visitors
             }
 
             throw new NotImplementedException();
-        }
-
-        private string Hash(string input)
-        {
-            var hash = new SHA1Managed().ComputeHash(Encoding.UTF8.GetBytes(input));
-            return string.Join("", hash.Select(b => b.ToString("x2")).ToArray());
         }
     }
 
