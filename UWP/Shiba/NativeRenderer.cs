@@ -1,4 +1,5 @@
-﻿using Shiba.Controls;
+﻿using System;
+using Shiba.Controls;
 using Shiba.Internal;
 using Shiba.Parser;
 using Shiba.Visitors;
@@ -10,7 +11,9 @@ namespace Shiba
     {
         public static View Parse(string layout)
         {
-            return Singleton<ShibaParserWrapper>.Instance.Parse(layout) as View;
+            // TODO
+            throw new NotImplementedException();
+            //return Singleton<ShibaParserWrapper>.Instance.Parse(layout) as View;
         }
 
         public static NativeView Render(string layout, IShibaContext context)

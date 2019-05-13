@@ -10,6 +10,11 @@ namespace Shiba.Scripting
     {
         internal static readonly List<ITypeConversion> Conversions = new List<ITypeConversion>();
 
+        public static JavaScriptPropertyId ToJavaScriptPropertyId(this string id)
+        {
+            return JavaScriptPropertyId.FromString(id);
+        }
+
         public static JavaScriptValue ToJavaScriptValue(this object it)
         {
             switch (it)
@@ -44,6 +49,11 @@ namespace Shiba.Scripting
 
                     return converter?.ToJsValue?.Invoke(it) ?? JavaScriptValue.Invalid;
             }
+        }
+
+        public static T ToNative<T>(this JavaScriptValue value)
+        {
+            return value.ToNative() is T ? (T) value.ToNative() : default;
         }
 
         public static object ToNative(this JavaScriptValue value)

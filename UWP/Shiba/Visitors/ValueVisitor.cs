@@ -77,7 +77,7 @@ namespace Shiba.Visitors
         {
             var attribute =
                 ShibaApp.Instance.ViewMapping.Mappers.LastOrDefault(it =>
-                    view.ViewName.IsCurrentPlatformAndCheckValue(it.ViewName));
+                    view.ViewName == it.ViewName);
             if (attribute == null) return null;
 
             var renderer = Renderer.GetOrAdd(attribute.ViewName, type => CreateRenderer(attribute));
@@ -92,8 +92,7 @@ namespace Shiba.Visitors
                     var child = Parse(it, context);
                     panel.Children.Add(child);
                     var commonprop = it.Properties.Where(prop =>
-                            prop.Name.IsCurrentPlatform() &&
-                            ShibaApp.Instance.Configuration.CommonProperties.Any(cp => cp.Name == prop.Name.Value))
+                            ShibaApp.Instance.Configuration.CommonProperties.Any(cp => cp.Name == prop.Name))
                         .ToList();
                     if (commonprop.Any()) commonprops.Add((it, child, commonprop));
                 });
@@ -103,7 +102,7 @@ namespace Shiba.Visitors
                     it.properties.ForEach(prop =>
                     {
                         ShibaApp.Instance.Configuration.CommonProperties
-                            .Where(cp => cp.Name == prop.Name.Value).ToList()
+                            .Where(cp => cp.Name == prop.Name).ToList()
                             .ForEach(cp => cp.Handle(prop.Value, it.view, it.native, target));
                     });
                 });

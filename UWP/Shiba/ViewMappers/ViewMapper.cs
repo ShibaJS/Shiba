@@ -111,10 +111,7 @@ namespace Shiba.ViewMappers
 
             foreach (var property in view.Properties)
             {
-                if (!property.Name.IsCurrentPlatform())
-                    continue;
-
-                var cache = _propertyCache.LastOrDefault(it => it.Name == property.Name.Value);
+                var cache = _propertyCache.LastOrDefault(it => it.Name == property.Name);
                 if (cache != null) SetValue(context, property.Value, cache, target);
             }
 

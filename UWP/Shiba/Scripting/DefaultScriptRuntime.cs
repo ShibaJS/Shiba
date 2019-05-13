@@ -30,6 +30,43 @@ namespace Shiba.Scripting
             ChakraHost = null;
         }
 
+        public void Initialization()
+        {
+            ChakraHost.EnterContext();
+
+            CreateRegisterComponentFunction();
+
+            ChakraHost.LeaveContext();
+        }
+
+        private void CreateRegisterComponentFunction()
+        {
+            var id = JavaScriptPropertyId.FromString("registerComponent");
+            var function = JavaScriptValue.CreateFunction(RegisterComponent, IntPtr.Zero);
+            ChakraHost.GlobalObject.SetProperty(id, function, true);
+
+        }
+
+        
+        private static JavaScriptValue RegisterComponent(JavaScriptValue callee, bool call,
+            JavaScriptValue[] arguments,
+            ushort count, IntPtr data)
+        {
+            if (count < 2)
+            {
+                return false.ToJavaScriptValue();
+            }
+
+            var name = arguments[0].ToNative<string>();
+            var view = arguments[1];
+            if (string.IsNullOrEmpty(name))
+            {
+                return false.ToJavaScriptValue();
+            }
+
+            return true.ToJavaScriptValue();
+        }
+
         public object Execute(string functionName, params object[] parameters)
         {
             ChakraHost.EnterContext();

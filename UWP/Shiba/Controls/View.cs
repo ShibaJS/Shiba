@@ -9,13 +9,13 @@ namespace Shiba.Controls
 {
     public sealed class Property
     {
-        public Property(ShibaToken name, object value)
+        public Property(string name, object value)
         {
             Name = name;
             Value = value;
         }
 
-        public ShibaToken Name { get; }
+        public string Name { get; }
         public object Value { get; }
 
         public override bool Equals(object obj)
@@ -75,16 +75,13 @@ namespace Shiba.Controls
 
     public sealed class View
     {
-        public View(ShibaToken viewName, string rawString, object defaultValue = null)
+        public View(string viewName, object defaultValue = null)
         {
-            RawString = rawString;
             ViewName = viewName;
             DefaultValue = defaultValue;
         }
 
-        public string RawString { get; }
-
-        public ShibaToken ViewName { get; }
+        public string ViewName { get; }
         public object DefaultValue { get; internal set; }
         public List<View> Children { get; } = new List<View>();
         public List<Property> Properties { get; } = new List<Property>();
@@ -92,7 +89,7 @@ namespace Shiba.Controls
 
         public object GetProperty(string name)
         {
-            return ShibaValueVisitor.GetValue(Properties.FirstOrDefault(it => it.Name.IsCurrentPlatformAndCheckValue(name)).Value, null);
+            return ShibaValueVisitor.GetValue(Properties.FirstOrDefault(it => it.Name == name)?.Value, null);
         }
 
         public override bool Equals(object obj)
@@ -112,12 +109,6 @@ namespace Shiba.Controls
                 hashCode = (hashCode * 397) ^ (Properties != null ? Properties.GetHashCode() : 0);
                 return hashCode;
             }
-        }
-
-
-        public override string ToString()
-        {
-            return RawString;
         }
 
         private bool Equals(View other)
@@ -233,77 +224,77 @@ namespace Shiba.Controls
         }
     }
 
-    public sealed class ShibaToken
-    {
-        public ShibaToken(string value) : this(string.Empty, value)
-        {
-        }
+//    public sealed class ShibaToken
+//    {
+//        public ShibaToken(string value) : this(string.Empty, value)
+//        {
+//        }
 
-        public ShibaToken(string prefix, string value)
-        {
-            Value = value;
-            Prefix = prefix;
-        }
+//        public ShibaToken(string prefix, string value)
+//        {
+//            Value = value;
+//            Prefix = prefix;
+//        }
 
-        public string Prefix { get; }
-        public string Value { get; }
+//        public string Prefix { get; }
+//        public string Value { get; }
 
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj is ShibaToken token && Equals(token);
-        }
+//        public override bool Equals(object obj)
+//        {
+//            if (ReferenceEquals(null, obj)) return false;
+//            if (ReferenceEquals(this, obj)) return true;
+//            return obj is ShibaToken token && Equals(token);
+//        }
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return ((Prefix != null ? Prefix.GetHashCode() : 0) * 397) ^ (Value != null ? Value.GetHashCode() : 0);
-            }
-        }
+//        public override int GetHashCode()
+//        {
+//            unchecked
+//            {
+//                return ((Prefix != null ? Prefix.GetHashCode() : 0) * 397) ^ (Value != null ? Value.GetHashCode() : 0);
+//            }
+//        }
 
-        public bool IsCurrentPlatformAndCheckValue(string value)
-        {
-            if (ReferenceEquals(value, null)) return false;
-            return IsCurrentPlatform() && string.Equals(value, Value);
-        }
-
-        public bool IsCurrentPlatform()
-        {
-            return Prefix == ShibaApp.Instance.Configuration.PlatformType || string.IsNullOrEmpty(Prefix);
-        }
-
-//        public static bool operator ==(string value, ShibaToken token)
+//        public bool IsCurrentPlatformAndCheckValue(string value)
 //        {
 //            if (ReferenceEquals(value, null)) return false;
-//            if (ReferenceEquals(token, null)) return false;
-//            return (token.Prefix == ShibaApp.Instance.Configuration.PlatformType || string.IsNullOrEmpty(token.Prefix)) && string.Equals(value, token.Value);
+//            return IsCurrentPlatform() && string.Equals(value, Value);
 //        }
-//
-//        public static bool operator !=(string name, ShibaToken token)
+
+//        public bool IsCurrentPlatform()
 //        {
-//            return !(name == token);
+//            return Prefix == ShibaApp.Instance.Configuration.PlatformType || string.IsNullOrEmpty(Prefix);
 //        }
 
-        public static bool operator ==(ShibaToken x, ShibaToken y)
-        {
-            if (ReferenceEquals(x, y)) return true;
-            if (ReferenceEquals(x, null)) return false;
-            if (ReferenceEquals(y, null)) return false;
-            return x.Equals(y);
-        }
+////        public static bool operator ==(string value, ShibaToken token)
+////        {
+////            if (ReferenceEquals(value, null)) return false;
+////            if (ReferenceEquals(token, null)) return false;
+////            return (token.Prefix == ShibaApp.Instance.Configuration.PlatformType || string.IsNullOrEmpty(token.Prefix)) && string.Equals(value, token.Value);
+////        }
+////
+////        public static bool operator !=(string name, ShibaToken token)
+////        {
+////            return !(name == token);
+////        }
 
-        public static bool operator !=(ShibaToken c1, ShibaToken c2)
-        {
-            return !(c1 == c2);
-        }
+//        public static bool operator ==(ShibaToken x, ShibaToken y)
+//        {
+//            if (ReferenceEquals(x, y)) return true;
+//            if (ReferenceEquals(x, null)) return false;
+//            if (ReferenceEquals(y, null)) return false;
+//            return x.Equals(y);
+//        }
 
-        private bool Equals(ShibaToken other)
-        {
-            return string.Equals(Prefix, other.Prefix) && string.Equals(Value, other.Value);
-        }
-    }
+//        public static bool operator !=(ShibaToken c1, ShibaToken c2)
+//        {
+//            return !(c1 == c2);
+//        }
+
+//        private bool Equals(ShibaToken other)
+//        {
+//            return string.Equals(Prefix, other.Prefix) && string.Equals(Value, other.Value);
+//        }
+//    }
 
 
     public sealed class ShibaFunction
