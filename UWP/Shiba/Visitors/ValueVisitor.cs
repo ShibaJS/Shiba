@@ -235,9 +235,9 @@ namespace Shiba.Visitors
             return obj.Select(it => DynamicVisit(it, context)).ToList();
         }
 
-        private Dictionary<string, object> Visit(JObject item, IShibaContext context)
+        private ShibaObject Visit(JObject item, IShibaContext context)
         {
-            var dic = new Dictionary<string, object>();
+            var dic = new ShibaObject();
             foreach (var (key, value) in item)
             {
                 dic.TryAdd(key, DynamicVisit(value, context));

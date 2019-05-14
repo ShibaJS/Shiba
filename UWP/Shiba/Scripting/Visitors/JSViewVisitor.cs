@@ -88,7 +88,7 @@ namespace Shiba.Scripting.Visitors
                     }
                     return new Property(name, new ShibaExtension(type, target, scriptName));
                 case ValueType.Custom:
-                    return new Property(name, new ShibaObject(Singleton<ValueVisitor>.Instance.DynamicVisit(JsonConvert.DeserializeObject<JObject>(propertyValue.ToNative<string>()), null) as Dictionary<string, object>));
+                    return new Property(name, Singleton<ValueVisitor>.Instance.DynamicVisit(JsonConvert.DeserializeObject<JObject>(propertyValue.ToNative<string>()), null));
                 case ValueType.Boolean:
                 case ValueType.Number:
                 case ValueType.String:

@@ -5,11 +5,11 @@ import moe.tlaster.shiba.NativeView
 
 interface ICommonProperty {
     val name: String
-    fun handle(targetValue: Any, nativeView: NativeView, parent: ViewGroup)
+    fun handle(targetValue: Any?, nativeView: NativeView, parent: ViewGroup)
 }
 
 abstract class AbsCommonProperty<T> : ICommonProperty {
-    override fun handle(targetValue: Any, nativeView: NativeView, parent: ViewGroup) {
+    override fun handle(targetValue: Any?, nativeView: NativeView, parent: ViewGroup) {
         val value = targetValue as? T
         if (value != null) {
             setValue(value, nativeView, parent)

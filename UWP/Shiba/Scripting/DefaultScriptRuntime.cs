@@ -169,8 +169,16 @@ namespace Shiba.Scripting
             }
 
             var component = Singleton<JSViewVisitor>.Instance.Visit(view);
-            if (component is View shibaView && ShibaApp.Instance.Components.TryAdd(name, shibaView))
+            if (component is View shibaView)
             {
+                if (ShibaApp.Instance.Components.ContainsKey(name))
+                {
+                    ShibaApp.Instance.Components[name] = shibaView;
+                }
+                else
+                {
+                    ShibaApp.Instance.Components.TryAdd(name, shibaView);
+                }
                 return true.ToJavaScriptValue();
             }
             return false.ToJavaScriptValue();

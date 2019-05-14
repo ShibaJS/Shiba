@@ -59,7 +59,8 @@ private class ShibaRecyclerAdapter(val context: Context) : androidx.recyclerview
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): ShibaViewHolder {
         return ShibaViewHolder(ShibaHost(context).apply {
-            load(layout, null)
+            TODO()
+//            component = layout
         })
     }
 

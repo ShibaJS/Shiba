@@ -5,9 +5,9 @@ import android.util.TypedValue
 import android.view.ViewGroup
 import moe.tlaster.shiba.*
 import moe.tlaster.shiba.dataBinding.ShibaBinding
-import moe.tlaster.shiba.type.ShibaMap
+import moe.tlaster.shiba.type.ShibaObject
 import moe.tlaster.shiba.type.View
-import moe.tlaster.shiba.visitors.ShibaValueVisitor
+import moe.tlaster.shiba.visitors.ValueVisitor
 
 internal val Number.dp: Int
     get() = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), Resources.getSystem().displayMetrics).toInt()
@@ -36,7 +36,7 @@ open class ViewMapper<TNativeView : NativeView> : IViewMapper<TNativeView> {
     protected open val defaultPropertyMap: PropertyMap? = null
 
     open fun getViewLayoutParams() : ViewGroup.LayoutParams {
-        return ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        return ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
     override fun map(view: View, context: IShibaContext): TNativeView {
@@ -49,28 +49,28 @@ open class ViewMapper<TNativeView : NativeView> : IViewMapper<TNativeView> {
         }
 
         view.properties.forEach { property ->
-            if (property.name.isCurrentPlatform()) {
-                val cache = _propertyCache.lastOrNull { it.name == property.name.value }
-                if (cache != null) {
-                    setValue(context, property.value, cache, target)
-                }
+            val cache = _propertyCache.lastOrNull { it.name == property.name }
+            if (cache != null) {
+                setValue(context, property.value, cache, target)
             }
         }
 
         return target
     }
 
-    private fun setValue(context: IShibaContext, value: Any, propertyMap: PropertyMap, target: TNativeView) {
-        val targetValue = if (propertyMap.valueType != null && propertyMap.valueType == value.javaClass) {
+    private fun setValue(context: IShibaContext, value: Any?, propertyMap: PropertyMap, target: TNativeView) {
+        val targetValue = if (propertyMap.valueType != null && value != null && propertyMap.valueType == value.javaClass) {
             value
         } else {
-            ShibaValueVisitor.getValue(value, context)
+            ValueVisitor.visit(value, context)
         }
 
         when (targetValue) {
             is ShibaBinding -> {
-                targetValue.targetView = target
-                targetValue.viewSetter = propertyMap.setter
+                targetValue.apply {
+                    targetView = target
+                    viewSetter = propertyMap.setter
+                }
                 if (propertyMap is TwoWayPropertyMap) {
                     propertyMap.twowayInitializer.invoke(target) {
                         targetValue.setValueToDataContext(it)
@@ -120,12 +120,12 @@ open class ViewMapper<TNativeView : NativeView> : IViewMapper<TNativeView> {
                     val lp = view.layoutParams
                     if (lp is ViewGroup.MarginLayoutParams) {
                         when (it) {
-                            is ShibaMap -> {
+                            is ShibaObject -> {
                                 lp.setMargins(
-                                        it["left"]?.toInt()?.dp ?: 0,
-                                        it["top"]?.toInt()?.dp ?: 0,
-                                        it["right"]?.toInt()?.dp ?: 0,
-                                        it["bottom"]?.toInt()?.dp ?: 0)
+                                        it["left"]?.toString()?.toInt()?.dp ?: 0,
+                                        it["top"]?.toString()?.toInt()?.dp ?: 0,
+                                        it["right"]?.toString()?.toInt()?.dp ?: 0,
+                                        it["bottom"]?.toString()?.toInt()?.dp ?: 0)
                             }
                             is Number -> {
                                 lp.setMargins(
@@ -139,7 +139,7 @@ open class ViewMapper<TNativeView : NativeView> : IViewMapper<TNativeView> {
                 }),
                 PropertyMap("padding", { view, it ->
                     when (it) {
-                        is ShibaMap -> {
+                        is ShibaObject -> {
                             view.setPaddingRelative(
                                     it["left"]?.toString()?.toInt()?.dp ?: 0,
                                     it["top"]?.toString()?.toInt()?.dp ?: 0,

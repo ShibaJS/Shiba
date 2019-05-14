@@ -27,6 +27,7 @@ class ShibaConfiguration {
 object Shiba {
     val viewMapping = ArrayMap<String, IViewMapper<*>>()
     val configuration = ShibaConfiguration()
+    internal val components = ArrayMap<String, ShibaView>()
 
     public fun init(application: Context) {
         addRenderer("stack", StackMapper())

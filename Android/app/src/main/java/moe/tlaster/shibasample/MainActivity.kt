@@ -17,9 +17,8 @@ import android.widget.LinearLayout
 import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.item_list.view.*
-import moe.tlaster.shiba.BaseNotifyObject
-import moe.tlaster.shiba.Binding
-import moe.tlaster.shiba.INotifyPropertyChanged
+import moe.tlaster.shiba.*
+
 
 //class Model : INotifyPropertyChanged {
 //    override var propertyChanged: ((sender: Any, propertyName: String) -> Unit)? = null
@@ -35,36 +34,23 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        host.load("list { itemLayout = text -> \$bind items = \$bind androidList }", WithListModel())
-
-        val layout = "<text text=\"{awesome(\$json hello.world { if(it === null) return null; return it + ' +1!'; })}\"/>"
-        host.load(layout, dataContext.jsonNode)
-        input.setText(layout)
-        input.addTextChangedListener(object : TextWatcher{
-            override fun afterTextChanged(s: Editable?) {
-                try {
-                    host.load(s.toString(), dataContext.jsonNode)
-                } catch (e: Exception) {
-
-                } catch (e: Error) {
-
-                }
+        val contents = String(resources.openRawResource(R.raw.bundle).use {
+            ByteArray(it.available()).apply {
+                it.read(this)
             }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
         })
-//        list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-//        list.adapter = Adapter(this)
-//        host.load("stack { text { text = \$bind text } input { text = \$bind text} }", Model())
+        Shiba.configuration.scriptRuntime.execute(contents)
+        host.dataContext = object : BaseNotifyObject() {
+            @get:Binding(name = "text")
+            @set:Binding(name = "text")
+            var text = "Android"
+                set(text) {
+                    field = text
+                    notifyPropertyChanged("text")
+                }
 
-        go_streaming.setOnClickListener {
-            startActivity(Intent(this, LiveActivity::class.java))
         }
+        host.component = "index"
     }
 }
 
@@ -95,27 +81,3 @@ class WithListModel : BaseNotifyObject() {
     var list = (1 until 1000).map { Model("Text $it") }
 }
 
-class Adapter(private val context: Context) : androidx.recyclerview.widget.RecyclerView.Adapter<ViewHolder>() {
-
-    private val items = (1 until 1000).map { Model("Text $it") }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.item_list, parent, false)
-        view.host.load("stack { padding = [ top = 8 ] width = match_parent text -> awesome(reverse(\$bind androidText)) text { text=\"Android!\" } input { text = \$bind androidText width=match_parent } input { text = \$bind androidText} }", null)
-        return ViewHolder(view)
-    }
-
-    override fun getItemCount(): Int {
-        return items.count()
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.itemView.text.text = items[position].text
-        holder.itemView.host.dataContext = items[position]
-    }
-
-}
-
-class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
-
-}

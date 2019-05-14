@@ -36,7 +36,7 @@ namespace Shiba
     {
         public static T Get<T>(this ShibaObject shibaObject, string name)
         {
-            var value = shibaObject.Properties.FirstOrDefault(it => it.Key == name).Value;
+            var value = shibaObject.FirstOrDefault(it => it.Key == name).Value;
             switch (value)
             {
                 case null:

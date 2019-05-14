@@ -120,30 +120,10 @@ namespace Shiba.Controls
     }
 
 
-    public sealed class ShibaObject
+    public sealed class ShibaObject : Dictionary<string, object>
     {
-        public ShibaObject(IDictionary<string, object> properties)
+        public ShibaObject()
         {
-            Properties = new ReadOnlyDictionary<string, object>(properties);
-        }
-
-        public ReadOnlyDictionary<string, object> Properties { get; }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj is ShibaObject o && Equals(o);
-        }
-
-        public override int GetHashCode()
-        {
-            return Properties != null ? Properties.GetHashCode() : 0;
-        }
-
-        private bool Equals(ShibaObject other)
-        {
-            return Properties.SequenceEqual(other.Properties);
         }
     }
 
