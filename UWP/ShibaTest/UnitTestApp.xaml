@@ -1,7 +1,7 @@
 ﻿<Application
-    x:Class="Shiba.Test.App"
+    x:Class="ShibaTest.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Shiba.Test">
+    xmlns:local="using:ShibaTest">
 
 </Application>

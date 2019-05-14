@@ -1,10 +1,10 @@
 package moe.tlaster.shiba
 
 import android.content.Context
-import androidx.constraintlayout.widget.ConstraintLayout
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import moe.tlaster.shiba.dataBinding.ShibaBinding
 
 fun <T : View> View.findName(name: String) : T? {
@@ -31,9 +31,20 @@ private fun <T : View> View.findView(predicate: (View) -> Boolean): T? {
 
 }
 
-class ShibaHost : ConstraintLayout, IShibaContext, INotifyPropertyChanged {
+class ShibaHost : FrameLayout, IShibaContext, INotifyPropertyChanged {
     override var propertyChanged: Event<String> = Event()
     override val bindings: ArrayList<ShibaBinding> = ArrayList()
+    internal var hostBinding: ShibaBinding? = null
+        set(value) {
+            field?.release()
+            value?.targetView = this
+            value?.viewSetter = { view, any ->
+                if (view is ShibaHost) {
+                    view.dataContext = any
+                }
+            }
+            field = value
+        }
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -41,31 +52,48 @@ class ShibaHost : ConstraintLayout, IShibaContext, INotifyPropertyChanged {
 
     @get:Binding(name = "dataContext")
     @set:Binding(name = "dataContext")
-    var dataContext: Any? = null
+    override var dataContext: Any? = null
         set(value) {
             field = value
             propertyChanged.invoke(this, "dataContext")
         }
 
-
-    public fun load(view: moe.tlaster.shiba.type.View?, dataContext: Any?) {
-        if (view != null) {
+    var component: String? = null
+        set(value) {
+            field = value
             removeAllViews()
-            addView(NativeRenderer.render(view, this))
+            if (Shiba.components.containsKey(field)) {
+                val component = Shiba.components[field]
+                addView(NativeRenderer.render(component, this))
+            }
         }
-        this.dataContext = dataContext
-    }
 
-    public fun load(layout: String, dataContext: Any?) {
-        removeAllViews()
-        addView(NativeRenderer.render(layout, this))
-        this.dataContext = dataContext
-    }
+
+
+//
+//    public fun load(view: moe.tlaster.shiba.type.View?, dataContext: Any?) {
+//        if (view != null) {
+//            removeAllViews()
+//            addView(NativeRenderer.render(view, this))
+//        }
+//        this.dataContext = dataContext
+//    }
+//
+//    public fun load(layout: String, dataContext: Any?) {
+//        removeAllViews()
+//        addView(NativeRenderer.render(layout, this))
+//        this.dataContext = dataContext
+//    }
 
     override fun removeAllViews() {
         super.removeAllViews()
         bindings.forEach { it.release() }
         bindings.clear()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        // TODO: Release all resources
     }
 
     fun <T : View> findViewByName(name: String) : T? {

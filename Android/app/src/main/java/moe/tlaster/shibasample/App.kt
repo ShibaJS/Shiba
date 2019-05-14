@@ -15,7 +15,5 @@ class App : Application() {
         LeakCanary.install(this)
 
         Shiba.init(this)
-        Shiba.addConverter("function awesome(value) { return value + \" is awesome!\" }")
-        Shiba.addConverter("function reverse(value) { if(value == null) return \"\"; return value.split(\"\").reverse().join(\"\"); }")
     }
 }

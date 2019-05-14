@@ -22,7 +22,7 @@ namespace Shiba.ViewMappers
         {
             yield return new PropertyMap("orientation", NativeView.OrientationProperty, typeof(string),
                 OrientationConverter);
-            yield return new PropertyMap("padding", NativeView.PaddingProperty, typeof(ShibaMap), typeof(Thickness),
+            yield return new PropertyMap("padding", NativeView.PaddingProperty, typeof(ShibaObject), typeof(Thickness),
                 value =>
                 {
                     switch (value)
@@ -30,7 +30,7 @@ namespace Shiba.ViewMappers
                         case decimal numberValue:
                             var dvalue = Convert.ToDouble(numberValue);
                             return new Thickness(dvalue, dvalue, dvalue, dvalue);
-                        case ShibaMap shibaMap:
+                        case ShibaObject shibaMap:
                             return shibaMap.ToNativeThickness();
                     }
 

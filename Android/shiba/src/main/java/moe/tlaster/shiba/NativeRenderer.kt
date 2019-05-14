@@ -4,24 +4,17 @@ import android.content.Context
 import android.view.View
 import moe.tlaster.shiba.common.Singleton
 import moe.tlaster.shiba.dataBinding.ShibaBinding
-import moe.tlaster.shiba.parser.ShibaParserWrapper
-import moe.tlaster.shiba.visitors.ShibaValueVisitor
+import moe.tlaster.shiba.visitors.ValueVisitor
 
 interface IShibaContext {
     fun getContext() : Context
+    var dataContext: Any?
     val bindings: ArrayList<ShibaBinding>
 }
 
 internal object NativeRenderer {
-    fun render(layout: String, shibaContext: IShibaContext): View {
-        val viewTree = Singleton.get<ShibaParserWrapper>().parse(layout)
-        return render(viewTree, shibaContext)
-    }
 
-    fun render(view: moe.tlaster.shiba.type.View?, shibaContext: IShibaContext): NativeView {
-        if (view != null) {
-            return ShibaValueVisitor.getValue(view, shibaContext) as NativeView
-        }
-        throw IllegalArgumentException("layout is not a valid view tree")
+    fun render(view: ShibaView?, context: IShibaContext): NativeView {
+        return ValueVisitor.visit(view, context) as NativeView
     }
 }

@@ -6,6 +6,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 using Shiba.Controls;
+using Shiba.Internal;
 using Shiba.Visitors;
 using ShibaView = Shiba.Controls.View;
 using NativeView = Windows.UI.Xaml.FrameworkElement;
@@ -111,11 +112,11 @@ namespace Shiba.ViewMappers
 
             foreach (var property in view.Properties)
             {
-                if (!property.Name.IsCurrentPlatform())
-                    continue;
-
-                var cache = _propertyCache.LastOrDefault(it => it.Name == property.Name.Value);
-                if (cache != null) SetValue(context, property.Value, cache, target);
+                var cache = _propertyCache.LastOrDefault(it => it.Name == property.Name);
+                if (cache != null)
+                {
+                    SetValue(context, property.Value, cache, target);
+                }
             }
 
             return target;
@@ -142,7 +143,7 @@ namespace Shiba.ViewMappers
                 value => (bool) value ? Visibility.Visible : Visibility.Collapsed);
             yield return new PropertyMap("background", Control.BackgroundProperty, typeof(string),
                 ColorConverter);
-            yield return new PropertyMap("padding", Control.PaddingProperty, typeof(ShibaMap), typeof(NativeThickness),
+            yield return new PropertyMap("padding", Control.PaddingProperty, typeof(ShibaObject), typeof(NativeThickness),
                 value =>
                 {
                     switch (value)
@@ -150,13 +151,13 @@ namespace Shiba.ViewMappers
                         case decimal numberValue:
                             var dvalue = Convert.ToDouble(numberValue);
                             return new NativeThickness(dvalue, dvalue, dvalue, dvalue);
-                        case ShibaMap shibaMap:
+                        case ShibaObject shibaMap:
                             return shibaMap.ToNativeThickness();
                     }
 
                     return new NativeThickness();
                 });
-            yield return new PropertyMap("margin", NativeView.MarginProperty, typeof(ShibaMap), typeof(NativeThickness),
+            yield return new PropertyMap("margin", NativeView.MarginProperty, typeof(ShibaObject), typeof(NativeThickness),
                 value =>
                 {
                     switch (value)
@@ -164,7 +165,7 @@ namespace Shiba.ViewMappers
                         case decimal numberValue:
                             var dvalue = Convert.ToDouble(numberValue);
                             return new NativeThickness(dvalue, dvalue, dvalue, dvalue);
-                        case ShibaMap shibaMap:
+                        case ShibaObject shibaMap:
                             return shibaMap.ToNativeThickness();
                     }
                     return new NativeThickness();
@@ -194,7 +195,7 @@ namespace Shiba.ViewMappers
         {
             var targetValue = valueMap.ValueType == value?.GetType()
                 ? value
-                : ShibaValueVisitor.GetValue(value, context);
+                : Singleton<ValueVisitor>.Instance.DynamicVisit(value, context);
             valueMap.SetValue(target, targetValue);
         }
     }

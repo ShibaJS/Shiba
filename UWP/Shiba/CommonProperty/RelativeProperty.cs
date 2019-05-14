@@ -7,11 +7,11 @@ using NativeViewGroup = Windows.UI.Xaml.Controls.Panel;
 
 namespace Shiba.CommonProperty
 {
-    public class RelativeProperty : AbsCommonProperty<ShibaMap>
+    public class RelativeProperty : AbsCommonProperty<ShibaObject>
     {
         public override string Name { get; } = "relative";
 
-        public override void SetValue(ShibaMap map, View targetShibaView, NativeView element, NativeViewGroup parent)
+        public override void SetValue(ShibaObject shibaObject, View targetShibaView, NativeView element, NativeViewGroup parent)
         {
         }
     }
