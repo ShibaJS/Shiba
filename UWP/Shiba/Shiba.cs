@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using Shiba.CommonProperty;
 using Shiba.Controls;
 using Shiba.ExtensionExecutors;
@@ -14,15 +16,15 @@ namespace Shiba
         private ShibaApp(Action<ShibaConfiguration> action)
         {
             action?.Invoke(Configuration);
-            ViewMapping.Init();
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
+            ViewMappings = assemblies
+                .Where(item => item.GetCustomAttributes<ExportMapperAttribute>()?.Any() == true)
+                .SelectMany(item => item.GetCustomAttributes<ExportMapperAttribute>()).ToList().AsReadOnly();
         }
 
+        public ReadOnlyCollection<ExportMapperAttribute> ViewMappings { get; }
         internal Dictionary<string, View> Components { get; } = new Dictionary<string, View>();
-
-        public ViewMapping ViewMapping { get; } = new ViewMapping();
-
         public ShibaConfiguration Configuration { get; } = new ShibaConfiguration();
-
         public static ShibaApp Instance { get; protected set; }
 
         public void AddConverter(string converter)

@@ -46,9 +46,6 @@ namespace Shiba.UWP.Sample
                     //TODO: 从之前挂起的应用程序加载状态
                 }
                 ShibaApp.Init();
-                ShibaApp.Instance.AddConverter("function awesome(value) { return value + \" is awesome!\" }");
-                ShibaApp.Instance.AddConverter("function reverse(value) { return value.split(\"\").reverse().join(\"\"); }");
-                ShibaApp.Instance.AddConverter("function helloWorld(value) { if (value === null || value === undefined) return null; return value.hello.world; }");
                 SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
                     AppViewBackButtonVisibility.Visible;
                 SystemNavigationManager.GetForCurrentView().BackRequested += App_BackRequested;

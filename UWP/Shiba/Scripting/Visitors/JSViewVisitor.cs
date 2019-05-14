@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using ChakraHosting;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Shiba.Controls;
+using Shiba.Internal;
+using Shiba.Visitors;
 
 namespace Shiba.Scripting.Visitors
 {
@@ -84,7 +88,7 @@ namespace Shiba.Scripting.Visitors
                     }
                     return new Property(name, new ShibaExtension(type, target, scriptName));
                 case ValueType.Custom:
-                    throw new NotImplementedException();
+                    return new Property(name, new ShibaObject(Singleton<ValueVisitor>.Instance.DynamicVisit(JsonConvert.DeserializeObject<JObject>(propertyValue.ToNative<string>()), null) as Dictionary<string, object>));
                 case ValueType.Boolean:
                 case ValueType.Number:
                 case ValueType.String:

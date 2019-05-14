@@ -1,7 +1,5 @@
-﻿using System;
-using Shiba.Controls;
+﻿using Shiba.Controls;
 using Shiba.Internal;
-using Shiba.Parser;
 using Shiba.Visitors;
 using NativeView = Windows.UI.Xaml.UIElement;
 
@@ -11,7 +9,7 @@ namespace Shiba
     {
         public static NativeView Render(View view, IShibaContext context)
         {
-            return ShibaValueVisitor.GetValue(view, context) as NativeView;
+            return Singleton<ValueVisitor>.Instance.DynamicVisit(view, context) as NativeView;
         }
     }
 }

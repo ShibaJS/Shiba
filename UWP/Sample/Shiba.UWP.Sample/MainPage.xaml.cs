@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
@@ -9,83 +11,95 @@ using Windows.UI.Xaml.Navigation;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-// https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x804 上介绍了“空白页”项模板
-
 namespace Shiba.UWP.Sample
 {
-    public class Model : INotifyPropertyChanged
-    {
-        private string _uwpText = "UWP!";
-        private bool _isChecked;
 
-        public string UWPText
-        {
-            get => _uwpText;
-            set
-            {
-                _uwpText = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public bool IsChecked
-        {
-            get => _isChecked;
-            set
-            {
-                _isChecked = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-    }
-    /// <summary>
-    ///     可用于自身或导航至 Frame 内部的空白页。
-    /// </summary>
     public sealed partial class MainPage : Page
     {
-        public Model ViewModel { get; set; } = new Model();
-
-        public JToken Json { get; set; } =
-            JsonConvert.DeserializeObject<JToken>("{\"hello\": {\"world\": \"hello world!\"}}");
-
         public MainPage()
         {
             InitializeComponent();
             NavigationCacheMode = NavigationCacheMode.Required;
-
-            //var items = Enumerable.Range(0, 1000).Select(it => new Model
-            //{
-            //    UWPText = $"UWP! {it}"
-            //}).ToList();
-            //ListView.ItemsSource = items;
-
         }
 
-        public string Layout { get; set; } =
-            "stack { text { text=[WPF: $bind Text, UWP:$bind UWPText] } input { text=[WPF: $bind Text, UWP:$bind UWPText] } }";
-
-        private void TextBox_OnTextChanged(object sender, TextChangedEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            try
+            base.OnNavigatedTo(e);
+            var fname = @"Assets\bundle.js";
+            var InstallationFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
+            var file = await InstallationFolder.GetFileAsync(fname);
+            var contents = await File.ReadAllTextAsync(file.Path);
+            ShibaApp.Instance.Configuration.ScriptRuntime.Execute(contents);
+            ShibaHost.DataContext = new
             {
-                host.Layout = text.Text;
+                text = "test!"
+            };
+            ShibaHost.Component = "index";
+        }
+    }
+
+    
+    public class Streaming
+    {
+        public Action<JToken> OnDataChanged { get; set; }
+        public Action<string> OnLayoutChanged { get; set; }
+
+        private HttpClient _client;
+
+        public string Host { get; set; } = "http://localhost:5000/streaming";
+
+        public async Task Start()
+        {
+            _client = new HttpClient();
+
+            var stream = await _client.GetStreamAsync(Host);
+
+            var reader = new StreamReader(stream);
+
+            string eventName = null;
+            string data = null;
+
+            while (_client != null)
+            {
+                var line = await reader.ReadLineAsync();
+
+
+                if (string.IsNullOrEmpty(line) || line.StartsWith(":"))
+                {
+                    eventName = data = null;
+                    continue;
+                }
+
+                if (line.StartsWith("event: "))
+                {
+                    eventName = line.Substring("event: ".Length).Trim();
+                }
+                else if (line.StartsWith("data: "))
+                {
+                    data = line.Substring("data: ".Length).Trim('"');
+
+                    switch (eventName)
+                    {
+                        case "data_changed":
+                            OnDataChanged?.Invoke(JsonConvert.DeserializeObject<JToken>(data));
+                            break;
+                        case "layout_changed":
+                            OnLayoutChanged?.Invoke(data);
+                            break;
+                    }
+                }
             }
-            catch (Exception ex)
+            this.Stop();
+        }
+
+        public void Stop()
+        {
+            if (_client != null)
             {
-                
+                _client.Dispose();
+                _client = null;
             }
         }
 
-        private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(LivePage));
-        }
     }
 }

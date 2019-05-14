@@ -9,16 +9,16 @@ using NativeViewGroup = Windows.UI.Xaml.Controls.Panel;
 
 namespace Shiba.CommonProperty
 {
-    public class GridProperty : AbsCommonProperty<ShibaMap>
+    public class GridProperty : AbsCommonProperty<ShibaObject>
     {
         public override string Name { get; } = "grid";
 
-        public override void SetValue(ShibaMap map, View targetShibaView, NativeView element, NativeViewGroup parent)
+        public override void SetValue(ShibaObject shibaObject, View targetShibaView, NativeView element, NativeViewGroup parent)
         {
-            var row = map.Get<int>("row");
-            var column = map.Get<int>("column");
-            var rowSpan = map.Get<int>("rowSpan");
-            var columnSpan = map.Get<int>("columnSpan");
+            var row = shibaObject.Get<int>("row");
+            var column = shibaObject.Get<int>("column");
+            var rowSpan = shibaObject.Get<int>("rowSpan");
+            var columnSpan = shibaObject.Get<int>("columnSpan");
             if (row != default) Grid.SetRow(element, row);
 
             if (column != default) Grid.SetColumn(element, column);

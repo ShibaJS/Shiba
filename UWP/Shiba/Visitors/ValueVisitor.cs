@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using Windows.UI.Xaml;
+using Newtonsoft.Json.Linq;
 using Shiba.Controls;
 using Shiba.ExtensionExecutors;
 using Shiba.Internal;
@@ -18,81 +20,46 @@ using NativeViewGroup = Windows.UI.Xaml.Controls.Panel;
 
 namespace Shiba.Visitors
 {
-    internal interface IValueVisitor
+    internal class ValueVisitor
     {
-        Type HandleType { get; }
-        object Visit(object item, IShibaContext context);
-    }
-
-    internal abstract class ShibaValueVisitor : IValueVisitor
-    {
-        private static readonly List<IValueVisitor> Visitors;
-
-        static ShibaValueVisitor()
+        public object DynamicVisit(object obj, IShibaContext context)
         {
-            Visitors = typeof(IValueVisitor)
-                .Assembly
-                .DefinedTypes
-                .Where(it =>
-                    it.IsClass && !it.IsAbstract &&
-                    typeof(IValueVisitor).GetTypeInfo().IsAssignableFrom(it.GetTypeInfo()))
-                .Select(it => Activator.CreateInstance(it) as IValueVisitor)
-                .ToList();
+            if (obj == null)
+            {
+                return null;
+            }
+            return Visit((dynamic) obj, context);
         }
 
-        public abstract Type HandleType { get; }
-        public abstract object Visit(object item, IShibaContext context);
-
-        protected internal static object GetValue(object item, IShibaContext context)
+        private object Visit(object obj, IShibaContext context)
         {
-            if (item == null) return null;
-
-            var visitor = Visitors.FirstOrDefault(it => it.HandleType == item.GetType());
-
-            if (visitor == null) return item;
-
-            return visitor.Visit(item, context);
-        }
-    }
-
-    internal abstract class GenericVisitor<T, K> : ShibaValueVisitor
-        where T : class
-    {
-        public override Type HandleType { get; } = typeof(T);
-
-        public override object Visit(object item, IShibaContext context)
-        {
-            return Parse(item as T, context);
+            return obj;
         }
 
-        protected abstract K Parse(T item, IShibaContext context);
-    }
-
-    internal sealed class ViewVisitor : GenericVisitor<ShibaView, NativeView>
-    {
         //TODO: Dictionary means it does not support multiple renderer for one view (like Xamarin.Forms custom renderer)
         private static readonly ConcurrentDictionary<string, IViewMapper> Renderer =
             new ConcurrentDictionary<string, IViewMapper>();
 
-        protected override NativeView Parse(View view, IShibaContext context)
+        private NativeView Visit(View view, IShibaContext context)
         {
             var attribute =
-                ShibaApp.Instance.ViewMapping.Mappers.LastOrDefault(it =>
+                ShibaApp.Instance.ViewMappings.LastOrDefault(it =>
                     view.ViewName == it.ViewName);
             if (attribute == null)
             {
                 if (ShibaApp.Instance.Components.ContainsKey(view.ViewName))
                 {
-                    // TODO:
-                    return new ShibaHost
+                    // TODO: Properties
+                    var host = new ShibaHost
                     {
                         Component = view.ViewName,
-                        DataContext = new NativeBinding
-                        {
-                            Source = context.ShibaHost,
-                            Path = new PropertyPath("DataContext")
-                        }
                     };
+                    host.SetBinding(FrameworkElement.DataContextProperty, new NativeBinding
+                    {
+                        Source = context.ShibaHost,
+                        Path = new PropertyPath("DataContext")
+                    });
+                    return host;
                 }
 
                 return null;
@@ -107,7 +74,7 @@ namespace Shiba.Visitors
                 var commonprops = new List<(ShibaView view, NativeView native, List<Property> properties)>();
                 view.Children.ForEach(it =>
                 {
-                    var child = Parse(it, context);
+                    var child = Visit(it, context);
                     panel.Children.Add(child);
                     var commonprop = it.Properties.Where(prop =>
                             ShibaApp.Instance.Configuration.CommonProperties.Any(cp => cp.Name == prop.Name))
@@ -134,11 +101,8 @@ namespace Shiba.Visitors
         {
             return Activator.CreateInstance(arg.MapperType) as IViewMapper;
         }
-    }
-
-    internal sealed class ShibaExtensionVisitor : GenericVisitor<ShibaExtension, object>
-    {
-        protected override object Parse(ShibaExtension item, IShibaContext context)
+        
+        private object Visit(ShibaExtension item, IShibaContext context)
         {
             var executor =
                 ShibaApp.Instance.Configuration.ExtensionExecutors.FirstOrDefault(it => it.Name == item.Type);
@@ -173,11 +137,8 @@ namespace Shiba.Visitors
 
             throw new NotImplementedException();
         }
-    }
-
-    internal sealed class ShibaFunctionVisitor : GenericVisitor<ShibaFunction, NativeBinding>
-    {
-        protected override NativeBinding Parse(ShibaFunction item, IShibaContext context)
+        
+        private NativeBinding Visit(ShibaFunction item, IShibaContext context)
         {
             var function = ParseFunction(item, context);
             var extensions = GetExtensions(function)?.ToList();
@@ -192,7 +153,7 @@ namespace Shiba.Visitors
             {
                 var extension = extensions.FirstOrDefault();
 
-                var extensionValue = GetValue(extension, context);
+                var extensionValue = DynamicVisit(extension, context);
 
                 switch (extensionValue)
                 {
@@ -260,38 +221,64 @@ namespace Shiba.Visitors
                             item.Parameters[i] = executor.ProvideValue(context, extension);
                         break;
                     default:
-                        item.Parameters[i] = GetValue(parameter, context);
+                        item.Parameters[i] = DynamicVisit(parameter, context);
                         break;
                 }
             }
 
             return item;
         }
+
+
+        private List<object> Visit(JArray obj, IShibaContext context)
+        {
+            return obj.Select(it => DynamicVisit(it, context)).ToList();
+        }
+
+        private Dictionary<string, object> Visit(JObject item, IShibaContext context)
+        {
+            var dic = new Dictionary<string, object>();
+            foreach (var (key, value) in item)
+            {
+                dic.TryAdd(key, DynamicVisit(value, context));
+            }
+
+            return dic;
+        }
+
+        private KeyValuePair<string, object> Visit(JProperty item, IShibaContext context)
+        {
+            return new KeyValuePair<string, object>(item.Name, DynamicVisit(item.Value, context));
+        }
+
+        private object Visit(JValue item, IShibaContext context)
+        {
+            switch (item.Type)
+            {
+                case JTokenType.Integer:
+                    return item.Value<int>();
+                case JTokenType.Float:
+                    return item.Value<float>();
+                case JTokenType.String:
+                    return item.Value<string>();
+                case JTokenType.Boolean:
+                    return item.Value<bool>();
+                case JTokenType.Date:
+                    return item.Value<DateTime>();
+                case JTokenType.Raw:
+                    return item.Value<string>();
+                case JTokenType.Bytes:
+                    return item.Value<byte[]>();
+                case JTokenType.Guid:
+                    return item.Value<Guid>();
+                case JTokenType.Uri:
+                    return item.Value<string>();
+                case JTokenType.TimeSpan:
+                    return item.Value<TimeSpan>();
+                default:
+                    return null;
+            }
+        }
     }
 
-//    internal sealed class ShibaMapVisitor : GenericVisitor<ShibaMap, Dictionary<string, object>>
-//    {
-//        protected override Dictionary<string, object> Parse(ShibaMap item, IShibaContext context)
-//        {
-//            return item..ToDictionary(it => it.Key, it => GetValue(it.Value, context));
-//        }
-//    }
-
-    //internal sealed class ShibaArrayVisitor : GenericVisitor<ShibaArray, IEnumerable<object>>
-    //{
-    //    protected override IEnumerable<object> Parse(ShibaArray item, IShibaContext context)
-    //    {
-    //        var shibaArray = new ShibaArray();
-    //        shibaArray.AddRange(item.Select(it => GetValue(it, context)));
-    //        return shibaArray;
-    //    }
-    //}
-
-    //internal sealed class BacisValueVisitor : GenericVisitor<BasicValue, object>
-    //{
-    //    protected override object Parse(BasicValue item, IShibaContext context)
-    //    {
-    //        return item.Value;
-    //    }
-    //}
 }
