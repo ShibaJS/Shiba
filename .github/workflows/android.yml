@@ -18,4 +18,4 @@ jobs:
     - name: Build with Gradle
       run: |
         cd ./Android
-        gradlew clean build
+        ./gradlew clean build
