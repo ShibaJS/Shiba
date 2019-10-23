@@ -17,23 +17,20 @@ jobs:
         uses: warrenbuckley/Setup-MSBuild@v1
       - name: Show version
         working-directory: ./UWP
-        run: echo $GITHUB_REF.SubString(10)
+        run: echo %GITHUB_REF:~10%
       - name: Restore with nuget
         working-directory: ./UWP
-        shell: pwsh
         run: nuget restore ./Shiba.sln
       - name: Build with msbuild
         working-directory: ./UWP
-        shell: pwsh
         run: msbuild ./Shiba.sln /m /verbosity:minimal /p:Configuration=Release
       - name: Deploy to github packages
         working-directory: ./UWP
-        shell: pwsh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           nuget source Add -Name "GitHub" -Source "https://nuget.pkg.github.com/ShibaJS/index.json" -UserName ShibaJS -Password GITHUB_TOKEN
-          nuget pack ./Shiba.nuspec -Version $GITHUB_REF.SubString(10)
+          nuget pack ./Shiba.nuspec -Version %GITHUB_REF:~10%
           nuget push "Shiba.nupkg" -Source "GitHub"
 
   build-and-deploy-Android:
