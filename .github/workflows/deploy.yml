@@ -15,6 +15,9 @@ jobs:
         uses: warrenbuckley/Setup-Nuget@v1
       - name: Setup MSBuild.exe
         uses: warrenbuckley/Setup-MSBuild@v1
+      - name: Show version
+        working-directory: ./UWP
+        run: echo $GITHUB_REF.SubString(10)
       - name: Restore with nuget
         working-directory: ./UWP
         shell: pwsh
@@ -42,6 +45,9 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+      - name: Show version
+        working-directory: ./Android
+        run: echo ${GITHUB_REF:10}
       - name: Grant execute permission for gradlew
         working-directory: ./Android
         run: chmod +x ./gradlew
@@ -50,4 +56,4 @@ jobs:
         run: ./gradlew clean build
       - name: Deploy to github packages
         working-directory: ./Android
-        run: ./gradlew publish -PversionName="${GITHUB_REF:10}" -Ptoken=GITHUB_TOKEN
+        run: ./gradlew publish -PversionName="${GITHUB_REF:10}" -Ptoken=GITHUB_TOKEN -Puser="ShibaJS"
