@@ -2,10 +2,8 @@ name: Deploy CI
 
 on:
   push:
-    branches:
-      - master
     tags:
-      - 0.3.*
+      - "v*.*.*"
 
 jobs:
   build-and-deploy-UWP:
