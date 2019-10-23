@@ -17,12 +17,15 @@ jobs:
         uses: warrenbuckley/Setup-MSBuild@v1
       - name: Restore with nuget
         working-directory: ./UWP
+        shell: pwsh
         run: nuget restore ./Shiba.sln
       - name: Build with msbuild
         working-directory: ./UWP
+        shell: pwsh
         run: msbuild ./Shiba.sln /m /verbosity:minimal /p:Configuration=Release
       - name: Deploy to github packages
         working-directory: ./UWP
+        shell: pwsh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
