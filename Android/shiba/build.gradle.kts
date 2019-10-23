@@ -57,7 +57,7 @@ publishing {
     repositories {
         maven {
             name = "Github"
-            url = uri("https://maven.pkg.github.com/ShibaJS/Shiba")
+            url = uri(getConfiguration("source", ""))
             credentials {
                 username = getConfiguration("user", "")
                 password = getConfiguration("token", "")
