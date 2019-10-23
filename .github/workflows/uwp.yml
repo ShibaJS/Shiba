@@ -1,0 +1,26 @@
+name: UWP CI
+
+on: 
+  push:
+    paths:
+      - 'UWP/**'
+
+jobs:
+  build:
+
+    runs-on: windows-2019
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.0.100
+    - name: Setup MSBuild.exe
+      uses: warrenbuckley/Setup-MSBuild@v1
+    - name: Restore with dotnet
+      working-directory: ./UWP
+      run: dotnet restore ./Shiba.sln
+    - name: Build with msbuild
+      working-directory: ./UWP
+      run: msbuild ./Shiba.sln /m /verbosity:minimal /p:Configuration=Release

@@ -1,6 +1,9 @@
 name: Android CI
 
-on: [push]
+on: 
+  push:
+    paths:
+      - 'Android/**'
 
 jobs:
   build:
@@ -13,5 +16,9 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+    - name: Grant execute permission for gradlew
+      working-directory: ./Android
+      run: chmod +x ./gradlew
     - name: Build with Gradle
-      run: ./Android/gradlew build
+      working-directory: ./Android
+      run: ./gradlew clean build
