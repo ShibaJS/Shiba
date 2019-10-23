@@ -1,6 +1,6 @@
 name: UWP CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -9,7 +9,11 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
-    - name: Restore with nuget
-      run: nuget restore "UWP\\Shiba.sln"
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.0.100
+    - name: Restore with dotnet
+      run: dotnet restore "UWP\\Shiba.sln"
     - name: Build with msbuild
       run: msbuild "UWP\\Shiba.sln" /m /verbosity:minimal /p:Configuration=Release
