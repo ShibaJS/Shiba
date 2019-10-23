@@ -1,6 +1,6 @@
 name: Android CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -16,4 +16,6 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x ./Android/gradlew
     - name: Build with Gradle
-      run: ./Android/gradlew clean build
+      run: |
+        cd ./Android
+        gradlew clean build
