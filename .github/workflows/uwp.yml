@@ -1,0 +1,15 @@
+name: UWP CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: windows-2019
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Restore with nuget
+      run: nuget restore "UWP\\Shiba.sln"
+    - name: Build with msbuild
+      run: msbuild "UWP\\Shiba.sln" /m /verbosity:minimal /p:Configuration=Release
