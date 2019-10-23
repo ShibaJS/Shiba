@@ -55,4 +55,4 @@ jobs:
         working-directory: ./Android
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew publish -PversionName="${GITHUB_REF:10}" -Ptoken=GITHUB_TOKEN -Puser=ShibaJS -Psource="https://maven.pkg.github.com/ShibaJS/Shiba"
+        run: ./gradlew publish -PversionName="${GITHUB_REF:10}" -Ptoken=${GITHUB_TOKEN} -Puser=ShibaJS -Psource="https://maven.pkg.github.com/ShibaJS/Shiba"
