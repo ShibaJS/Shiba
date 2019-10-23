@@ -1,21 +1,23 @@
 name: UWP CI
 
-on: [push]
+on:
+  push:
+    paths:
+      - "UWP/**"
 
 jobs:
   build:
-
     runs-on: windows-2019
-    
+
     steps:
-    - uses: actions/checkout@v1
-    - name: Setup Nuget.exe
-      uses: warrenbuckley/Setup-Nuget@v1
-    - name: Setup MSBuild.exe
-      uses: warrenbuckley/Setup-MSBuild@v1
-    - name: Restore with nuget
-      working-directory: ./UWP
-      run:  nuget restore ./Shiba.sln
-    - name: Build with msbuild
-      working-directory: ./UWP
-      run: msbuild ./Shiba.sln /m /verbosity:minimal /p:Configuration=Release
+      - uses: actions/checkout@v1
+      - name: Setup Nuget.exe
+        uses: warrenbuckley/Setup-Nuget@v1
+      - name: Setup MSBuild.exe
+        uses: warrenbuckley/Setup-MSBuild@v1
+      - name: Restore with nuget
+        working-directory: ./UWP
+        run: nuget restore ./Shiba.sln
+      - name: Build with msbuild
+        working-directory: ./UWP
+        run: msbuild ./Shiba.sln /m /verbosity:minimal /p:Configuration=Release

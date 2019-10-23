@@ -1,24 +1,23 @@
 name: Android CI
 
-on: 
+on:
   push:
     paths:
-      - 'Android/**'
+      - "Android/**"
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
-    - name: set up JDK 1.8
-      uses: actions/setup-java@v1
-      with:
-        java-version: 1.8
-    - name: Grant execute permission for gradlew
-      working-directory: ./Android
-      run: chmod +x ./gradlew
-    - name: Build with Gradle
-      working-directory: ./Android
-      run: ./gradlew clean build
+      - uses: actions/checkout@v1
+      - name: set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Grant execute permission for gradlew
+        working-directory: ./Android
+        run: chmod +x ./gradlew
+      - name: Build with Gradle
+        working-directory: ./Android
+        run: ./gradlew clean build

@@ -3,6 +3,7 @@ plugins {
     kotlin("android")
     kotlin("android.extensions")
     kotlin("kapt")
+    id("digital.wup.android-maven-publish").version("3.6.2")
 }
 
 
@@ -51,4 +52,24 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.2.0")
 }
 
-apply(from= "publish.gradle")
+
+publishing {
+    repositories {
+        maven {
+            name = "Github"
+            url = uri("https://maven.pkg.github.com/ShibaJS/Shiba")
+            credentials {
+                password = getConfiguration("token", "")
+            }
+        }
+    }
+    publications {
+        create<MavenPublication>("mavenAar") {
+            groupId = "org.shibajs"
+            artifactId = "shiba"
+            version = appConfig.versionName
+            from(components["android"])
+        }
+    }
+}
+// apply(from= "publish.gradle")
