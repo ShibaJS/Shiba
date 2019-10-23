@@ -7,7 +7,7 @@ plugins {
 android {
     compileSdkVersion(appConfig.compileSdkVersion)
     defaultConfig {
-        applicationId = "moe.tlaster.shibasample"
+        applicationId = "org.shibajs.shibasample"
         minSdkVersion(appConfig.minSdkVersion)
         targetSdkVersion(appConfig.targetSdkVersion)
         versionCode = appConfig.versionCode

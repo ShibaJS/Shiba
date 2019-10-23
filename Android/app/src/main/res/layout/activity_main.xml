@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="moe.tlaster.shibasample.MainActivity">
-    <moe.tlaster.shiba.ShibaHost
+    tools:context="org.shibajs.shibasample.MainActivity">
+    <org.shibajs.shiba.ShibaHost
         android:id="@+id/host"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
