@@ -1,9 +1,6 @@
 name: UWP CI
 
-on: 
-  push:
-    paths:
-      - 'UWP/**'
+on: [push]
 
 jobs:
   build:
@@ -12,15 +9,13 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.0.100
+    - name: Setup Nuget.exe
+      uses: warrenbuckley/Setup-Nuget@v1
     - name: Setup MSBuild.exe
       uses: warrenbuckley/Setup-MSBuild@v1
-    - name: Restore with dotnet
+    - name: Restore with nuget
       working-directory: ./UWP
-      run: dotnet restore ./Shiba.sln
+      run:  nuget restore ./Shiba.sln
     - name: Build with msbuild
       working-directory: ./UWP
       run: msbuild ./Shiba.sln /m /verbosity:minimal /p:Configuration=Release
