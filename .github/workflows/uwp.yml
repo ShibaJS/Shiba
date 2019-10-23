@@ -16,9 +16,11 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.0.100
+    - name: Setup MSBuild.exe
+      uses: warrenbuckley/Setup-MSBuild@v1
     - name: Restore with dotnet
       working-directory: ./UWP
       run: dotnet restore ./Shiba.sln
     - name: Build with msbuild
       working-directory: ./UWP
-      run: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/MSBuild/Current/Bin/MSBuild.exe" ./Shiba.sln /m /verbosity:minimal /p:Configuration=Release
+      run: msbuild ./Shiba.sln /m /verbosity:minimal /p:Configuration=Release
