@@ -28,9 +28,9 @@ android {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8", appConfig.kotlinVersion))
-    implementation("androidx.appcompat:appcompat:1.0.2")
-    implementation("androidx.constraintlayout:constraintlayout:2.0.0-beta1")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.9.9")
+    implementation("androidx.appcompat:appcompat:1.1.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.0.0-beta2")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.9.10")
 
     implementation("com.squareup.okhttp3:okhttp:3.13.1")
 

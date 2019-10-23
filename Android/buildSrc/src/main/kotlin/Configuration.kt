@@ -1,6 +1,6 @@
 import org.gradle.api.Project
 class Configuration(project: Project) {
-    val kotlinVersion = "1.3.31"
+    val kotlinVersion = "1.3.50"
     val minSdkVersion = 21
     val targetSdkVersion = 28
     val compileSdkVersion = 28
