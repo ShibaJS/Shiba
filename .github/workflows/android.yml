@@ -1,6 +1,9 @@
 name: Android CI
 
-on: [push, pull_request]
+on: 
+  [push, pull_request]:
+    paths:
+      - 'Android/**'
 
 jobs:
   build:
