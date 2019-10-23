@@ -4,11 +4,11 @@
     <id>Shiba</id>
     <version>1.0.0-alpha</version>
     <title></title>
-    <authors>Tlaster</authors>
-    <owners>Tlaster</owners>
+    <authors>ShibaJS</authors>
+    <owners>ShibaJS</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="expression">MIT</license>
-    <projectUrl>https://github.com/Tlaster/Shiba</projectUrl>
+    <projectUrl>https://github.com/ShibaJS/Shiba</projectUrl>
     <description>Shiba</description>
     <dependencies>
       <group>
