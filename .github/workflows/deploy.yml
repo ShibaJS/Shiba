@@ -29,7 +29,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          nuget source Add -Name "GitHub" -Source "https://nuget.pkg.github.com/ShibaJS/index.json" -UserName ShibaJS -Password GITHUB_TOKEN
+          nuget source Add -Name "GitHub" -Source "https://nuget.pkg.github.com/ShibaJS/index.json" -UserName ShibaJS -Password %GITHUB_REF%
           nuget pack ./Shiba.nuspec -Version %GITHUB_REF:~10%
           nuget push *.nupkg -Source "GitHub"
 
@@ -53,4 +53,6 @@ jobs:
         run: ./gradlew clean build
       - name: Deploy to github packages
         working-directory: ./Android
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew publish -PversionName="${GITHUB_REF:10}" -Ptoken=GITHUB_TOKEN -Puser=ShibaJS -Psource="https://maven.pkg.github.com/ShibaJS"
