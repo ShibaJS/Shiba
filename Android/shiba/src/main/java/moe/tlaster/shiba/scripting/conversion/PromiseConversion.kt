@@ -1,16 +1,13 @@
 package moe.tlaster.shiba.scripting.conversion
 
-import android.provider.Settings
 import android.util.ArrayMap
-import android.util.Log
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.liquidplayer.javascript.JSContext
-import org.liquidplayer.javascript.JSValue
 import org.liquidplayer.javascript.JSFunction
-import org.liquidplayer.javascript.JSObject
+import org.liquidplayer.javascript.JSValue
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine

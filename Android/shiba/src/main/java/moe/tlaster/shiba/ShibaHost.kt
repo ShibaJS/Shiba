@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import moe.tlaster.shiba.dataBinding.ShibaBinding
 
-fun <T : View> View.findName(name: String) : T? {
+fun <T : View> View.findName(name: String): T? {
     return findView { it ->
         it.getTag(R.id.shiba_view_name_key) == name
     }
@@ -34,17 +34,6 @@ private fun <T : View> View.findView(predicate: (View) -> Boolean): T? {
 class ShibaHost : FrameLayout, IShibaContext, INotifyPropertyChanged {
     override var propertyChanged: Event<String> = Event()
     override val bindings: ArrayList<ShibaBinding> = ArrayList()
-    internal var hostBinding: ShibaBinding? = null
-        set(value) {
-            field?.release()
-            value?.targetView = this
-            value?.viewSetter = { view, any ->
-                if (view is ShibaHost) {
-                    view.dataContext = any
-                }
-            }
-            field = value
-        }
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -56,20 +45,49 @@ class ShibaHost : FrameLayout, IShibaContext, INotifyPropertyChanged {
         set(value) {
             field = value
             propertyChanged.invoke(this, "dataContext")
+            onDataContextChanged(value)
         }
+
+    private fun onDataContextChanged(value: Any?) {
+        if (Shiba.configuration.scriptRuntime.isObject(value) && value != null) {
+            Shiba.configuration.scriptRuntime.injectFunction<String>(value, "onPropertyChanged") { name ->
+                bindings.filter { it.actualPath == name }.forEach {
+                    it.setValueToView()
+                }
+            }
+        }
+    }
 
     var component: String? = null
         set(value) {
             field = value
             removeAllViews()
             if (Shiba.components.containsKey(field)) {
-                val component = Shiba.components[field]
-                addView(NativeRenderer.render(component, this))
+                viewComponent = Shiba.components[field]
             }
         }
 
+    var creator: String? = null
+        set(value) {
+            field = value
+            if (value != null) {
+                addView(NativeRenderer.renderFromFunction(value, this))
+            }
+        }
 
+    internal var viewComponent: ShibaView? = null
+        set(value) {
+            field = value
+            addView(NativeRenderer.render(field, this))
+        }
 
+    override fun eventCallback(name: String) {
+        if (Shiba.configuration.scriptRuntime.hasFunction(name)) {
+            Shiba.configuration.scriptRuntime.callFunction(name, dataContext)
+        } else if (dataContext != null && Shiba.configuration.scriptRuntime.hasFunction(dataContext, name)) {
+            Shiba.configuration.scriptRuntime.callFunction(dataContext, name, dataContext)
+        }
+    }
 //
 //    public fun load(view: moe.tlaster.shiba.type.View?, dataContext: Any?) {
 //        if (view != null) {
@@ -91,12 +109,7 @@ class ShibaHost : FrameLayout, IShibaContext, INotifyPropertyChanged {
         bindings.clear()
     }
 
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        // TODO: Release all resources
-    }
-
-    fun <T : View> findViewByName(name: String) : T? {
+    fun <T : View> findViewByName(name: String): T? {
         return findView { it ->
             it.getTag(R.id.shiba_view_name_key) == name
         }

@@ -1,8 +1,17 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
+using Windows.UI.Core;
+using Windows.UI.ViewManagement;
+using Windows.UI.WindowManagement;
 using ChakraHosting;
+using Newtonsoft.Json;
+using Shiba.Internal;
+using Shiba.Visitors;
 
 namespace Shiba.Scripting.Conversion
 {
@@ -30,23 +39,30 @@ namespace Shiba.Scripting.Conversion
                         {
                             dynamic dtask = task;
                             var taskResult = await dtask as object;
-                            runtime.ChakraHost.EnterContext();
-                            resolve.CallFunction(result, taskResult.ToJavaScriptValue());
-                            runtime.ChakraHost.LeaveContext();
+                            await CoreApplication.MainView.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                                () =>
+                                {
+                                    resolve.CallFunction(result, taskResult.ToJavaScriptValue());
+                                });
                         }
                         else //Task
                         {
                             await task;
-                            runtime.ChakraHost.EnterContext();
-                            resolve.CallFunction(result, JavaScriptValue.Invalid);
-                            runtime.ChakraHost.LeaveContext();
+                            await CoreApplication.MainView.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                                () =>
+                                {
+                                    resolve.CallFunction(result, JavaScriptValue.Invalid);
+                                });
                         }
                     }
                     catch (Exception ex)
                     {
-                        runtime.ChakraHost.EnterContext();
-                        reject.CallFunction(result, JavaScriptValue.FromString(ex.Message));
-                        runtime.ChakraHost.LeaveContext();
+                        Debug.WriteLine(ex.Message);
+                        await CoreApplication.MainView.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                            () =>
+                            {
+                                reject.CallFunction(result, JavaScriptValue.FromString(ex.Message));
+                            });
                     }
                 });
 
@@ -70,9 +86,8 @@ namespace Shiba.Scripting.Conversion
                     JavaScriptValue RejectCallback(JavaScriptValue callee, bool call, JavaScriptValue[] arguments,
                         ushort count, IntPtr data)
                     {
-                        result.SetError(arguments.Skip(1).FirstOrDefault().ValueType == JavaScriptValueType.String
-                            ? arguments.FirstOrDefault().ToString()
-                            : string.Empty);
+                        var props = Singleton<ValueVisitor>.Instance.DynamicVisit(arguments[1], null);
+                        result.SetError(JsonConvert.SerializeObject(props));
                         callback?.Invoke(result);
                         return JavaScriptValue.Invalid;
                     }

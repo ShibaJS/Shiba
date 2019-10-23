@@ -8,10 +8,6 @@ import java.util.function.Predicate
 class ShibaArray : ArrayList<Any?>() {
     var collectionChanged: Event<CollectionChangedEventArg> = Event()
 
-    override fun toString(): String {
-        return "[${this.joinToString(separator = ",") { it.toString() }}]"
-    }
-
     override fun add(element: Any?): Boolean {
         val result = super.add(element)
         if (result) {

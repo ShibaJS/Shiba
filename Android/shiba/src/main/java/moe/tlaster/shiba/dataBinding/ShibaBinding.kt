@@ -40,14 +40,14 @@ private fun getRawPropertyMethods(dataContext: Any?): Map<String, PropertyMethod
 
 private fun generatePropertyMethod(method: Map.Entry<String, List<Method>>): PropertyMethod {
     val getter = method.value.firstOrNull { !it.parameterTypes.any() }
-    val setter = method.value.firstOrNull { method ->
-        method.parameterTypes.count { it == (getter?.returnType ?: it) } == 1
+    val setter = method.value.firstOrNull { setterMethod ->
+        setterMethod.parameterTypes.count { it == (getter?.returnType ?: it) } == 1
     }
     return PropertyMethod(getter, setter)
 }
 
 
-class ShibaBinding(val path: String) {
+class ShibaBinding(val path: String, val actualPath: String = "") {
     private val bindingSources = ArrayList<BindingContext>()
 
     init {
@@ -61,10 +61,9 @@ class ShibaBinding(val path: String) {
     }
     var converter: ShibaConverter? = null
     var parameter: Any? = null
-    internal var targetView: NativeView? = null
+    var targetView: NativeView? = null
     private var isChanging = false
-    internal var viewSetter: ((NativeView, Any?) -> Unit)? = null
-
+    var viewSetter: ((NativeView, Any?) -> Unit)? = null
 
     private fun updateBindingSource(newValue: Any?) {
         releaseBindingSources()
@@ -87,13 +86,15 @@ class ShibaBinding(val path: String) {
         setValueToView()
     }
 
-    internal fun setValueToView() {
+    fun setValueToView() {
         val source = bindingSources.lastOrNull()
         val target = targetView
         val setter = viewSetter
         if (source != null && target != null && setter != null && !isChanging) {
             isChanging = true
-            setter.invoke(target, executeConverter(getValueFromDataContext(source.dataContext, source.propertyPath)))
+            val value = getValueFromDataContext(source.dataContext, source.propertyPath)
+            val convertValue = executeConverter(value)
+            setter.invoke(target, convertValue)
             isChanging = false
         }
     }

@@ -1,7 +1,7 @@
 package moe.tlaster.shiba.scripting.conversion
 
-import org.liquidplayer.javascript.JSContext
-import org.liquidplayer.javascript.JSValue
+import org.liquidplayer.javascript.*
+
 
 interface ITypeConversion {
     val objectType: Class<*>

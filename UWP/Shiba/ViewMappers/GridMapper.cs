@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Shiba.Controls;
 using Shiba.ViewMappers;
@@ -10,9 +11,10 @@ using NativeView = Windows.UI.Xaml.Controls.Grid;
 
 namespace Shiba.ViewMappers
 {
-    public class GridMapper : ViewMapper<NativeView>
+    public class GridMapper : AllowChildViewMapper<NativeView>
     {
-        public override IEnumerable<IValueMap> PropertyMaps()
+
+        protected override IEnumerable<IValueMap> PropertyMaps()
         {
             return base.PropertyMaps().Concat(GetPropertyMaps());
         }

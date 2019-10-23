@@ -1,13 +1,9 @@
 package moe.tlaster.shiba.scripting.visitors
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.annotation.JsonAppend
 import moe.tlaster.shiba.ShibaView
-import moe.tlaster.shiba.common.Singleton
 import moe.tlaster.shiba.scripting.conversion.toNative
 import moe.tlaster.shiba.type.Property
 import moe.tlaster.shiba.type.ShibaExtension
-import moe.tlaster.shiba.visitors.ValueVisitor
 import org.liquidplayer.javascript.JSObject
 import org.liquidplayer.javascript.JSValue
 
@@ -75,7 +71,7 @@ internal object JSViewVisitor {
                 return Property(name, propertyValue.toNative())
             }
             ValueType.Custom -> {
-                return Property(name, ValueVisitor.visit(Singleton.get<ObjectMapper>().readTree(propertyValue.toString()), null))
+                return Property(name, propertyValue)
             }
             null -> {
                 return Property(name, null)

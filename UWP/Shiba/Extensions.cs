@@ -19,14 +19,12 @@ namespace Shiba
     public static class ViewExtension
     {
         public static DataTemplate ToDataTemplate(this ShibaView view)
-        {
-            // TODO:
+        {   
             throw new NotImplementedException();
             //var layoutString = view.ToString();
             //var templateString =
             //    $"<DataTemplate xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"><views:{typeof(ShibaHost).Name} xmlns:views=\"using:{typeof(ShibaHost).Namespace}\" DataContext=\"{{Binding}}\" Layout={JsonConvert.SerializeObject(layoutString)}/></DataTemplate>";
             //var template = XamlReader.Load(templateString) as DataTemplate;
-
 
             //return template;
         }

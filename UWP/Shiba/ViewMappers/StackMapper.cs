@@ -11,30 +11,32 @@ using NativeView = Windows.UI.Xaml.Controls.StackPanel;
 
 namespace Shiba.ViewMappers
 {
-    public class StackMapper : ViewMapper<NativeView>
+    public class StackMapper : AllowChildViewMapper<NativeView>
     {
-        public override IEnumerable<IValueMap> PropertyMaps()
+        protected  override IEnumerable<IValueMap> PropertyMaps()
         {
             return base.PropertyMaps().Concat(GetProperties());
         }
 
         private IEnumerable<PropertyMap> GetProperties()
         {
-            yield return new PropertyMap("orientation", NativeView.OrientationProperty, typeof(string),
+            yield return new PropertyMap("orientation", NativeView.OrientationProperty, typeof(Orientation),
                 OrientationConverter);
             yield return new PropertyMap("padding", NativeView.PaddingProperty, typeof(ShibaObject), typeof(Thickness),
                 value =>
                 {
+                    Thickness thickness;
                     switch (value)
                     {
-                        case decimal numberValue:
-                            var dvalue = Convert.ToDouble(numberValue);
-                            return new Thickness(dvalue, dvalue, dvalue, dvalue);
                         case ShibaObject shibaMap:
-                            return shibaMap.ToNativeThickness();
+                            thickness = shibaMap.ToNativeThickness();
+                            break;
+                        default:
+                            thickness = value.TryChangeType<int>(out var ivalue) ? new Thickness(ivalue, ivalue, ivalue, ivalue) : new Thickness();
+                            break;
                     }
 
-                    return new Thickness();
+                    return thickness;
                 });
         }
 

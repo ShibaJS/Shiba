@@ -3,7 +3,7 @@ package moe.tlaster.shiba.type
 import moe.tlaster.shiba.ShibaView
 
 
-final class View(var viewName: String) {
+class View(var viewName: String) {
     var parent: ShibaView? = null
     val children: ArrayList<View> = ArrayList()
     val properties: ArrayList<Property> = ArrayList()

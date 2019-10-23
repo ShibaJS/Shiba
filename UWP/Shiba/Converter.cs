@@ -12,8 +12,16 @@ namespace Shiba
     {
         public object Execute(ShibaFunction function, object dataContext)
         {
-            return ShibaApp.Instance.Configuration.ScriptRuntime.Execute(function.Name,
-                function.Parameters.Select(it => GetParameterValue(it, dataContext)).ToArray());
+            if (ShibaApp.Instance.Configuration.NativeConverters.ContainsKey(function.Name))
+            {
+                return ShibaApp.Instance.Configuration.NativeConverters[function.Name]
+                    .Invoke(function.Parameters.Select(it => GetParameterValue(it, dataContext)).ToList());
+            }
+            else
+            {
+                return ShibaApp.Instance.Configuration.ScriptRuntime.CallFunction(function.Name,
+                    function.Parameters.Select(it => GetParameterValue(it, dataContext)).ToArray());
+            }
         }
 
         protected virtual object GetValueFromDataContext(ShibaExtension extension, object dataContext)

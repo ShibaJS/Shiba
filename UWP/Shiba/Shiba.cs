@@ -1,13 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
+using Windows.UI.Core;
 using Shiba.CommonProperty;
 using Shiba.Controls;
 using Shiba.ExtensionExecutors;
 using Shiba.Scripting;
 using Shiba.Scripting.Runtime;
+using Console = Shiba.Scripting.Runtime.Console;
 
 namespace Shiba
 {
@@ -26,10 +31,11 @@ namespace Shiba
         internal Dictionary<string, View> Components { get; } = new Dictionary<string, View>();
         public ShibaConfiguration Configuration { get; } = new ShibaConfiguration();
         public static ShibaApp Instance { get; protected set; }
+        internal View AppComponent { get; set; }
 
-        public void AddConverter(string converter)
+        public void AddConverter(string name, Func<List<object>, object> converter)
         {
-            Configuration.ScriptRuntime.Execute(converter);
+            Configuration.NativeConverters.Add(name, converter);
         }
 
         public static void Init(Action<ShibaConfiguration> action = null)
@@ -37,9 +43,14 @@ namespace Shiba
             Instance = new ShibaApp(c =>
             {
                 c.PlatformType = "UWP";
-                c.ScriptRuntime.AddObject("storage", new Storage());
+                c.ScriptRuntime.AddObject("shibaStorage", new Storage());
+                c.ScriptRuntime.AddObject("console", new Console());
+                c.CommonProperties.Add(new GridProperty());
+                c.CommonProperties.Add(new RelativeProperty());
+                c.ExtensionExecutors.Add(new BindingExecutor());
+                c.ExtensionExecutors.Add(new JsonExecutor());
                 action?.Invoke(c);
-            });
+            }); 
         }
     }
 
@@ -48,18 +59,11 @@ namespace Shiba
         public IScriptRuntime ScriptRuntime { get; set; } = new DefaultScriptRuntime();
         public string PlatformType { get; set; } = "Windows";
 
-        public List<IExtensionExecutor> ExtensionExecutors { get; } =
-            AppDomain.CurrentDomain.GetAssemblies()
-                .Where(it => !it.IsDynamic)
-                .SelectMany(it => it.ExportedTypes)
-                .Where(it => it.IsClass && !it.IsAbstract && typeof(IExtensionExecutor).IsAssignableFrom(it))
-                .Select(it => Activator.CreateInstance(it) as IExtensionExecutor).ToList();
+        public Dictionary<string, Func<List<object>, object>> NativeConverters { get; set; } =
+            new Dictionary<string, Func<List<object>, object>>();
 
-        public List<ICommonProperty> CommonProperties { get; } =
-            AppDomain.CurrentDomain.GetAssemblies()
-                .Where(it => !it.IsDynamic)
-                .SelectMany(it => it.ExportedTypes)
-                .Where(it => it.IsClass && !it.IsAbstract && typeof(ICommonProperty).IsAssignableFrom(it))
-                .Select(it => Activator.CreateInstance(it) as ICommonProperty).ToList();
+        public List<IExtensionExecutor> ExtensionExecutors { get; } = new List<IExtensionExecutor>();
+
+        public List<ICommonProperty> CommonProperties { get; } = new List<ICommonProperty>();
     }
 }

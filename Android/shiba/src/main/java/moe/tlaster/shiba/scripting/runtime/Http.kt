@@ -12,9 +12,9 @@ import org.liquidplayer.javascript.JSValue
 
 class Http(ctx: JSContext?) : JSObject(ctx) {
     @jsexport
-    public fun get(url: String): JSValue {
+    public fun get(url: String, cookie: String): JSValue {
         return GlobalScope.async {
-            val result = url.httpGet().awaitString()
+            val result = url.httpGet().header(Pair("Cookie", cookie)).awaitString()
             return@async result
         }.toJSValue(context)
     }

@@ -19,10 +19,13 @@ namespace Shiba.Scripting.Visitors
             if (value.ValueType != JavaScriptValueType.Object || !value.HasProperty(className.ToJavaScriptPropertyId()))
                 return value.ToNative();
             var type = value.GetProperty(className.ToJavaScriptPropertyId()).ToNative<string>();
-            return type switch {
-                ViewType => VisitView(value),
-                _ => throw new ArgumentOutOfRangeException()
-                };
+            switch (type)
+            {
+                case ViewType:
+                    return VisitView(value);
+                default: throw new ArgumentOutOfRangeException();
+
+            }
         }
 
         private View VisitView(JavaScriptValue value)
@@ -88,7 +91,7 @@ namespace Shiba.Scripting.Visitors
                     }
                     return new Property(name, new ShibaExtension(type, target, scriptName));
                 case ValueType.Custom:
-                    return new Property(name, Singleton<ValueVisitor>.Instance.DynamicVisit(JsonConvert.DeserializeObject<JObject>(propertyValue.ToNative<string>()), null));
+                    return new Property(name, Singleton<ValueVisitor>.Instance.DynamicVisit(propertyValue, null));
                 case ValueType.Boolean:
                 case ValueType.Number:
                 case ValueType.String:

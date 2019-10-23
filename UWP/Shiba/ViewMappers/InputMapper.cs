@@ -16,7 +16,7 @@ namespace Shiba.ViewMappers
         protected override PropertyMap DefaultPropertyMap { get; } =
             new PropertyMap("text", NativeView.TextProperty, typeof(string), isTwoWay: true);
 
-        public override IEnumerable<IValueMap> PropertyMaps()
+        protected  override IEnumerable<IValueMap> PropertyMaps()
         {
             foreach (var propertyMap in base.PropertyMaps()) yield return propertyMap;
             yield return new PropertyMap("size", Control.FontSizeProperty, typeof(double));

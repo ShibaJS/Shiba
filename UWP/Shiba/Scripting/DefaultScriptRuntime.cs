@@ -1,42 +1,69 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
+using Windows.Foundation.Diagnostics;
+using Windows.UI.Core;
 using ChakraHosting;
+using Newtonsoft.Json;
 using Shiba.Controls;
 using Shiba.Internal;
 using Shiba.Scripting.Conversion;
 using Shiba.Scripting.Runtime;
 using Shiba.Scripting.Visitors;
+using Console = System.Console;
 
 namespace Shiba.Scripting
 {
     public class DefaultScriptRuntime : IScriptRuntime, IDisposable
     {
         private readonly List<JavaScriptNativeFunction> _functions = new List<JavaScriptNativeFunction>();
-        private readonly JavaScriptValue[] _prefix;
 
         public DefaultScriptRuntime()
         {
             ChakraHost = new ChakraHost();
             ChakraHost.EnterContext();
-            _prefix = new[] {JavaScriptValue.FromBoolean(false)};
             InitConversion();
             InitRuntimeObject();
-            ChakraHost.LeaveContext();
+            // Since the hole application will run with shiba, maybe we should not leave context until application is exit?
+            //ChakraHost.LeaveContext();
         }
 
         public ChakraHost ChakraHost { get; private set; }
 
         public void Dispose()
         {
+            ChakraHost?.LeaveContext();
             ChakraHost?.Dispose();
             ChakraHost = null;
         }
 
-        public object Execute(string functionName, params object[] parameters)
+        public bool HasFunction(string name)
         {
-            ChakraHost.EnterContext();
+            return HasFunction(ChakraHost.GlobalObject, name);
+        }
+
+        public bool HasFunction(object instance, string name)
+        {
+            if (!(instance is JavaScriptValue javaScriptValue))
+            {
+                return false;
+            }
+
+            return javaScriptValue.GetProperty(name.ToJavaScriptPropertyId()).ValueType == JavaScriptValueType.Function;
+        }
+
+        public object CallFunctionWithCustomThis(object thiz, string functionName, params object[] parameters)
+        {
+            //ChakraHost.EnterContext();
+            if (!(thiz is JavaScriptValue javaScriptValue))
+            {
+                return null;
+            }
             var func = ChakraHost.GlobalObject.GetProperty(
                 JavaScriptPropertyId.FromString(functionName));
             object result = null;
@@ -44,21 +71,132 @@ namespace Shiba.Scripting
             {
                 case JavaScriptValueType.Function:
                 {
-                    var param = _prefix.Concat(parameters.Select(it => it.ToJavaScriptValue())).ToArray();
+                    var param = new []{javaScriptValue}.Concat(parameters.Select(it => it.ToJavaScriptValue())).ToArray();
+                    
                     result = func.CallFunction(param).ToNative();
                 }
                     break;
             }
 
-            ChakraHost.LeaveContext();
+            //ChakraHost.LeaveContext();
             return result;
+        }
+
+        public object CallFunction(string functionName, params object[] parameters)
+        {
+            return CallFunction(ChakraHost.GlobalObject, functionName, parameters);
+        }
+
+        public object CallFunction(object instance, string functionName, params object[] parameters)
+        {
+            //ChakraHost.EnterContext();
+            if (!(instance is JavaScriptValue javaScriptValue))
+            {
+                return null;
+            }
+            var func = javaScriptValue.GetProperty(
+                JavaScriptPropertyId.FromString(functionName));
+            object result = null;
+            switch (func.ValueType)
+            {
+                case JavaScriptValueType.Function:
+                {
+                    var param = new []{javaScriptValue}.Concat(parameters.Select(it => it.ToJavaScriptValue())).ToArray();
+                    result = func.CallFunction(param).ToNative();
+                }
+                    break;
+            }
+
+            //ChakraHost.LeaveContext();
+            return result;
+        }
+
+        public object GetProperty(object instance, string propertyName)
+        {
+            if (!(instance is JavaScriptValue javaScriptValue))
+            {
+                return null;
+            }
+
+            if (!javaScriptValue.HasProperty(propertyName.ToJavaScriptPropertyId()))
+            {
+                return null;
+            }
+
+            return javaScriptValue.GetProperty(propertyName.ToJavaScriptPropertyId()).ToNative();
+        }
+
+        public object GetAtIndex(object instance, int index)
+        {
+            if (!(instance is JavaScriptValue javaScriptValue))
+            {
+                return null;
+            }
+
+            if (javaScriptValue.ValueType != JavaScriptValueType.Array)
+            {
+                return null;
+            }
+
+            return javaScriptValue.GetIndexedProperty(JavaScriptValue.FromInt32(index)).ToNative();
+        }
+
+        public void AddRef(object instance)
+        {
+            if (!(instance is JavaScriptValue javaScriptValue))
+            {
+                return;
+            }
+
+            javaScriptValue.AddRef();
+        }
+
+        public void ReleaseObj(object instance)
+        {
+            if (!(instance is JavaScriptValue javaScriptValue))
+            {
+                return;
+            }
+
+            javaScriptValue.Release();
+        }
+
+        public bool IsArray(object instance)
+        {
+            if (!(instance is JavaScriptValue javaScriptValue))
+            {
+                return false;
+            }
+
+            return javaScriptValue.ValueType == JavaScriptValueType.Array;
+        }
+
+        public IEnumerable ToArray(object instance)
+        {
+            if (IsArray(instance))
+            {
+                var javascriptValue = (JavaScriptValue)instance;
+                var result = new List<object>();
+                var currentIndex = 0;
+                while (javascriptValue.HasIndexedProperty(currentIndex.ToJavaScriptValue()))
+                {
+                    result.Add(javascriptValue.GetIndexedProperty(currentIndex.ToJavaScriptValue()).ToNative());
+                    currentIndex++;
+                }
+
+                return result;
+            }
+            else
+            {
+                return Enumerable.Empty<object>();
+            }
         }
 
         public object Execute(string script)
         {
-            ChakraHost.EnterContext();
+            //ChakraHost.EnterContext();
             var result = ChakraHost.RunScript(script).ToNative();
-            ChakraHost.LeaveContext();
+            //ChakraHost.LeaveContext();
             return result;
         }
 
@@ -66,7 +204,7 @@ namespace Shiba.Scripting
         {
             if (value == null || string.IsNullOrEmpty(name)) throw new ArgumentException();
 
-            ChakraHost.EnterContext();
+            //ChakraHost.EnterContext();
             var objPropertyId = JavaScriptPropertyId.FromString(name);
             switch (value)
             {
@@ -138,16 +276,43 @@ namespace Shiba.Scripting
                     break;
             }
 
-            ChakraHost.LeaveContext();
+            //ChakraHost.LeaveContext();
+        }
+
+        private void CreateRunShibaAppFunction()
+        {
+            var id = "runShibaApp".ToJavaScriptPropertyId();
+            var function = JavaScriptValue.CreateFunction(RunShibaApp, IntPtr.Zero);
+            ChakraHost.GlobalObject.SetProperty(id, function, true);
         }
 
         private void CreateRegisterComponentFunction()
         {
-            var id = JavaScriptPropertyId.FromString("registerComponent");
+            var id = "registerComponent".ToJavaScriptPropertyId();
             var function = JavaScriptValue.CreateFunction(RegisterComponent, IntPtr.Zero);
             ChakraHost.GlobalObject.SetProperty(id, function, true);
         }
 
+        private static JavaScriptValue RunShibaApp(JavaScriptValue callee, bool call,
+            JavaScriptValue[] arguments,
+            ushort count, IntPtr data)
+        {
+            var args = arguments.Skip(1).ToArray();
+            if (count < 1)
+            {
+                return false.ToJavaScriptValue();
+            }
+
+            var view = args[0];
+            var component = Singleton<JSViewVisitor>.Instance.Visit(view);
+            if (component is View shibaView)
+            {
+                ShibaApp.Instance.AppComponent = shibaView;
+                return true.ToJavaScriptValue();
+            }
+
+            return false.ToJavaScriptValue();
+        }
 
         private static JavaScriptValue RegisterComponent(JavaScriptValue callee, bool call,
             JavaScriptValue[] arguments,
@@ -206,8 +371,9 @@ namespace Shiba.Scripting
 
         private void InitRuntimeObject()
         {
-            //AddObject("http", new Http());
+            AddObject("http", new Http());
             CreateRegisterComponentFunction();
+            CreateRunShibaAppFunction();
         }
     }
 

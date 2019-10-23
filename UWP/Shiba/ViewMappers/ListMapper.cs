@@ -13,7 +13,7 @@ namespace Shiba.ViewMappers
 {
     public class ListMapper : ViewMapper<NativeView>
     {
-        public override IEnumerable<IValueMap> PropertyMaps()
+        protected  override IEnumerable<IValueMap> PropertyMaps()
         {
             return base.PropertyMaps().Concat(GetProperties());
         }

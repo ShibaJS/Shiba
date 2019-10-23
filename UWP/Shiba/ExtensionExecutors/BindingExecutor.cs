@@ -26,7 +26,7 @@ namespace Shiba.ExtensionExecutors
         public virtual NativeBinding ProvideNativeBinding(IShibaContext context, ShibaExtension value)
         {
             var dataContextPath =
-                "DataContext";
+                nameof(context.DataContext);
             var targetPath = value.Value;
             var path = string.IsNullOrEmpty(targetPath)
                 ? dataContextPath
@@ -34,7 +34,7 @@ namespace Shiba.ExtensionExecutors
 
             return new NativeBinding
             {
-                Source = context.ShibaHost,
+                Source = context,
                 Path = new PropertyPath(path),
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             };
@@ -48,7 +48,7 @@ namespace Shiba.ExtensionExecutors
         public override NativeBinding ProvideNativeBinding(IShibaContext context, ShibaExtension value)
         {
             var dataContextPath =
-                "DataContext";
+                nameof(context.DataContext);
             var targetPath = value.Value;
             var path = dataContextPath;
 
@@ -56,7 +56,7 @@ namespace Shiba.ExtensionExecutors
             {
                 Converter = Singleton<JsonConverter>.Instance,
                 ConverterParameter = targetPath,
-                Source = context.ShibaHost,
+                Source = context,
                 Path = new PropertyPath(path),
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             };

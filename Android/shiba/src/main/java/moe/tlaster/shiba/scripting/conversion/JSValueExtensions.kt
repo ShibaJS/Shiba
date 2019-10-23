@@ -15,7 +15,7 @@ fun JSValue.toNative(): Any? {
             val converter = conversions.firstOrNull {
                 it.canConvert(this)
             }
-            return converter?.fromJSValue(this)
+            return converter?.fromJSValue(this) ?: this
         }
     }
 }
@@ -25,6 +25,7 @@ fun Any?.toJSValue(context: JSContext): JSValue {
         return JSValue(context, null)
     }
     return when (this) {
+        is JSValue -> return this
         is String,
         is Double,
         is Int,

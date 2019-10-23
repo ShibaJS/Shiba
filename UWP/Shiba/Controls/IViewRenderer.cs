@@ -1,29 +1,26 @@
-﻿namespace Shiba.Controls
+﻿
+using ChakraHosting;
+using NativeView = Windows.UI.Xaml.FrameworkElement;
+using NativeBinding = Windows.UI.Xaml.Data.Binding;
+using NativeProperty = Windows.UI.Xaml.DependencyProperty;
+using NativeThickness = Windows.UI.Xaml.Thickness;
+using NativeViewGroup = Windows.UI.Xaml.Controls.Panel;
+
+namespace Shiba.Controls
 {
     public interface IShibaContext
     {
-        IShibaHost ShibaHost { get; }
-    }
-
-    public interface IShibaHost
-    {
         object DataContext { get; }
-        IShibaContext Context { get; }
+        void EventCallback(string name);
     }
 
-    public class ShibaContext : IShibaContext
-    {
-        public IShibaHost ShibaHost { get; set; }
-    }
-
-    public interface IViewMapper
+    internal interface IViewMapper
     {
         object Map(View view, IShibaContext context);
     }
 
-    public interface IViewMapper<T> : IViewMapper
+    internal interface IAllowChildViewMapper : IViewMapper
     {
-        T CreateNativeView();
-        new T Map(View view, IShibaContext context);
+        void AddChild(NativeView parent, NativeView child);
     }
 }

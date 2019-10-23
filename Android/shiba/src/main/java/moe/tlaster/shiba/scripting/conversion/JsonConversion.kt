@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import moe.tlaster.shiba.common.Singleton
 import org.liquidplayer.javascript.JSContext
+import org.liquidplayer.javascript.JSObject
 import org.liquidplayer.javascript.JSValue
 
 class JsonConversion(override val objectType: Class<*> = JsonNode::class.java) : ITypeConversion {
@@ -12,10 +13,11 @@ class JsonConversion(override val objectType: Class<*> = JsonNode::class.java) :
         if (value !is JsonNode) {
             return JSValue(context,null)
         }
-
+        if (value.isObject) {
+            return JSObject(context, Singleton.get<ObjectMapper>().convertValue(value, Map::class.java))
+        }
         return JSValue(context, when {
             value.isArray -> Singleton.get<ObjectMapper>().convertValue(value, List::class.java)
-            value.isObject -> Singleton.get<ObjectMapper>().convertValue(value, Map::class.java)
             else -> null
         })
     }

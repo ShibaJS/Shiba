@@ -5,18 +5,19 @@ import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.databind.node.ValueNode
 import moe.tlaster.shiba.*
-import moe.tlaster.shiba.NativeView
-import moe.tlaster.shiba.ShibaView
 import moe.tlaster.shiba.common.Singleton
 import moe.tlaster.shiba.converters.RawConverter
 import moe.tlaster.shiba.converters.ShibaConverterParameter
 import moe.tlaster.shiba.converters.SingleBindingFunctionConverter
 import moe.tlaster.shiba.dataBinding.ShibaBinding
 import moe.tlaster.shiba.extensionExecutor.IMutableExtensionExecutor
+import moe.tlaster.shiba.mapper.ComponentMapper
+import moe.tlaster.shiba.mapper.IAllowChildViewMapper
 import moe.tlaster.shiba.type.Property
 import moe.tlaster.shiba.type.ShibaExtension
 import moe.tlaster.shiba.type.ShibaFunction
 import moe.tlaster.shiba.type.ShibaObject
+import org.liquidplayer.javascript.*
 
 
 internal object ValueVisitor {
@@ -28,9 +29,14 @@ internal object ValueVisitor {
             is ObjectNode -> visit(item, context)
             is ArrayNode -> visit(item, context)
             is ValueNode -> visit(item, context)
+            is JSValue -> visit(item, context)
             null -> null
             else -> item
         }
+    }
+
+    private val shibaHostMapper by lazy {
+        ComponentMapper()
     }
 
     private fun visit(tree: ShibaView, context: IShibaContext?): NativeView {
@@ -41,23 +47,21 @@ internal object ValueVisitor {
         }
         if (mapper == null) {
             if (Shiba.components.contains(tree.viewName)) {
-                // TODO: Properties
-                return ShibaHost(context.getContext()).apply {
-                    component = tree.viewName
-                    dataContext = context.dataContext
-                    hostBinding = ShibaBinding("dataContext").apply {
-                        source = context
-                    }
-                }
+                tree.properties.add(Property("componentName", tree.viewName))
+                return shibaHostMapper.map(tree, context)
             }
-            throw ClassNotFoundException()
+            throw ClassNotFoundException("${tree.viewName} not found")
         } else {
             val target = mapper.map(tree, context)
             if (tree.children.any() && target is ViewGroup) {
                 val commonProps = ArrayList<Triple<ShibaView, NativeView, List<Property>>>()
                 tree.children.forEach {
                     val child = visit(it, context)
-                    target.addView(child)
+                    if (mapper is IAllowChildViewMapper) {
+                        mapper.addChild(target, child)
+                    } else {
+                        target.addView(child)
+                    }
                     val comprop = it.properties.filter { Shiba.configuration.commonProperties.any { cp -> cp.name == it.name } }.toList()
                     if (comprop.any()) {
                         commonProps.add(Triple(it, child, comprop))
@@ -203,5 +207,30 @@ internal object ValueVisitor {
                 else -> null
             }
         }
+    }
+
+    private fun visit(item: JSValue, context: IShibaContext?): Any? {
+        return when {
+            item.isObject -> return visitJSObject(item)
+            item.isArray -> return visitJSArray(item)
+            item.isBoolean -> item.toBoolean()
+            item.isNumber -> item.toNumber()
+            item.isString -> item.toString()
+            item.isNull -> null
+            else -> item
+        }
+    }
+
+    private fun visitJSArray(item: JSValue): List<Any?> {
+        return item.toJSArray().map { visit(it, null) }
+    }
+
+    private fun visitJSObject(item: JSValue): ShibaObject {
+        val jsobj = item.toObject()
+        val obj = ShibaObject()
+        item.toObject().propertyNames().forEach {
+            obj[it] = visit(jsobj.property(it), null)
+        }
+        return obj
     }
 }

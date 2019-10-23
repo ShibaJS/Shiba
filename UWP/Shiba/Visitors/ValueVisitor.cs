@@ -7,10 +7,13 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using Windows.UI.Xaml;
+using ChakraHosting;
 using Newtonsoft.Json.Linq;
 using Shiba.Controls;
 using Shiba.ExtensionExecutors;
 using Shiba.Internal;
+using Shiba.Scripting;
+using Shiba.ViewMappers;
 using ShibaView = Shiba.Controls.View;
 using NativeView = Windows.UI.Xaml.FrameworkElement;
 using NativeBinding = Windows.UI.Xaml.Data.Binding;
@@ -39,6 +42,7 @@ namespace Shiba.Visitors
         //TODO: Dictionary means it does not support multiple renderer for one view (like Xamarin.Forms custom renderer)
         private static readonly ConcurrentDictionary<string, IViewMapper> Renderer =
             new ConcurrentDictionary<string, IViewMapper>();
+        private static readonly IViewMapper ShibaHostMapper = new ComponentMapper();
 
         private NativeView Visit(View view, IShibaContext context)
         {
@@ -49,17 +53,8 @@ namespace Shiba.Visitors
             {
                 if (ShibaApp.Instance.Components.ContainsKey(view.ViewName))
                 {
-                    // TODO: Properties
-                    var host = new ShibaHost
-                    {
-                        Component = view.ViewName,
-                    };
-                    host.SetBinding(FrameworkElement.DataContextProperty, new NativeBinding
-                    {
-                        Source = context.ShibaHost,
-                        Path = new PropertyPath("DataContext")
-                    });
-                    return host;
+                    view.Properties.Add(new Property("componentName", view.ViewName));
+                    return ShibaHostMapper.Map(view, context) as ShibaHost;
                 }
 
                 return null;
@@ -75,7 +70,14 @@ namespace Shiba.Visitors
                 view.Children.ForEach(it =>
                 {
                     var child = Visit(it, context);
-                    panel.Children.Add(child);
+                    if (renderer is IAllowChildViewMapper viewGroupMapper)
+                    {
+                        viewGroupMapper.AddChild(panel, child);
+                    }
+                    else
+                    {
+                        panel.Children.Add(child);
+                    }
                     var commonprop = it.Properties.Where(prop =>
                             ShibaApp.Instance.Configuration.CommonProperties.Any(cp => cp.Name == prop.Name))
                         .ToList();
@@ -278,6 +280,56 @@ namespace Shiba.Visitors
                 default:
                     return null;
             }
+        }
+
+        private object Visit(JavaScriptValue value, IShibaContext context)
+        {
+            switch (value.ValueType)
+            {
+                case JavaScriptValueType.Error:
+                case JavaScriptValueType.Object:
+                    return VisitJavascriptObject(value);
+                case JavaScriptValueType.Array:
+                    return VisitJavascriptArray(value);
+                case JavaScriptValueType.Boolean:
+                    return value.ToBoolean();
+                case JavaScriptValueType.Null:
+                    return null;
+                case JavaScriptValueType.Number:
+                    return value.ToDouble();
+                case JavaScriptValueType.String:
+                    return value.ToString();
+                case JavaScriptValueType.Undefined:
+                case JavaScriptValueType.Function:
+                default:
+                    return value;
+            }
+        }
+
+        private List<object> VisitJavascriptArray(JavaScriptValue value)
+        {
+            var result = new List<object>();
+            {
+                var currentIndex = 0;
+                while (value.HasIndexedProperty(currentIndex.ToJavaScriptValue()))
+                {
+                    result.Add(Visit(value.GetIndexedProperty(currentIndex.ToJavaScriptValue()), null));
+                    currentIndex++;
+                }
+            }
+            return result;
+        }
+
+        private ShibaObject VisitJavascriptObject(JavaScriptValue value)
+        {
+            var propers = VisitJavascriptArray(value.GetOwnPropertyNames()).Cast<string>().ToList();
+            var obj = new ShibaObject();
+            foreach (var name in propers)
+            {
+                obj.TryAdd(name, Visit(value.GetProperty(name.ToJavaScriptPropertyId()), null));
+            }
+
+            return obj;
         }
     }
 

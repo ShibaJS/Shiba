@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Shiba.Controls;
 using Shiba.ViewMappers;
@@ -10,12 +11,20 @@ namespace Shiba.ViewMappers
 {
     public class TextMapper : ViewMapper<NativeView>
     {
+        protected override NativeView CreateNativeView(IShibaContext context)
+        {
+            return new NativeView()
+            {
+                TextWrapping = TextWrapping.Wrap,
+            };
+        }
+
         protected override bool HasDefaultProperty { get; } = true;
 
         protected override PropertyMap DefaultPropertyMap { get; } =
             new PropertyMap("text", NativeView.TextProperty, typeof(string));
 
-        public override IEnumerable<IValueMap> PropertyMaps()
+        protected  override IEnumerable<IValueMap> PropertyMaps()
         {
             foreach (var propertyMap in base.PropertyMaps()) yield return propertyMap;
             yield return new PropertyMap("size", NativeView.FontSizeProperty, typeof(double));

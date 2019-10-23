@@ -111,6 +111,13 @@ namespace Shiba
                 $"The {colorString} string passed in the colorString argument is not a recognized Color.");
         }
 
+        public static bool TryChangeType<T>(this object value, out T result)
+        {
+            var success = TryChangeType(value, typeof(T), out var convertResult);
+            result = convertResult is T ? (T)convertResult : default;
+            return success;
+        }
+
         public static bool TryChangeType(this object value, Type type, out object result)
         {
             if (value == null)
