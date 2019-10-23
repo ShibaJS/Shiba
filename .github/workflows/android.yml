@@ -14,8 +14,8 @@ jobs:
       with:
         java-version: 1.8
     - name: Grant execute permission for gradlew
-      run: chmod +x ./Android/gradlew
+      working-directory: ./Android
+      run: chmod +x ./gradlew
     - name: Build with Gradle
-      run: |
-        cd ./Android
-        ./gradlew clean build
+      working-directory: ./Android
+      run: ./gradlew clean build

@@ -14,6 +14,8 @@ jobs:
       with:
         dotnet-version: 3.0.100
     - name: Restore with dotnet
-      run: dotnet restore "UWP\\Shiba.sln"
+      working-directory: ./UWP
+      run: dotnet restore ./Shiba.sln
     - name: Build with msbuild
-      run: msbuild "UWP\\Shiba.sln" /m /verbosity:minimal /p:Configuration=Release
+      working-directory: ./UWP
+      run: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe ./Shiba.sln /m /verbosity:minimal /p:Configuration=Release
