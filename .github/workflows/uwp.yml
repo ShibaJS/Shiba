@@ -21,4 +21,4 @@ jobs:
       run: dotnet restore ./Shiba.sln
     - name: Build with msbuild
       working-directory: ./UWP
-      run: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe' ./Shiba.sln /m /verbosity:minimal /p:Configuration=Release
+      run: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/MSBuild/Current/Bin/MSBuild.exe" ./Shiba.sln /m /verbosity:minimal /p:Configuration=Release
