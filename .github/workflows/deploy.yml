@@ -31,7 +31,7 @@ jobs:
         run: |
           nuget source Add -Name "GitHub" -Source "https://nuget.pkg.github.com/ShibaJS/index.json" -UserName ShibaJS -Password GITHUB_TOKEN
           nuget pack ./Shiba.nuspec -Version %GITHUB_REF:~10%
-          nuget push "Shiba.nupkg" -Source "GitHub"
+          nuget push *.nupkg -Source "GitHub"
 
   build-and-deploy-Android:
     runs-on: ubuntu-latest
